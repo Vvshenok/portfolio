@@ -8,8 +8,53 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/style.css"/>
+<style>
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  border-radius: 6px;
+  padding: 2rem;
+  width: 340px;
+  max-width: 90vw;
+}
+.modal-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f0f0f0;
+  margin-bottom: 0.5rem;
+}
+.modal-body {
+  font-size: 0.82rem;
+  color: #777;
+  margin-bottom: 1.75rem;
+  line-height: 1.6;
+}
+.modal-body strong { color: #d8d8d8; font-weight: 600; }
+.modal-btns { display: flex; gap: 0.6rem; justify-content: flex-end; }
+</style>
 </head>
 <body>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-title">Delete game</div>
+    <div class="modal-body">Are you sure you want to remove <strong id="modal-name"></strong> from your portfolio? This cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.45rem 1rem;" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-solid" style="font-size:0.75rem;padding:0.45rem 1rem;background:#f55;color:#fff;" id="modal-confirm">Delete</button>
+    </div>
+  </div>
+</div>
 
 <div class="dash-top">
   <div class="dash-brand">vvshenok<em>.dev</em> / dashboard</div>
@@ -116,7 +161,7 @@ function renderGames(games) {
         '<button class="sm-btn" onclick="toggleGame(\'' + g.id + '\',' + !g.active + ')">' + (g.active ? 'Hide' : 'Show') + '</button>' +
       '</span>' +
       '<span class="row-btns">' +
-        '<button class="sm-btn del" onclick="deleteGame(\'' + g.id + '\',\'' + esc(g.name).replace(/'/g,"\\'") + '\')">Delete</button>' +
+        '<button class="sm-btn del" onclick="openModal(\'' + g.id + '\',\'' + esc(g.name).replace(/'/g, "\\'") + '\')">Delete</button>' +
       '</span>';
     body.appendChild(row);
   });
@@ -126,11 +171,52 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+let _pendingDeleteId = null;
+
+function openModal(id, name) {
+  _pendingDeleteId = id;
+  document.getElementById('modal-name').textContent = name;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-confirm').onclick = confirmDelete;
+}
+
+function closeModal() {
+  _pendingDeleteId = null;
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+async function confirmDelete() {
+  if (!_pendingDeleteId) return;
+  const id = _pendingDeleteId;
+  closeModal();
+  try {
+    const r = await fetch('/api/admin/games', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (r.status === 401) { window.location.href = '/login'; return; }
+    const d = await r.json();
+    if (d.ok) {
+      msg('Game deleted.', 'ok');
+      loadGames();
+    } else {
+      msg(d.error || 'Failed to delete.', 'err');
+    }
+  } catch {
+    msg('Network error.', 'err');
+  }
+}
+
 async function addGame() {
-  const universeId = document.getElementById('f-uid').value.trim();
-  const placeId    = document.getElementById('f-pid').value.trim();
-  const name       = document.getElementById('f-name').value.trim();
-  const role       = document.getElementById('f-role').value.trim();
+  const universeId  = document.getElementById('f-uid').value.trim();
+  const placeId     = document.getElementById('f-pid').value.trim();
+  const name        = document.getElementById('f-name').value.trim();
+  const role        = document.getElementById('f-role').value.trim();
   const description = document.getElementById('f-desc').value.trim();
 
   if (!universeId || !placeId || !name || !role) {
@@ -177,24 +263,13 @@ async function toggleGame(id, active) {
       body: JSON.stringify({ id, active }),
     });
     if (r.status === 401) { window.location.href = '/login'; return; }
-    msg(active ? 'Game set to visible.' : 'Game hidden.', 'ok');
-    loadGames();
-  } catch {
-    msg('Network error.', 'err');
-  }
-}
-
-async function deleteGame(id, name) {
-  if (!confirm('Delete "' + name + '" from your portfolio?')) return;
-  try {
-    const r = await fetch('/api/admin/games', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    if (r.status === 401) { window.location.href = '/login'; return; }
-    msg('Deleted.', 'ok');
-    loadGames();
+    const d = await r.json();
+    if (d.game) {
+      msg(active ? 'Game set to visible.' : 'Game hidden.', 'ok');
+      loadGames();
+    } else {
+      msg(d.error || 'Failed to update.', 'err');
+    }
   } catch {
     msg('Network error.', 'err');
   }
