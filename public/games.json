@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "universeId": "5441487628",
+    "placeId": "113385048266134",
+    "name": "Draw Or Oof!",
+    "role": "Lua Scripter",
+    "description": "Scripted core drawing detection logic and round management system.",
+    "active": true
+  },
+  {
+    "id": "2",
+    "universeId": "4786359830",
+    "placeId": "80201470599965",
+    "name": "Guess Drawing Or Die",
+    "role": "Gameplay Systems",
+    "description": "Built the voting system and player score tracking.",
+    "active": true
+  },
+  {
+    "id": "3",
+    "universeId": "4917583574",
+    "placeId": "84640406742922",
+    "name": "Trap a Thief",
+    "role": "Core Scripter",
+    "description": "Developed the thief detection and trap placement mechanics.",
+    "active": true
+  },
+  {
+    "id": "4",
+    "universeId": "6006823490",
+    "placeId": "120326262727477",
+    "name": "Tallest Waterslide Simulator",
+    "role": "Lua Scripter",
+    "description": "Scripted the line queue system and slide physics.",
+    "active": true
+  },
+  {
+    "id": "5",
+    "universeId": "1705691151",
+    "placeId": "13468284385",
+    "name": "Color Chairs",
+    "role": "Systems Dev",
+    "description": "Built the chair assignment logic and round elimination system.",
+    "active": true
+  },
+  {
+    "id": "6",
+    "universeId": "2691665355",
+    "placeId": "16531667568",
+    "name": "Team Evil Queen Escape",
+    "role": "Lua Scripter",
+    "description": "Scripted teamwork checkpoints and co-op trigger zones.",
+    "active": true
+  }
+]

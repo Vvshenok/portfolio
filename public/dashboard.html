@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — Vvshenok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+
+<div class="dash-top">
+  <div class="dash-brand">vvshenok<em>.dev</em> / dashboard</div>
+  <div class="dash-btns">
+    <a href="/" class="btn btn-ghost" style="font-size:0.72rem;padding:0.38rem 0.85rem;">View site</a>
+    <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.38rem 0.85rem;" onclick="doLogout()">Sign out</button>
+  </div>
+</div>
+
+<div class="dash-body">
+
+  <div class="dash-status" id="dash-status"></div>
+
+  <div class="dash-sec">Add a game</div>
+
+  <div class="add-box">
+    <div class="add-grid">
+      <div class="field">
+        <label class="field-label" for="f-uid">Universe ID</label>
+        <input class="field-input" type="text" id="f-uid" placeholder="e.g. 5441487628"/>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-pid">Place ID</label>
+        <input class="field-input" type="text" id="f-pid" placeholder="e.g. 113385048266134"/>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-name">Game name</label>
+        <input class="field-input" type="text" id="f-name" placeholder="Draw Or Oof!"/>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-role">Your role</label>
+        <input class="field-input" type="text" id="f-role" placeholder="Lua Scripter"/>
+      </div>
+      <div class="field full">
+        <label class="field-label" for="f-desc">Description <span style="color:var(--dim);font-style:normal">(optional)</span></label>
+        <input class="field-input" type="text" id="f-desc" placeholder="What did you build or script on this game?"/>
+      </div>
+    </div>
+    <div class="add-foot">
+      <button class="btn btn-solid" id="add-btn" onclick="addGame()" style="font-size:0.75rem;">Add game</button>
+    </div>
+  </div>
+
+  <div class="dash-sec">Games on your portfolio</div>
+
+  <div class="tbl">
+    <div class="tbl-head">
+      <span>Name</span>
+      <span>Role</span>
+      <span>Status</span>
+      <span>Toggle</span>
+      <span>Delete</span>
+    </div>
+    <div id="tbl-body"></div>
+  </div>
+
+</div>
+
+<script>
+(async function checkAuth() {
+  try {
+    const r = await fetch('/api/admin/check');
+    const d = await r.json();
+    if (!d.authed) window.location.href = '/login';
+    else loadGames();
+  } catch {
+    window.location.href = '/login';
+  }
+})();
+
+function msg(text, type) {
+  const el = document.getElementById('dash-status');
+  el.textContent = text;
+  el.className = 'dash-status ' + type;
+  setTimeout(() => { el.textContent = ''; el.className = 'dash-status'; }, 4000);
+}
+
+async function loadGames() {
+  try {
+    const r = await fetch('/api/admin/games');
+    if (r.status === 401) { window.location.href = '/login'; return; }
+    const d = await r.json();
+    renderGames(d.games || []);
+  } catch {
+    msg('Failed to load games.', 'err');
+  }
+}
+
+function renderGames(games) {
+  const body = document.getElementById('tbl-body');
+  if (!games.length) {
+    body.innerHTML = '<div style="padding:1.25rem 1rem;font-family:var(--mono);font-size:0.65rem;color:var(--dim);">No games yet. Add one above.</div>';
+    return;
+  }
+  body.innerHTML = '';
+  games.forEach(g => {
+    const row = document.createElement('div');
+    row.className = 'tbl-row';
+    row.innerHTML =
+      '<span class="tbl-name">' + esc(g.name) + '</span>' +
+      '<span class="tbl-role">' + esc(g.role) + '</span>' +
+      '<span><span class="badge ' + (g.active ? 'badge-on' : 'badge-off') + '">' + (g.active ? 'visible' : 'hidden') + '</span></span>' +
+      '<span class="row-btns">' +
+        '<button class="sm-btn" onclick="toggleGame(\'' + g.id + '\',' + !g.active + ')">' + (g.active ? 'Hide' : 'Show') + '</button>' +
+      '</span>' +
+      '<span class="row-btns">' +
+        '<button class="sm-btn del" onclick="deleteGame(\'' + g.id + '\',\'' + esc(g.name).replace(/'/g,"\\'") + '\')">Delete</button>' +
+      '</span>';
+    body.appendChild(row);
+  });
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function addGame() {
+  const universeId = document.getElementById('f-uid').value.trim();
+  const placeId    = document.getElementById('f-pid').value.trim();
+  const name       = document.getElementById('f-name').value.trim();
+  const role       = document.getElementById('f-role').value.trim();
+  const description = document.getElementById('f-desc').value.trim();
+
+  if (!universeId || !placeId || !name || !role) {
+    msg('Universe ID, Place ID, Name and Role are all required.', 'err');
+    return;
+  }
+
+  const btn = document.getElementById('add-btn');
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
+
+  try {
+    const r = await fetch('/api/admin/games', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ universeId, placeId, name, role, description }),
+    });
+    if (r.status === 401) { window.location.href = '/login'; return; }
+    const d = await r.json();
+    if (d.game) {
+      msg('Game added.', 'ok');
+      document.getElementById('f-uid').value = '';
+      document.getElementById('f-pid').value = '';
+      document.getElementById('f-name').value = '';
+      document.getElementById('f-role').value = '';
+      document.getElementById('f-desc').value = '';
+      loadGames();
+    } else {
+      msg(d.error || 'Failed to add game.', 'err');
+    }
+  } catch {
+    msg('Network error.', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Add game';
+  }
+}
+
+async function toggleGame(id, active) {
+  try {
+    const r = await fetch('/api/admin/games', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, active }),
+    });
+    if (r.status === 401) { window.location.href = '/login'; return; }
+    msg(active ? 'Game set to visible.' : 'Game hidden.', 'ok');
+    loadGames();
+  } catch {
+    msg('Network error.', 'err');
+  }
+}
+
+async function deleteGame(id, name) {
+  if (!confirm('Delete "' + name + '" from your portfolio?')) return;
+  try {
+    const r = await fetch('/api/admin/games', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (r.status === 401) { window.location.href = '/login'; return; }
+    msg('Deleted.', 'ok');
+    loadGames();
+  } catch {
+    msg('Network error.', 'err');
+  }
+}
+
+async function doLogout() {
+  await fetch('/api/admin/logout', { method: 'POST' });
+  window.location.href = '/login';
+}
+</script>
+</body>
+</html>

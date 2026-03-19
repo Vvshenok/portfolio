@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vvshenok — Roblox Developer</title>
+<meta name="description" content="Roblox Lua developer. Scripted games with hundreds of millions of visits."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-logo">vvshenok<em>.dev</em></span>
+    <ul class="nav-links">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#games">Games</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avail-dot" id="avail-dot"></div>
+      <span class="avail-text" id="avail-text"></span>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-kicker" id="hero-kicker">Roblox Developer / Lua Scripter</div>
+    <div class="hero-name" id="hero-name">Vvshenok<em>.</em></div>
+    <div class="hero-foot">
+      <p class="hero-bio" id="hero-bio"></p>
+      <div class="hero-btns">
+        <a href="#games" class="btn btn-solid">View games</a>
+        <a href="#contact" class="btn btn-ghost">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-row">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-n" id="s-visits">—</div>
+      <div class="stat-l">Total visits</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" id="s-games">—</div>
+      <div class="stat-l">Games worked on</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" id="s-favs">—</div>
+      <div class="stat-l">Total favorites</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" id="s-years">—</div>
+      <div class="stat-l">Years scripting</div>
+    </div>
+  </div>
+</section>
+
+<section class="skills-wrap reveal" id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">01</span>
+      <span class="sec-t">Skills</span>
+    </div>
+    <div class="skills-grid">
+      <div class="skill">
+        <div class="skill-i">01</div>
+        <div class="skill-h">Core Gameplay Systems</div>
+        <p class="skill-p">Combat, movement, round logic, win conditions. The mechanics that make a game feel right to play.</p>
+        <div class="skill-tags"><span class="tag">Lua</span><span class="tag">State Machines</span><span class="tag">Game Logic</span></div>
+      </div>
+      <div class="skill">
+        <div class="skill-i">02</div>
+        <div class="skill-h">Client–Server Architecture</div>
+        <p class="skill-p">RemoteEvents, server-authoritative validation, clean replication. Secure and performant by design.</p>
+        <div class="skill-tags"><span class="tag">RemoteEvents</span><span class="tag">Server Auth</span><span class="tag">Replication</span></div>
+      </div>
+      <div class="skill">
+        <div class="skill-i">03</div>
+        <div class="skill-h">DataStore & Persistence</div>
+        <p class="skill-p">Session locking, retry logic, safe migrations with ProfileService and DataStore2. Players don't lose data.</p>
+        <div class="skill-tags"><span class="tag">DataStore2</span><span class="tag">ProfileService</span><span class="tag">Data Safety</span></div>
+      </div>
+      <div class="skill">
+        <div class="skill-i">04</div>
+        <div class="skill-h">UI Scripting</div>
+        <p class="skill-p">Tweening, reactive layouts, inventory systems, HUDs. Interfaces that feel instant and polished.</p>
+        <div class="skill-tags"><span class="tag">TweenService</span><span class="tag">ScreenGui</span><span class="tag">Animations</span></div>
+      </div>
+      <div class="skill">
+        <div class="skill-i">05</div>
+        <div class="skill-h">Monetization</div>
+        <p class="skill-p">Gamepasses, Developer Products, shops with proper receipt handling and server-side validation.</p>
+        <div class="skill-tags"><span class="tag">Gamepasses</span><span class="tag">Dev Products</span><span class="tag">MarketplaceService</span></div>
+      </div>
+      <div class="skill">
+        <div class="skill-i">06</div>
+        <div class="skill-h">Optimization & Anti-Exploit</div>
+        <p class="skill-p">Script profiling, memory management, server validation. Fast games that are hard to cheat.</p>
+        <div class="skill-tags"><span class="tag">Profiling</span><span class="tag">Server Validation</span><span class="tag">Memory</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="games-wrap reveal" id="games">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">02</span>
+      <span class="sec-t">Games I've worked on</span>
+    </div>
+  </div>
+  <div class="marquee-shell" id="marquee-shell">
+    <div class="games-loading" id="games-loading">Fetching live data from Roblox...</div>
+  </div>
+</section>
+
+<section class="about-wrap reveal" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">03</span>
+      <span class="sec-t">About</span>
+    </div>
+    <div class="about-grid">
+      <div>
+        <p class="about-p" id="about-p1"></p>
+        <p class="about-p" id="about-p2"></p>
+        <div class="bars" id="bars">
+          <div class="bar-row">
+            <div class="bar-meta"><span class="bar-lbl">Lua / Luau</span><span class="bar-pct">95%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="95"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span class="bar-lbl">Game Systems</span><span class="bar-pct">90%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="90"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span class="bar-lbl">UI Scripting</span><span class="bar-pct">85%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="85"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span class="bar-lbl">DataStore</span><span class="bar-pct">80%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="80"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-meta"><span class="bar-lbl">Anti-Exploit</span><span class="bar-pct">75%</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="75"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="links-col" id="links-col">
+        <a href="#" class="slink" id="link-roblox" target="_blank" rel="noreferrer">
+          <div><div class="slink-lbl">Roblox</div><div class="slink-val">@Vvshenok</div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+        <a href="#" class="slink" id="link-twitter" target="_blank" rel="noreferrer">
+          <div><div class="slink-lbl">Twitter / X</div><div class="slink-val" id="tw-val">@—</div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+        <div class="slink" style="cursor:default">
+          <div><div class="slink-lbl">Discord</div><div class="slink-val" id="disc-val">—</div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".3"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-wrap reveal" id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">04</span>
+      <span class="sec-t">Contact</span>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-p">Have a game that needs scripting? Want to bring me on as a dev? Send a message — I'll get back to you.</p>
+      </div>
+      <div>
+        <div class="field">
+          <label class="field-label" for="fn">Name</label>
+          <input class="field-input" type="text" id="fn" placeholder="Your name"/>
+        </div>
+        <div class="field">
+          <label class="field-label" for="fe">Email</label>
+          <input class="field-input" type="email" id="fe" placeholder="your@email.com"/>
+        </div>
+        <div class="field">
+          <label class="field-label" for="fm">Message</label>
+          <textarea class="field-input" id="fm" placeholder="Tell me about your project..."></textarea>
+        </div>
+        <button class="send-btn" id="send-btn" onclick="submitContact()">Send message</button>
+        <div class="form-status" id="form-status"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-copy">© <span id="yr"></span> Vvshenok</div>
+  <div class="foot-links">
+    <a href="#skills">Skills</a>
+    <a href="#games">Games</a>
+    <a href="#contact">Contact</a>
+    <a href="/login" style="opacity:0;pointer-events:none;position:absolute">_</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+let _ejs = {};
+
+async function loadConfig() {
+  try {
+    const r = await fetch('/api/config');
+    const c = await r.json();
+
+    if (c.available) {
+      document.getElementById('avail-dot').classList.add('on');
+      document.getElementById('avail-text').textContent = 'Available';
+    } else {
+      document.getElementById('avail-text').textContent = 'Unavailable';
+    }
+
+    if (c.bio) document.getElementById('hero-bio').textContent = c.bio;
+    if (c.bio) document.getElementById('about-p1').textContent = c.bio;
+    if (c.bioExtra) document.getElementById('about-p2').textContent = c.bioExtra;
+
+    const st = c.stats || {};
+    document.getElementById('s-visits').textContent = st.totalVisits || '—';
+    document.getElementById('s-games').textContent = st.gamesWorkedOn ? st.gamesWorkedOn + '+' : '—';
+    document.getElementById('s-favs').textContent = st.totalFavorites || '—';
+    document.getElementById('s-years').textContent = st.years ? st.years + ' yrs' : '—';
+
+    const soc = c.socials || {};
+    if (soc.roblox) document.getElementById('link-roblox').href = soc.roblox;
+    if (soc.twitter) {
+      document.getElementById('link-twitter').href = soc.twitter;
+      const handle = soc.twitter.split('/').pop();
+      document.getElementById('tw-val').textContent = '@' + handle;
+    }
+    if (soc.discord) document.getElementById('disc-val').textContent = soc.discord;
+
+    if (c.emailjs) {
+      _ejs = c.emailjs;
+      if (_ejs.publicKey) emailjs.init(_ejs.publicKey);
+    }
+  } catch (e) {
+    console.error('config error', e);
+  }
+}
+
+async function loadGames() {
+  const shell = document.getElementById('marquee-shell');
+  const loading = document.getElementById('games-loading');
+  try {
+    const r = await fetch('/api/games');
+    const data = await r.json();
+    const games = data.games || [];
+
+    if (!games.length) { loading.textContent = 'No games listed yet.'; return; }
+    loading.remove();
+
+    const mid = Math.ceil(games.length / 2);
+    const rows = [games.slice(0, mid), games.slice(mid)];
+    const cls = ['r1', 'r2'];
+
+    rows.forEach((row, ri) => {
+      if (!row.length) return;
+      const track = document.createElement('div');
+      track.className = 'm-track ' + cls[ri];
+      const items = [...row, ...row];
+      items.forEach(g => {
+        const visits = fmtNum(g.visits);
+        const div = document.createElement('div');
+        div.className = 'gcard';
+        div.innerHTML =
+          '<div class="gcard-img-wrap">' +
+            (g.thumbnail
+              ? '<img class="gcard-img" src="' + g.thumbnail + '" alt="' + esc(g.name) + '" loading="lazy"/>'
+              : '<div class="gcard-ph">no image</div>') +
+          '</div>' +
+          '<div class="gcard-body">' +
+            '<div class="gcard-name">' + esc(g.name) + '</div>' +
+            '<div class="gcard-meta">' +
+              '<span>' + visits + ' visits</span>' +
+              '<span>' + (g.playing || 0) + ' playing</span>' +
+            '</div>' +
+            '<div class="gcard-role">' + esc(g.role) + '</div>' +
+            '<a href="' + g.robloxUrl + '" target="_blank" rel="noreferrer" class="gcard-btn">' +
+              '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>' +
+              'Play on Roblox' +
+            '</a>' +
+          '</div>';
+        track.appendChild(div);
+      });
+      shell.appendChild(track);
+    });
+  } catch (e) {
+    if (loading) loading.textContent = 'Could not load games.';
+    console.error('games error', e);
+  }
+}
+
+function fmtNum(n) {
+  if (!n) return '0';
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
+  return String(n);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function submitContact() {
+  const name = document.getElementById('fn').value.trim();
+  const email = document.getElementById('fe').value.trim();
+  const msg = document.getElementById('fm').value.trim();
+  const btn = document.getElementById('send-btn');
+  const status = document.getElementById('form-status');
+
+  status.className = 'form-status';
+  status.textContent = '';
+
+  if (!name || !email || !msg) {
+    status.className = 'form-status err';
+    status.textContent = 'Please fill in all fields.';
+    return;
+  }
+
+  if (!_ejs.serviceId || !_ejs.templateId) {
+    status.className = 'form-status err';
+    status.textContent = 'Email not configured yet — add your EmailJS keys to .env.local';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    await emailjs.send(_ejs.serviceId, _ejs.templateId, {
+      from_name: name,
+      from_email: email,
+      message: msg,
+    });
+    status.className = 'form-status ok';
+    status.textContent = 'Message sent.';
+    document.getElementById('fn').value = '';
+    document.getElementById('fe').value = '';
+    document.getElementById('fm').value = '';
+  } catch (e) {
+    status.className = 'form-status err';
+    status.textContent = 'Send failed. Check your EmailJS keys.';
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send message';
+  }
+}
+
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); } });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+      barObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+const barsEl = document.getElementById('bars');
+if (barsEl) barObs.observe(barsEl);
+
+loadConfig();
+loadGames();
+</script>
+</body>
+</html>
