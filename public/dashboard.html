@@ -52,6 +52,8 @@
     <div class="dash-tab" onclick="switchTab('libraries')">Libraries</div>
     <div class="dash-tab" onclick="switchTab('groups')">Groups</div>
     <div class="dash-tab" onclick="switchTab('projects')">Projects</div>
+    <div class="dash-tab" onclick="switchTab('testimonials')">Testimonials</div>
+    <div class="dash-tab" onclick="switchTab('statuspricing')">Status & Pricing</div>
   </div>
 
   <!-- GAMES TAB -->
@@ -161,19 +163,55 @@
     </div>
   </div>
 
+  <div class="tab-panel" id="tab-testimonials">
+    <div class="dash-sec">Add a testimonial</div>
+    <div class="add-box">
+      <div class="add-grid">
+        <div class="field"><label class="field-label" for="t-author">Name</label><input class="field-input" type="text" id="t-author" placeholder="e.g. SmoKeyDev"/></div>
+        <div class="field"><label class="field-label" for="t-role">Their role <span style="color:var(--dim)">(optional)</span></label><input class="field-input" type="text" id="t-role" placeholder="e.g. Game Owner"/></div>
+        <div class="field full"><label class="field-label" for="t-quote">Quote</label><input class="field-input" type="text" id="t-quote" placeholder="What they said about working with you..."/></div>
+        <div class="field full"><label class="field-label" for="t-avatar">Their avatar URL <span style="color:var(--dim)">(optional)</span></label><input class="field-input" type="text" id="t-avatar" placeholder="https://..."/></div>
+      </div>
+      <div class="add-foot"><button class="btn btn-solid" id="t-add-btn" onclick="addTestimonial()" style="font-size:0.75rem;">Add testimonial</button></div>
+    </div>
+    <div class="dash-sec">Your testimonials</div>
+    <div id="t-list"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-statuspricing">
+    <div class="dash-sec">Currently working on</div>
+    <div class="add-box">
+      <div class="field"><label class="field-label" for="sp-text">What are you working on right now?</label><input class="field-input" type="text" id="sp-text" placeholder="e.g. Combat system for a new fighting game"/></div>
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.75rem;">
+        <input type="checkbox" id="sp-active" style="accent-color:var(--accent);width:14px;height:14px;"/>
+        <label for="sp-active" style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);cursor:pointer;">Show banner on site</label>
+      </div>
+      <div class="add-foot"><button class="btn btn-solid" onclick="saveStatus()" style="font-size:0.75rem;">Save status</button></div>
+    </div>
+    <div class="dash-sec">Pricing tiers</div>
+    <div class="add-box">
+      <div class="add-grid">
+        <div class="field"><label class="field-label" for="p-name">Tier name</label><input class="field-input" type="text" id="p-name" placeholder="e.g. Basic Script"/></div>
+        <div class="field"><label class="field-label" for="p-price">Price</label><input class="field-input" type="text" id="p-price" placeholder="e.g. 500 Robux or Contact for pricing"/></div>
+        <div class="field full"><label class="field-label" for="p-desc2">Description <span style="color:var(--dim)">(optional)</span></label><input class="field-input" type="text" id="p-desc2" placeholder="What is included..."/></div>
+      </div>
+      <div class="add-foot"><button class="btn btn-solid" onclick="addPricing()" style="font-size:0.75rem;">Add tier</button></div>
+    </div>
+    <div class="dash-sec">Your pricing tiers</div>
+    <div id="pricing-list"></div>
+  </div>
+
 </div>
 
 <script>
 (async function checkAuth(){
-  try{const r=await fetch('/api/admin/check');const d=await r.json();if(!d.authed)window.location.href='/login';else{loadGames();loadLibraries();loadGroups();loadProjects();}}
+  try{const r=await fetch('/api/admin/check');const d=await r.json();if(!d.authed)window.location.href='/login';else{loadGames();loadLibraries();loadGroups();loadProjects();loadTestimonials();loadStatusPricing();}}
   catch{window.location.href='/login';}
 })();
 
 function switchTab(name){
-  document.querySelectorAll('.dash-tab').forEach((t,i)=>{
-    const names=['games','libraries','groups','projects'];
-    t.classList.toggle('active',names[i]===name);
-  });
+  const names=['games','libraries','groups','projects','testimonials','statuspricing'];
+  document.querySelectorAll('.dash-tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
 }
@@ -366,6 +404,90 @@ async function addProject(){
 }
 
 async function doLogout(){await fetch('/api/admin/logout',{method:'POST'});window.location.href='/login';}
+
+async function loadTestimonials(){
+  try{const r=await fetch('/api/admin/testimonials');const d=await r.json();renderTestimonials(d.testimonials||[]);}
+  catch{msg('Failed to load testimonials.','err');}
+}
+function renderTestimonials(list){
+  const el=document.getElementById('t-list');
+  if(!list.length){el.innerHTML='<div style="font-family:var(--mono);font-size:0.65rem;color:var(--dim);padding:1rem 0;">No testimonials yet.</div>';return;}
+  el.innerHTML='';
+  list.forEach(t=>{
+    const row=document.createElement('div');
+    row.style.cssText='padding:0.9rem 1rem;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:0.5rem;background:var(--bg2);display:flex;align-items:flex-start;gap:1rem;';
+    row.innerHTML='<div style="flex:1;min-width:0;"><div style="font-size:0.85rem;color:var(--white);font-weight:600;margin-bottom:0.2rem;">'+esc(t.author)+(t.role?' <span style="color:var(--dim);font-size:0.72rem;font-family:var(--mono);">'+esc(t.role)+'</span>':'')+'</div><div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">'+esc(t.quote)+'</div></div><button class="sm-btn del" onclick="openModal(\''+t.id+'\',\''+esc(t.author).replace(/'/g,"\\'")+'\',\'testimonial\')">Delete</button>';
+    el.appendChild(row);
+  });
+}
+async function addTestimonial(){
+  const author=document.getElementById('t-author').value.trim();
+  const role=document.getElementById('t-role').value.trim();
+  const quote=document.getElementById('t-quote').value.trim();
+  const avatar=document.getElementById('t-avatar').value.trim();
+  if(!author||!quote){msg('Author and quote are required.','err');return;}
+  const btn=document.getElementById('t-add-btn');btn.disabled=true;btn.textContent='Adding...';
+  try{
+    const r=await fetch('/api/admin/testimonials',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({author,role,quote,avatar})});
+    const d=await r.json();
+    if(d.item){msg('Testimonial added.','ok');['t-author','t-role','t-quote','t-avatar'].forEach(id=>document.getElementById(id).value='');loadTestimonials();}
+    else msg(d.error||'Failed.','err');
+  }catch{msg('Network error.','err');}
+  finally{btn.disabled=false;btn.textContent='Add testimonial';}
+}
+
+async function loadStatusPricing(){
+  try{
+    const r=await fetch('/api/admin/status');
+    const d=await r.json();
+    const st=d.status||{};
+    document.getElementById('sp-text').value=st.text||'';
+    document.getElementById('sp-active').checked=!!st.active;
+    renderPricingList(d.pricing||[]);
+  }catch{msg('Failed to load status.','err');}
+}
+async function saveStatus(){
+  const text=document.getElementById('sp-text').value.trim();
+  const active=document.getElementById('sp-active').checked;
+  try{
+    await fetch('/api/admin/status',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:{text,active}})});
+    msg('Status saved.','ok');
+  }catch{msg('Network error.','err');}
+}
+
+let _pricingList=[];
+function renderPricingList(list){
+  _pricingList=list;
+  const el=document.getElementById('pricing-list');
+  if(!list.length){el.innerHTML='<div style="font-family:var(--mono);font-size:0.65rem;color:var(--dim);padding:0.5rem 0;">No pricing tiers yet.</div>';return;}
+  el.innerHTML='';
+  list.forEach((p,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1rem;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:0.4rem;background:var(--bg2);';
+    row.innerHTML='<span style="flex:1;font-size:0.82rem;color:var(--white);">'+esc(p.name)+'</span><span style="font-family:var(--mono);font-size:0.8rem;color:#ff8c00;">'+esc(p.price)+'</span><button class="sm-btn del" onclick="removePricing('+i+')">Remove</button>';
+    el.appendChild(row);
+  });
+}
+async function addPricing(){
+  const name=document.getElementById('p-name').value.trim();
+  const price=document.getElementById('p-price').value.trim();
+  const desc=document.getElementById('p-desc2').value.trim();
+  if(!name||!price){msg('Name and price are required.','err');return;}
+  const list=[..._pricingList,{name,price,description:desc}];
+  try{
+    await fetch('/api/admin/status',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({pricing:list})});
+    msg('Pricing added.','ok');
+    document.getElementById('p-name').value='';document.getElementById('p-price').value='';document.getElementById('p-desc2').value='';
+    loadStatusPricing();
+  }catch{msg('Network error.','err');}
+}
+async function removePricing(i){
+  const list=_pricingList.filter((_,idx)=>idx!==i);
+  try{
+    await fetch('/api/admin/status',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({pricing:list})});
+    msg('Removed.','ok');loadStatusPricing();
+  }catch{msg('Network error.','err');}
+}
 </script>
 </body>
 </html>

@@ -1,12 +1,16 @@
 const { getList } = require("../../lib/store");
+const { kvGet } = require("../../lib/kv");
 
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).end();
   try {
-    const [libraries, projects, groups] = await Promise.all([
+    const [libraries, projects, groups, testimonials, status, pricing] = await Promise.all([
       getList("vs:libraries"),
       getList("vs:projects"),
       getList("vs:groups"),
+      getList("vs:testimonials"),
+      kvGet("vs:status"),
+      kvGet("vs:pricing"),
     ]);
 
     const refreshedGroups = await Promise.all(groups.map(async g => {
@@ -26,8 +30,15 @@ export default async function handler(req, res) {
       } catch { return g; }
     }));
 
-    res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate=600");
-    return res.status(200).json({ libraries, projects, groups: refreshedGroups });
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+    return res.status(200).json({
+      libraries,
+      projects,
+      groups: refreshedGroups,
+      testimonials,
+      status: status || { text: "", active: false },
+      pricing: pricing || [],
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Failed to load portfolio data" });

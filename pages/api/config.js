@@ -8,6 +8,8 @@ export default function handler(req, res) {
     tagline: cfg.tagline,
     bio: cfg.bio,
     bioExtra: cfg.bioExtra,
+    discordId: cfg.discordId,
+    responseTime: cfg.responseTime,
     socials: cfg.socials,
     stats: cfg.stats,
     emailjs: {
