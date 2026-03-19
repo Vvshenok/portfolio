@@ -594,10 +594,10 @@ footer {
   gap: 0.3rem;
   font-family: var(--mono);
   font-size: 0.65rem;
-  color: var(--dim);
+  color: #ff8c00;
   transition: color 0.12s;
 }
-.lib-link:hover { color: var(--white); }
+.lib-link:hover { color: #ffaa44; }
 
 .groups-grid {
   display: grid;
@@ -645,7 +645,7 @@ footer {
   gap: 0.75rem;
   font-family: var(--mono);
   font-size: 0.62rem;
-  color: var(--dim);
+  color: #ff8c00;
 }
 .group-rank { color: var(--accent); }
 .group-link {
@@ -794,13 +794,19 @@ footer {
 }
 .m-track {
   display: flex;
-  gap: 8px;
   width: max-content;
+  will-change: transform;
+}
+.marquee-set {
+  display: flex;
+  gap: 8px;
+  padding-right: 8px;
+  flex-shrink: 0;
 }
 .m-track.r1 { animation: mLeft 18s linear infinite; }
 .m-track.r2 { animation: mRight 18s linear infinite; }
-@keyframes mLeft  { from{transform:translateX(0)}    to{transform:translateX(-50%)} }
-@keyframes mRight { from{transform:translateX(-50%)} to{transform:translateX(0)}    }
+@keyframes mLeft  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes mRight { from{transform:translateX(-50%)} to{transform:translateX(0)} }
 
 .gcard-meta {
   display: flex;

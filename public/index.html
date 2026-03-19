@@ -331,11 +331,7 @@ async function loadGames() {
       const track = document.createElement('div');
       track.className = 'm-track ' + dirs[ri];
 
-      const needed = Math.max(Math.ceil(20 / row.length), 2);
-      const items = [];
-      for (let i = 0; i < needed; i++) items.push(...row);
-
-      items.forEach(g => {
+      function makeCard(g) {
         const div = document.createElement('div');
         div.className = 'gcard';
         div.innerHTML =
@@ -351,8 +347,17 @@ async function loadGames() {
             '<div class="gcard-role">'+esc(g.role)+'</div>' +
             '<a href="'+g.robloxUrl+'" target="_blank" rel="noreferrer" class="gcard-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>Play on Roblox</a>' +
           '</div>';
-        track.appendChild(div);
-      });
+        return div;
+      }
+
+      const set1 = document.createElement('div');
+      set1.className = 'marquee-set';
+      row.forEach(g => set1.appendChild(makeCard(g)));
+
+      const set2 = set1.cloneNode(true);
+
+      track.appendChild(set1);
+      track.appendChild(set2);
 
       wrapper.appendChild(track);
       wrapper.addEventListener('mouseenter', () => track.style.animationPlayState = 'paused');
