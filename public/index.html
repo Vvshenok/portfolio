@@ -47,18 +47,27 @@
 <section class="stats-row">
   <div class="stats-inner">
     <div class="stat">
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
       <div class="stat-n" id="s-visits">—</div>
       <div class="stat-l">Total visits</div>
     </div>
     <div class="stat">
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <div class="stat-n" id="s-playing">—</div>
       <div class="stat-l">Playing now</div>
     </div>
     <div class="stat">
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z"/></svg></div>
       <div class="stat-n" id="s-games">—</div>
       <div class="stat-l">Games worked on</div>
     </div>
     <div class="stat">
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="stat-n" id="s-members">—</div>
+      <div class="stat-l">Total group members</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
       <div class="stat-n" id="s-years">—</div>
       <div class="stat-l">Years scripting</div>
     </div>
@@ -128,8 +137,9 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="sec-n">03</span>
-      <span class="sec-t">Libraries & Frameworks</span>
+      <span class="sec-t">Libraries & Frameworks I've used</span>
     </div>
+    <p class="sec-sub">Tools and frameworks I have experience working with — not libraries I made, but ones I've built projects with.</p>
     <div class="lib-grid" id="lib-grid">
       <div class="games-loading">Loading...</div>
     </div>
@@ -331,12 +341,14 @@ function renderLibraries(libs) {
 function renderGroups(groups) {
   const el = document.getElementById('groups-grid');
   if (!groups.length) { el.innerHTML = '<div class="empty-state">No groups added yet.</div>'; return; }
+  let totalMembers = 0;
   el.innerHTML = '';
   groups.forEach(g => {
+    totalMembers += g.memberCount || 0;
     const card = document.createElement('div');
     card.className = 'group-card';
     const verifiedBadge = g.isVerified
-      ? '<span class="verified-badge" title="Verified Group"><svg width="14" height="14" viewBox="0 0 24 24" fill="#009bf5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>'
+      ? '<img src="/verified.png" class="verified-img" title="Verified Group" alt="Verified"/>'
       : '';
     card.innerHTML =
       '<div class="group-icon-wrap">' +
@@ -349,6 +361,7 @@ function renderGroups(groups) {
       '<a href="'+esc(g.url)+'" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     el.appendChild(card);
   });
+  document.getElementById('s-members').textContent = fmtNum(totalMembers);
 }
 
 function renderProjects(projects) {

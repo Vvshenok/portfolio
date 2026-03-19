@@ -86,7 +86,7 @@ section { border-bottom: 1px solid var(--line); }
 
 .hero {
   padding-top: 52px;
-  min-height: 50vh;
+  min-height: 55vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -720,4 +720,32 @@ footer {
 
 @media (max-width: 780px) {
   .lib-grid, .groups-grid, .projects-grid { grid-template-columns: 1fr; }
+}
+
+.stat-icon {
+  color: var(--dim);
+  margin-bottom: 0.5rem;
+  display: flex;
+}
+.stats-inner {
+  grid-template-columns: repeat(5, 1fr);
+}
+.verified-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+.sec-sub {
+  font-size: 0.78rem;
+  color: var(--dim);
+  margin-top: -1.25rem;
+  margin-bottom: 1.75rem;
+  line-height: 1.6;
+  max-width: 520px;
+}
+@media (max-width: 780px) {
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
 }
