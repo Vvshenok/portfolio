@@ -1,26 +1,44 @@
 const auth = require("../../../lib/auth");
 const db = require("../../../lib/games");
 
-function guard(req, res) {
+async function guard(req, res) {
   const token = auth.getToken(req);
-  if (!auth.valid(token)) { res.status(401).json({ error: "Unauthorized" }); return false; }
+  if (!await auth.valid(token)) { res.status(401).json({ error: "Unauthorized" }); return false; }
   return true;
 }
 
+async function fetchGameMeta(universeId) {
+  try {
+    const r = await fetch(`https://games.roblox.com/v1/games?universeIds=${universeId}`);
+    if (!r.ok) return {};
+    const d = await r.json();
+    const g = d.data?.[0];
+    if (!g) return {};
+    return { name: g.name, placeId: String(g.rootPlaceId || "") };
+  } catch { return {}; }
+}
+
 export default async function handler(req, res) {
-  if (!guard(req, res)) return;
+  if (req.method === "GET" && req.query.lookup) {
+    const meta = await fetchGameMeta(req.query.lookup);
+    return res.status(200).json(meta);
+  }
+
+  if (!await guard(req, res)) return;
 
   if (req.method === "GET") {
-    const games = await db.read();
-    return res.status(200).json({ games });
+    return res.status(200).json({ games: await db.read() });
   }
 
   if (req.method === "POST") {
-    const { universeId, placeId, name, role, description } = req.body || {};
-    if (!universeId || !placeId || !name || !role) {
-      return res.status(400).json({ error: "universeId, placeId, name and role are required" });
+    let { universeId, placeId, name, role, description } = req.body || {};
+    if (!universeId || !role) return res.status(400).json({ error: "universeId and role are required" });
+    if (!name || !placeId) {
+      const meta = await fetchGameMeta(universeId);
+      if (!name) name = meta.name || "Unknown Game";
+      if (!placeId) placeId = meta.placeId || "";
     }
-    const game = await db.add({ universeId, placeId, name, role, description });
+    const game = await db.add({ universeId, placeId, name, role, description: description || "" });
     return res.status(201).json({ game });
   }
 

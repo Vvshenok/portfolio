@@ -10,12 +10,10 @@
 <link rel="stylesheet" href="/style.css"/>
 </head>
 <body class="admin-page">
-
 <div class="admin-box">
-  <div class="admin-brand">vvshenok<em>.dev</em> / admin</div>
-  <div class="admin-h">Sign in</div>
-  <div class="admin-sub">Credentials are set in <code style="font-size:0.72rem;color:var(--dim)">.env.local</code></div>
-
+  <div class="admin-brand">vvshenok<em>.dev</em></div>
+  <div class="admin-h">Welcome back</div>
+  <div class="admin-sub">Sign in to continue.</div>
   <div class="field">
     <label class="field-label" for="u">Username</label>
     <input class="field-input" type="text" id="u" autocomplete="username"/>
@@ -24,51 +22,27 @@
     <label class="field-label" for="p">Password</label>
     <input class="field-input" type="password" id="p" autocomplete="current-password"/>
   </div>
-  <button class="btn btn-solid" id="login-btn" onclick="doLogin()" style="width:100%;justify-content:center;">Sign in</button>
+  <button class="btn btn-solid" id="login-btn" onclick="doLogin()" style="width:100%;justify-content:center;margin-top:0.25rem;">Sign in</button>
   <div class="admin-err" id="err"></div>
 </div>
-
 <script>
-(async function checkAuth() {
-  try {
-    const r = await fetch('/api/admin/check');
-    const d = await r.json();
-    if (d.authed) window.location.href = '/dashboard';
-  } catch {}
-})();
-
-document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
-async function doLogin() {
-  const username = document.getElementById('u').value.trim();
-  const password = document.getElementById('p').value;
-  const errEl = document.getElementById('err');
-  const btn = document.getElementById('login-btn');
-
-  errEl.textContent = '';
-  if (!username || !password) { errEl.textContent = 'Fill in both fields.'; return; }
-
-  btn.disabled = true;
-  btn.textContent = 'Signing in...';
-
-  try {
-    const r = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    const d = await r.json();
-    if (d.ok) {
-      window.location.href = '/dashboard';
-    } else {
-      errEl.textContent = d.error || 'Invalid credentials.';
-    }
-  } catch {
-    errEl.textContent = 'Network error.';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Sign in';
-  }
+(async function(){ try{ const r=await fetch('/api/admin/check'); const d=await r.json(); if(d.authed) window.location.href='/dashboard'; }catch{} })();
+document.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+async function doLogin(){
+  const u=document.getElementById('u').value.trim();
+  const p=document.getElementById('p').value;
+  const err=document.getElementById('err');
+  const btn=document.getElementById('login-btn');
+  err.textContent='';
+  if(!u||!p){err.textContent='Fill in both fields.';return;}
+  btn.disabled=true; btn.textContent='Signing in...';
+  try{
+    const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+    const d=await r.json();
+    if(d.ok) window.location.href='/dashboard';
+    else err.textContent=d.error||'Incorrect credentials.';
+  }catch{ err.textContent='Network error.'; }
+  finally{ btn.disabled=false; btn.textContent='Sign in'; }
 }
 </script>
 </body>

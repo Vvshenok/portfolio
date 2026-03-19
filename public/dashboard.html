@@ -9,46 +9,26 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/style.css"/>
 <style>
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 999;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal-box {
-  background: #1a1a1a;
-  border: 1px solid #2e2e2e;
-  border-radius: 6px;
-  padding: 2rem;
-  width: 340px;
-  max-width: 90vw;
-}
-.modal-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #f0f0f0;
-  margin-bottom: 0.5rem;
-}
-.modal-body {
-  font-size: 0.82rem;
-  color: #777;
-  margin-bottom: 1.75rem;
-  line-height: 1.6;
-}
-.modal-body strong { color: #d8d8d8; font-weight: 600; }
-.modal-btns { display: flex; gap: 0.6rem; justify-content: flex-end; }
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#1a1a1a;border:1px solid #2e2e2e;border-radius:6px;padding:2rem;width:340px;max-width:90vw;}
+.modal-title{font-size:0.95rem;font-weight:700;color:#f0f0f0;margin-bottom:0.5rem;}
+.modal-body{font-size:0.82rem;color:#777;margin-bottom:1.75rem;line-height:1.6;}
+.modal-body strong{color:#d8d8d8;font-weight:600;}
+.modal-btns{display:flex;gap:0.6rem;justify-content:flex-end;}
+.dash-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:2rem;}
+.dash-tab{font-family:var(--mono);font-size:0.7rem;padding:0.6rem 1.1rem;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:color 0.12s,border-color 0.12s;letter-spacing:0.05em;text-transform:uppercase;}
+.dash-tab.active{color:var(--white);border-bottom-color:var(--accent);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
 </style>
 </head>
 <body>
 
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
-    <div class="modal-title">Delete game</div>
-    <div class="modal-body">Are you sure you want to remove <strong id="modal-name"></strong> from your portfolio? This cannot be undone.</div>
+    <div class="modal-title">Confirm delete</div>
+    <div class="modal-body">Remove <strong id="modal-name"></strong> from your portfolio? This cannot be undone.</div>
     <div class="modal-btns">
       <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.45rem 1rem;" onclick="closeModal()">Cancel</button>
       <button class="btn btn-solid" style="font-size:0.75rem;padding:0.45rem 1rem;background:#f55;color:#fff;" id="modal-confirm">Delete</button>
@@ -65,220 +45,327 @@
 </div>
 
 <div class="dash-body">
-
   <div class="dash-status" id="dash-status"></div>
 
-  <div class="dash-sec">Add a game</div>
+  <div class="dash-tabs">
+    <div class="dash-tab active" onclick="switchTab('games')">Games</div>
+    <div class="dash-tab" onclick="switchTab('libraries')">Libraries</div>
+    <div class="dash-tab" onclick="switchTab('groups')">Groups</div>
+    <div class="dash-tab" onclick="switchTab('projects')">Projects</div>
+  </div>
 
-  <div class="add-box">
-    <div class="add-grid">
-      <div class="field">
-        <label class="field-label" for="f-uid">Universe ID</label>
-        <input class="field-input" type="text" id="f-uid" placeholder="e.g. 5441487628"/>
+  <!-- GAMES TAB -->
+  <div class="tab-panel active" id="tab-games">
+    <div class="dash-sec">Add a game</div>
+    <div class="add-box">
+      <div class="add-grid">
+        <div class="field">
+          <label class="field-label" for="g-uid">Universe ID</label>
+          <input class="field-input" type="text" id="g-uid" placeholder="e.g. 5441487628" onblur="autoFillGame()"/>
+        </div>
+        <div class="field">
+          <label class="field-label" for="g-pid">Place ID <span style="color:var(--dim)">(auto-filled)</span></label>
+          <input class="field-input" type="text" id="g-pid" placeholder="Auto-filled from Universe ID"/>
+        </div>
+        <div class="field">
+          <label class="field-label" for="g-name">Game name <span style="color:var(--dim)">(auto-filled)</span></label>
+          <input class="field-input" type="text" id="g-name" placeholder="Auto-filled from Universe ID"/>
+        </div>
+        <div class="field">
+          <label class="field-label" for="g-role">Your role</label>
+          <input class="field-input" type="text" id="g-role" placeholder="Lua Scripter"/>
+        </div>
+        <div class="field full">
+          <label class="field-label" for="g-desc">Description <span style="color:var(--dim)">(optional)</span></label>
+          <input class="field-input" type="text" id="g-desc" placeholder="What did you build on this game?"/>
+        </div>
       </div>
-      <div class="field">
-        <label class="field-label" for="f-pid">Place ID</label>
-        <input class="field-input" type="text" id="f-pid" placeholder="e.g. 113385048266134"/>
-      </div>
-      <div class="field">
-        <label class="field-label" for="f-name">Game name</label>
-        <input class="field-input" type="text" id="f-name" placeholder="Draw Or Oof!"/>
-      </div>
-      <div class="field">
-        <label class="field-label" for="f-role">Your role</label>
-        <input class="field-input" type="text" id="f-role" placeholder="Lua Scripter"/>
-      </div>
-      <div class="field full">
-        <label class="field-label" for="f-desc">Description <span style="color:var(--dim);font-style:normal">(optional)</span></label>
-        <input class="field-input" type="text" id="f-desc" placeholder="What did you build or script on this game?"/>
-      </div>
+      <div class="add-foot"><button class="btn btn-solid" id="g-add-btn" onclick="addGame()" style="font-size:0.75rem;">Add game</button></div>
     </div>
-    <div class="add-foot">
-      <button class="btn btn-solid" id="add-btn" onclick="addGame()" style="font-size:0.75rem;">Add game</button>
+    <div class="dash-sec">Your games</div>
+    <div class="tbl">
+      <div class="tbl-head"><span>Name</span><span>Role</span><span>Status</span><span>Toggle</span><span>Delete</span></div>
+      <div id="games-list"></div>
     </div>
   </div>
 
-  <div class="dash-sec">Games on your portfolio</div>
-
-  <div class="tbl">
-    <div class="tbl-head">
-      <span>Name</span>
-      <span>Role</span>
-      <span>Status</span>
-      <span>Toggle</span>
-      <span>Delete</span>
+  <!-- LIBRARIES TAB -->
+  <div class="tab-panel" id="tab-libraries">
+    <div class="dash-sec">Add a library or framework</div>
+    <div class="add-box">
+      <div class="add-grid">
+        <div class="field">
+          <label class="field-label" for="l-name">Name</label>
+          <input class="field-input" type="text" id="l-name" placeholder="e.g. Fusion"/>
+        </div>
+        <div class="field">
+          <label class="field-label" for="l-cat">Category</label>
+          <input class="field-input" type="text" id="l-cat" placeholder="UI Framework / Library / Module"/>
+        </div>
+        <div class="field full">
+          <label class="field-label" for="l-url">Docs / DevForum URL <span style="color:var(--dim)">(optional)</span></label>
+          <input class="field-input" type="text" id="l-url" placeholder="https://devforum.roblox.com/..."/>
+        </div>
+        <div class="field full">
+          <label class="field-label" for="l-desc">Description <span style="color:var(--dim)">(optional)</span></label>
+          <input class="field-input" type="text" id="l-desc" placeholder="What do you use this for?"/>
+        </div>
+      </div>
+      <div class="add-foot"><button class="btn btn-solid" id="l-add-btn" onclick="addLibrary()" style="font-size:0.75rem;">Add library</button></div>
     </div>
-    <div id="tbl-body"></div>
+    <div class="dash-sec">Your libraries</div>
+    <div class="tbl">
+      <div class="tbl-head" style="grid-template-columns:2fr 1.2fr 1fr 80px;"><span>Name</span><span>Category</span><span>URL</span><span>Delete</span></div>
+      <div id="libs-list"></div>
+    </div>
+  </div>
+
+  <!-- GROUPS TAB -->
+  <div class="tab-panel" id="tab-groups">
+    <div class="dash-sec">Add a Roblox group</div>
+    <div class="add-box">
+      <div class="add-grid">
+        <div class="field full">
+          <label class="field-label" for="grp-id">Group ID</label>
+          <input class="field-input" type="text" id="grp-id" placeholder="e.g. 1234567 — find it in the group URL"/>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.65rem;color:var(--dim);margin-top:0.5rem;">Name, icon, member count, verified status and your rank are all fetched automatically.</div>
+      <div class="add-foot"><button class="btn btn-solid" id="grp-add-btn" onclick="addGroup()" style="font-size:0.75rem;">Add group</button></div>
+    </div>
+    <div class="dash-sec">Your groups</div>
+    <div id="groups-list"></div>
+  </div>
+
+  <!-- PROJECTS TAB -->
+  <div class="tab-panel" id="tab-projects">
+    <div class="dash-sec">Add a GitHub project</div>
+    <div class="add-box">
+      <div class="add-grid">
+        <div class="field full">
+          <label class="field-label" for="p-url">GitHub URL</label>
+          <input class="field-input" type="text" id="p-url" placeholder="https://github.com/Vvshenok/SpotlightUI"/>
+        </div>
+        <div class="field full">
+          <label class="field-label" for="p-desc">Custom description <span style="color:var(--dim)">(optional, overrides GitHub description)</span></label>
+          <input class="field-input" type="text" id="p-desc" placeholder="Leave blank to use the GitHub repo description"/>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.65rem;color:var(--dim);margin-top:0.5rem;">Name, stars, forks and language are fetched automatically from GitHub.</div>
+      <div class="add-foot"><button class="btn btn-solid" id="p-add-btn" onclick="addProject()" style="font-size:0.75rem;">Add project</button></div>
+    </div>
+    <div class="dash-sec">Your projects</div>
+    <div class="tbl">
+      <div class="tbl-head" style="grid-template-columns:2fr 1fr 1fr 80px;"><span>Name</span><span>Language</span><span>Stars</span><span>Delete</span></div>
+      <div id="projects-list"></div>
+    </div>
   </div>
 
 </div>
 
 <script>
-(async function checkAuth() {
-  try {
-    const r = await fetch('/api/admin/check');
-    const d = await r.json();
-    if (!d.authed) window.location.href = '/login';
-    else loadGames();
-  } catch {
-    window.location.href = '/login';
-  }
+(async function checkAuth(){
+  try{const r=await fetch('/api/admin/check');const d=await r.json();if(!d.authed)window.location.href='/login';else{loadGames();loadLibraries();loadGroups();loadProjects();}}
+  catch{window.location.href='/login';}
 })();
 
-function msg(text, type) {
-  const el = document.getElementById('dash-status');
-  el.textContent = text;
-  el.className = 'dash-status ' + type;
-  setTimeout(() => { el.textContent = ''; el.className = 'dash-status'; }, 4000);
+function switchTab(name){
+  document.querySelectorAll('.dash-tab').forEach((t,i)=>{
+    const names=['games','libraries','groups','projects'];
+    t.classList.toggle('active',names[i]===name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
 }
 
-async function loadGames() {
-  try {
-    const r = await fetch('/api/admin/games');
-    if (r.status === 401) { window.location.href = '/login'; return; }
-    const d = await r.json();
-    renderGames(d.games || []);
-  } catch {
-    msg('Failed to load games.', 'err');
-  }
+function msg(text,type){
+  const el=document.getElementById('dash-status');
+  el.textContent=text; el.className='dash-status '+type;
+  setTimeout(()=>{el.textContent='';el.className='dash-status';},4000);
 }
 
-function renderGames(games) {
-  const body = document.getElementById('tbl-body');
-  if (!games.length) {
-    body.innerHTML = '<div style="padding:1.25rem 1rem;font-family:var(--mono);font-size:0.65rem;color:var(--dim);">No games yet. Add one above.</div>';
-    return;
-  }
-  body.innerHTML = '';
-  games.forEach(g => {
-    const row = document.createElement('div');
-    row.className = 'tbl-row';
-    row.innerHTML =
-      '<span class="tbl-name">' + esc(g.name) + '</span>' +
-      '<span class="tbl-role">' + esc(g.role) + '</span>' +
-      '<span><span class="badge ' + (g.active ? 'badge-on' : 'badge-off') + '">' + (g.active ? 'visible' : 'hidden') + '</span></span>' +
-      '<span class="row-btns">' +
-        '<button class="sm-btn" onclick="toggleGame(\'' + g.id + '\',' + !g.active + ')">' + (g.active ? 'Hide' : 'Show') + '</button>' +
-      '</span>' +
-      '<span class="row-btns">' +
-        '<button class="sm-btn del" onclick="openModal(\'' + g.id + '\',\'' + esc(g.name).replace(/'/g, "\\'") + '\')">Delete</button>' +
-      '</span>';
-    body.appendChild(row);
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+let _pendingId=null, _pendingKey=null;
+function openModal(id,name,key){_pendingId=id;_pendingKey=key;document.getElementById('modal-name').textContent=name;document.getElementById('modal').classList.add('open');document.getElementById('modal-confirm').onclick=confirmDelete;}
+function closeModal(){_pendingId=null;_pendingKey=null;document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+async function confirmDelete(){
+  if(!_pendingId)return;
+  const id=_pendingId, key=_pendingKey; closeModal();
+  try{
+    const endpoint=key==='game'?'/api/admin/games':key==='library'?'/api/admin/libraries':key==='group'?'/api/admin/groups':'/api/admin/projects';
+    const r=await fetch(endpoint,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+    if(r.status===401){window.location.href='/login';return;}
+    const d=await r.json();
+    if(d.ok){msg('Deleted.','ok');if(key==='game')loadGames();else if(key==='library')loadLibraries();else if(key==='group')loadGroups();else loadProjects();}
+    else msg(d.error||'Delete failed.','err');
+  }catch{msg('Network error.','err');}
+}
+
+async function autoFillGame(){
+  const uid=document.getElementById('g-uid').value.trim();
+  if(!uid)return;
+  try{
+    const r=await fetch('/api/admin/games?lookup='+uid);
+    const d=await r.json();
+    if(d.name)document.getElementById('g-name').value=d.name;
+    if(d.placeId)document.getElementById('g-pid').value=d.placeId;
+  }catch{}
+}
+
+async function loadGames(){
+  try{
+    const r=await fetch('/api/admin/games');if(r.status===401){window.location.href='/login';return;}
+    const d=await r.json();renderGames(d.games||[]);
+  }catch{msg('Failed to load games.','err');}
+}
+function renderGames(games){
+  const el=document.getElementById('games-list');
+  if(!games.length){el.innerHTML='<div style="padding:1.25rem 1rem;font-family:var(--mono);font-size:0.65rem;color:var(--dim);">No games yet.</div>';return;}
+  el.innerHTML='';
+  games.forEach(g=>{
+    const row=document.createElement('div');row.className='tbl-row';
+    row.innerHTML='<span class="tbl-name">'+esc(g.name)+'</span>'+
+      '<span class="tbl-role">'+esc(g.role)+'</span>'+
+      '<span><span class="badge '+(g.active?'badge-on':'badge-off')+'">'+(g.active?'visible':'hidden')+'</span></span>'+
+      '<span class="row-btns"><button class="sm-btn" onclick="toggleGame(\''+g.id+'\','+!g.active+')">'+(g.active?'Hide':'Show')+'</button></span>'+
+      '<span class="row-btns"><button class="sm-btn del" onclick="openModal(\''+g.id+'\',\''+esc(g.name).replace(/'/g,"\\'")+'\',\'game\')">Delete</button></span>';
+    el.appendChild(row);
   });
 }
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+async function addGame(){
+  const universeId=document.getElementById('g-uid').value.trim();
+  const placeId=document.getElementById('g-pid').value.trim();
+  const name=document.getElementById('g-name').value.trim();
+  const role=document.getElementById('g-role').value.trim();
+  const description=document.getElementById('g-desc').value.trim();
+  if(!universeId||!role){msg('Universe ID and Role are required.','err');return;}
+  const btn=document.getElementById('g-add-btn');btn.disabled=true;btn.textContent='Adding...';
+  try{
+    const r=await fetch('/api/admin/games',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({universeId,placeId,name,role,description})});
+    if(r.status===401){window.location.href='/login';return;}
+    const d=await r.json();
+    if(d.game){msg('Game added.','ok');['g-uid','g-pid','g-name','g-role','g-desc'].forEach(id=>document.getElementById(id).value='');loadGames();}
+    else msg(d.error||'Failed to add.','err');
+  }catch{msg('Network error.','err');}
+  finally{btn.disabled=false;btn.textContent='Add game';}
+}
+async function toggleGame(id,active){
+  try{
+    const r=await fetch('/api/admin/games',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,active})});
+    if(r.status===401){window.location.href='/login';return;}
+    const d=await r.json();
+    if(d.game){msg(active?'Set to visible.':'Hidden.','ok');loadGames();}
+    else msg(d.error||'Failed.','err');
+  }catch{msg('Network error.','err');}
 }
 
-let _pendingDeleteId = null;
-
-function openModal(id, name) {
-  _pendingDeleteId = id;
-  document.getElementById('modal-name').textContent = name;
-  document.getElementById('modal').classList.add('open');
-  document.getElementById('modal-confirm').onclick = confirmDelete;
+async function loadLibraries(){
+  try{const r=await fetch('/api/admin/libraries');const d=await r.json();renderLibraries(d.libraries||[]);}
+  catch{msg('Failed to load libraries.','err');}
+}
+function renderLibraries(libs){
+  const el=document.getElementById('libs-list');
+  if(!libs.length){el.innerHTML='<div style="padding:1.25rem 1rem;font-family:var(--mono);font-size:0.65rem;color:var(--dim);">No libraries yet.</div>';return;}
+  el.innerHTML='';
+  libs.forEach(l=>{
+    const row=document.createElement('div');
+    row.className='tbl-row';row.style.gridTemplateColumns='2fr 1.2fr 1fr 80px';
+    row.innerHTML='<span class="tbl-name">'+esc(l.name)+'</span>'+
+      '<span class="tbl-role">'+esc(l.category||'')+'</span>'+
+      '<span style="font-family:var(--mono);font-size:0.65rem;color:var(--dim);">'+(l.url?'<a href="'+esc(l.url)+'" target="_blank" style="color:var(--accent);">link</a>':'—')+'</span>'+
+      '<span class="row-btns"><button class="sm-btn del" onclick="openModal(\''+l.id+'\',\''+esc(l.name).replace(/'/g,"\\'")+'\',\'library\')">Delete</button></span>';
+    el.appendChild(row);
+  });
+}
+async function addLibrary(){
+  const name=document.getElementById('l-name').value.trim();
+  const category=document.getElementById('l-cat').value.trim();
+  const url=document.getElementById('l-url').value.trim();
+  const description=document.getElementById('l-desc').value.trim();
+  if(!name){msg('Name is required.','err');return;}
+  const btn=document.getElementById('l-add-btn');btn.disabled=true;btn.textContent='Adding...';
+  try{
+    const r=await fetch('/api/admin/libraries',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,category:category||'Library',url,description})});
+    const d=await r.json();
+    if(d.item){msg('Library added.','ok');['l-name','l-cat','l-url','l-desc'].forEach(id=>document.getElementById(id).value='');loadLibraries();}
+    else msg(d.error||'Failed.','err');
+  }catch{msg('Network error.','err');}
+  finally{btn.disabled=false;btn.textContent='Add library';}
 }
 
-function closeModal() {
-  _pendingDeleteId = null;
-  document.getElementById('modal').classList.remove('open');
+async function loadGroups(){
+  try{const r=await fetch('/api/admin/groups');const d=await r.json();renderGroups(d.groups||[]);}
+  catch{msg('Failed to load groups.','err');}
+}
+function renderGroups(groups){
+  const el=document.getElementById('groups-list');
+  if(!groups.length){el.innerHTML='<div style="font-family:var(--mono);font-size:0.65rem;color:var(--dim);padding:1rem 0;">No groups yet.</div>';return;}
+  el.innerHTML='';
+  groups.forEach(g=>{
+    const card=document.createElement('div');
+    card.style.cssText='display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:0.5rem;background:var(--bg2);';
+    const verBadge=g.isVerified?'<svg width="13" height="13" viewBox="0 0 24 24" fill="#009bf5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>':'';
+    card.innerHTML=
+      (g.icon?'<img src="'+esc(g.icon)+'" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;">'
+              :'<div style="width:40px;height:40px;border-radius:6px;background:var(--bg3);flex-shrink:0;"></div>')+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="display:flex;align-items:center;gap:0.35rem;font-size:0.85rem;font-weight:600;color:var(--white);">'+esc(g.name)+verBadge+'</div>'+
+        '<div style="font-family:var(--mono);font-size:0.62rem;color:var(--dim);margin-top:0.2rem;">'+fmtNum(g.memberCount)+' members · <span style="color:var(--accent);">'+esc(g.myRank||'Member')+'</span></div>'+
+      '</div>'+
+      '<button class="sm-btn del" onclick="openModal(\''+g.id+'\',\''+esc(g.name).replace(/'/g,"\\'")+'\',\'group\')">Delete</button>';
+    el.appendChild(card);
+  });
+}
+function fmtNum(n){if(!n)return'0';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return String(n);}
+async function addGroup(){
+  const groupId=document.getElementById('grp-id').value.trim();
+  if(!groupId){msg('Group ID is required.','err');return;}
+  const btn=document.getElementById('grp-add-btn');btn.disabled=true;btn.textContent='Fetching...';
+  try{
+    const r=await fetch('/api/admin/groups',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({groupId})});
+    const d=await r.json();
+    if(d.item){msg('Group added.','ok');document.getElementById('grp-id').value='';loadGroups();}
+    else msg(d.error||'Failed.','err');
+  }catch{msg('Network error.','err');}
+  finally{btn.disabled=false;btn.textContent='Add group';}
 }
 
-document.getElementById('modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-async function confirmDelete() {
-  if (!_pendingDeleteId) return;
-  const id = _pendingDeleteId;
-  closeModal();
-  try {
-    const r = await fetch('/api/admin/games', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    if (r.status === 401) { window.location.href = '/login'; return; }
-    const d = await r.json();
-    if (d.ok) {
-      msg('Game deleted.', 'ok');
-      loadGames();
-    } else {
-      msg(d.error || 'Failed to delete.', 'err');
-    }
-  } catch {
-    msg('Network error.', 'err');
-  }
+async function loadProjects(){
+  try{const r=await fetch('/api/admin/projects');const d=await r.json();renderProjects(d.projects||[]);}
+  catch{msg('Failed to load projects.','err');}
+}
+function renderProjects(projects){
+  const el=document.getElementById('projects-list');
+  if(!projects.length){el.innerHTML='<div style="padding:1.25rem 1rem;font-family:var(--mono);font-size:0.65rem;color:var(--dim);">No projects yet.</div>';return;}
+  el.innerHTML='';
+  projects.forEach(p=>{
+    const row=document.createElement('div');
+    row.className='tbl-row';row.style.gridTemplateColumns='2fr 1fr 1fr 80px';
+    row.innerHTML='<span class="tbl-name">'+esc(p.name)+'</span>'+
+      '<span class="tbl-role">'+esc(p.language||'—')+'</span>'+
+      '<span style="font-family:var(--mono);font-size:0.72rem;color:var(--dim);">★ '+p.stars+'</span>'+
+      '<span class="row-btns"><button class="sm-btn del" onclick="openModal(\''+p.id+'\',\''+esc(p.name).replace(/'/g,"\\'")+'\',\'project\')">Delete</button></span>';
+    el.appendChild(row);
+  });
+}
+async function addProject(){
+  const githubUrl=document.getElementById('p-url').value.trim();
+  const description=document.getElementById('p-desc').value.trim();
+  if(!githubUrl){msg('GitHub URL is required.','err');return;}
+  const btn=document.getElementById('p-add-btn');btn.disabled=true;btn.textContent='Fetching...';
+  try{
+    const r=await fetch('/api/admin/projects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({githubUrl,description})});
+    const d=await r.json();
+    if(d.item){msg('Project added.','ok');document.getElementById('p-url').value='';document.getElementById('p-desc').value='';loadProjects();}
+    else msg(d.error||'Failed. Make sure the repo is public.','err');
+  }catch{msg('Network error.','err');}
+  finally{btn.disabled=false;btn.textContent='Add project';}
 }
 
-async function addGame() {
-  const universeId  = document.getElementById('f-uid').value.trim();
-  const placeId     = document.getElementById('f-pid').value.trim();
-  const name        = document.getElementById('f-name').value.trim();
-  const role        = document.getElementById('f-role').value.trim();
-  const description = document.getElementById('f-desc').value.trim();
-
-  if (!universeId || !placeId || !name || !role) {
-    msg('Universe ID, Place ID, Name and Role are all required.', 'err');
-    return;
-  }
-
-  const btn = document.getElementById('add-btn');
-  btn.disabled = true;
-  btn.textContent = 'Adding...';
-
-  try {
-    const r = await fetch('/api/admin/games', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ universeId, placeId, name, role, description }),
-    });
-    if (r.status === 401) { window.location.href = '/login'; return; }
-    const d = await r.json();
-    if (d.game) {
-      msg('Game added.', 'ok');
-      document.getElementById('f-uid').value = '';
-      document.getElementById('f-pid').value = '';
-      document.getElementById('f-name').value = '';
-      document.getElementById('f-role').value = '';
-      document.getElementById('f-desc').value = '';
-      loadGames();
-    } else {
-      msg(d.error || 'Failed to add game.', 'err');
-    }
-  } catch {
-    msg('Network error.', 'err');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Add game';
-  }
-}
-
-async function toggleGame(id, active) {
-  try {
-    const r = await fetch('/api/admin/games', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, active }),
-    });
-    if (r.status === 401) { window.location.href = '/login'; return; }
-    const d = await r.json();
-    if (d.game) {
-      msg(active ? 'Game set to visible.' : 'Game hidden.', 'ok');
-      loadGames();
-    } else {
-      msg(d.error || 'Failed to update.', 'err');
-    }
-  } catch {
-    msg('Network error.', 'err');
-  }
-}
-
-async function doLogout() {
-  await fetch('/api/admin/logout', { method: 'POST' });
-  window.location.href = '/login';
-}
+async function doLogout(){await fetch('/api/admin/logout',{method:'POST'});window.location.href='/login';}
 </script>
 </body>
 </html>

@@ -4,13 +4,13 @@ const config = {
   username: "Vvshenok",
   displayName: "Vvshenok",
   tagline: "Roblox Developer / Lua Scripter",
-  bio: "I build Roblox games and script in Lua. I've contributed to titles with hundreds of millions of visits, from core gameplay systems to UI, datastores, and monetization.",
+  bio: "I build Roblox games and script in Lua. I've contributed to titles with hundreds of millions of visits — from core gameplay systems to UI, datastores, and monetization.",
   bioExtra: "Clean code, good architecture, and player experience first. Always.",
 
   socials: {
-    roblox: "https://www.roblox.com/users/5233637325/profile",
+    roblox: "https://www.roblox.com/users/YOUR_ROBLOX_USER_ID/profile",
     twitter: "https://x.com/YOUR_TWITTER_HANDLE",
-    discord: "vvshenok",
+    discord: "yourDiscordTag#0000",
   },
 
   emailjs: {
@@ -20,7 +20,7 @@ const config = {
   },
 
   stats: {
-    years: "4+",
+    years: "3+",
     gamesWorkedOn: "13",
     totalVisits: "555M+",
     totalFavorites: "18M+",
