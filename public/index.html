@@ -25,7 +25,6 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <div class="avail-dot" id="avail-dot"></div>
       <span class="avail-text" id="avail-text"></span>
     </div>
   </div>
@@ -35,8 +34,8 @@
   <div class="hero-bg" id="hero-bg"></div>
   <div class="hero-bg-overlay"></div>
   <div class="wrap hero-content">
-    <div class="hero-kicker blur-in" id="hero-kicker">Roblox Developer / Lua Scripter</div>
-    <div class="hero-name blur-in delay-1" id="hero-name">Vvshenok<em>.</em></div>
+    <div class="hero-kicker blur-in">Roblox Developer / Lua Scripter</div>
+    <div class="hero-name blur-in delay-1">Vvshenok<em>.</em></div>
     <div class="hero-foot blur-in delay-2">
       <p class="hero-bio" id="hero-bio"></p>
       <div class="hero-btns">
@@ -45,11 +44,30 @@
       </div>
     </div>
   </div>
+  <div class="hero-discord blur-in delay-2" id="hero-discord-wrap" style="display:none;">
+    <div class="hero-discord-card">
+      <div class="hero-discord-top">
+        <div class="discord-avatar-wrap">
+          <img class="discord-avatar" id="dc-avatar" src="" alt=""/>
+          <span class="discord-status-dot" id="dc-status-dot"></span>
+        </div>
+        <div class="discord-info">
+          <div class="discord-name" id="dc-name"></div>
+          <div class="discord-tag" id="dc-tag"></div>
+        </div>
+      </div>
+      <div class="hero-discord-activity" id="dc-activity"></div>
+      <div class="hero-discord-file" id="dc-file" style="display:none;">
+        <span class="hero-discord-file-icon" id="dc-file-icon"></span>
+        <span id="dc-file-name"></span>
+        <span class="hero-discord-line" id="dc-line"></span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <div id="status-banner" style="display:none;" class="status-banner">
   <div class="wrap status-banner-inner">
-    <span class="status-pulse"></span>
     <span class="status-label">Currently working on</span>
     <span class="status-text" id="status-text"></span>
   </div>
@@ -58,32 +76,32 @@
 <section class="stats-row">
   <div class="stats-inner">
     <div class="stat">
-      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></div>
       <div class="stat-n" id="s-visits">0</div>
       <div class="stat-l">Total visits</div>
     </div>
     <div class="stat">
-      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <div class="stat-n" id="s-playing">0</div>
       <div class="stat-l">Playing now</div>
     </div>
     <div class="stat">
-      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z"/></svg></div>
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z"/></svg></div>
       <div class="stat-n" id="s-games">0</div>
       <div class="stat-l">Games worked on</div>
     </div>
     <div class="stat">
-      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <div class="stat-n" id="s-members">0</div>
       <div class="stat-l">Total group members</div>
     </div>
     <div class="stat">
-      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
       <div class="stat-n" id="s-years">0</div>
       <div class="stat-l">Years scripting</div>
     </div>
     <div class="stat">
-      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
       <div class="stat-n" id="s-pageviews">0</div>
       <div class="stat-l">Portfolio views</div>
     </div>
@@ -188,32 +206,17 @@
           <div class="bar-row"><div class="bar-meta"><span class="bar-lbl">Anti-Exploit</span><span class="bar-pct">45%</span></div><div class="bar-track"><div class="bar-fill" data-w="45"></div></div></div>
         </div>
       </div>
-      <div>
-        <div id="discord-card" class="discord-card" style="display:none;">
-          <div class="discord-card-top">
-            <div class="discord-avatar-wrap">
-              <img class="discord-avatar" id="dc-avatar" src="" alt=""/>
-              <span class="discord-status-dot" id="dc-status-dot"></span>
-            </div>
-            <div class="discord-info">
-              <div class="discord-name" id="dc-name"></div>
-              <div class="discord-tag" id="dc-tag"></div>
-              <div class="discord-activity" id="dc-activity"></div>
-            </div>
-          </div>
-        </div>
-        <div class="links-col" id="links-col" style="margin-top:1rem;">
-          <a href="#" class="slink" id="link-roblox" target="_blank" rel="noreferrer">
-            <div><div class="slink-lbl">Roblox</div><div class="slink-val">@Vvshenok</div></div>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </a>
-          <a href="#" class="slink" id="link-twitter" target="_blank" rel="noreferrer">
-            <div><div class="slink-lbl">Twitter / X</div><div class="slink-val" id="tw-val">@</div></div>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </a>
-          <div class="slink" style="cursor:default">
-            <div><div class="slink-lbl">Discord</div><div class="slink-val" id="disc-val"></div></div>
-          </div>
+      <div class="links-col">
+        <a href="#" class="slink" id="link-roblox" target="_blank" rel="noreferrer">
+          <div><div class="slink-lbl">Roblox</div><div class="slink-val">@Vvshenok</div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+        <a href="#" class="slink" id="link-twitter" target="_blank" rel="noreferrer">
+          <div><div class="slink-lbl">Twitter / X</div><div class="slink-val" id="tw-val">@</div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+        <div class="slink" style="cursor:default">
+          <div><div class="slink-lbl">Discord</div><div class="slink-val" id="disc-val"></div></div>
         </div>
       </div>
     </div>
@@ -264,12 +267,18 @@ function fmtNum(n) {
   if (n >= 1e3) return (n/1e3).toFixed(0)+'K';
   return String(n);
 }
+
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 const EYE_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
 const USERS_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+
+function getFileIcon(ext) {
+  const icons = { lua:'🌙', luau:'🌙', js:'JS', ts:'TS', jsx:'JSX', tsx:'TSX', json:'{}', html:'HTML', css:'CSS', py:'PY', md:'MD', sh:'SH', txt:'TXT' };
+  return icons[(ext||'').toLowerCase()] || '📄';
+}
 
 async function trackVisit() {
   try {
@@ -283,8 +292,11 @@ async function loadConfig() {
   try {
     const r = await fetch('/api/config');
     const c = await r.json();
-    if (c.available) { document.getElementById('avail-dot').classList.add('on'); document.getElementById('avail-text').textContent = 'Available'; }
-    else { document.getElementById('avail-text').textContent = 'Unavailable'; }
+    if (c.available) {
+      document.getElementById('avail-text').textContent = 'Available';
+    } else {
+      document.getElementById('avail-text').textContent = 'Unavailable';
+    }
     if (c.bio) { document.getElementById('hero-bio').textContent = c.bio; document.getElementById('about-p1').textContent = c.bio; }
     if (c.bioExtra) document.getElementById('about-p2').textContent = c.bioExtra;
     const st = c.stats || {};
@@ -295,68 +307,105 @@ async function loadConfig() {
     if (soc.discord) document.getElementById('disc-val').textContent = soc.discord;
     if (c.responseTime) document.getElementById('contact-response').textContent = c.responseTime;
     if (c.emailjs) { _ejs = c.emailjs; if (_ejs.publicKey) emailjs.init(_ejs.publicKey); }
-    if (c.discordId) loadDiscord(c.discordId);
-  } catch(e) { console.error('config',e); }
+    if (c.discordId) connectLanyard(c.discordId);
+  } catch(e) { console.error('config', e); }
 }
 
-async function loadDiscord(userId) {
-  try {
-    const r = await fetch('https://api.lanyard.rest/v1/users/' + userId);
-    const d = await r.json();
-    if (!d.success) return;
-    const data = d.data;
-    const card = document.getElementById('discord-card');
+function connectLanyard(userId) {
+  const ws = new WebSocket('wss://api.lanyard.rest/socket');
+  let heartbeat = null;
 
-    const avatarHash = data.discord_user.avatar;
-    const avatarUrl = avatarHash
-      ? 'https://cdn.discordapp.com/avatars/' + data.discord_user.id + '/' + avatarHash + '.png?size=128'
-      : 'https://cdn.discordapp.com/embed/avatars/0.png';
-
-    document.getElementById('dc-avatar').src = avatarUrl;
-    document.getElementById('dc-name').textContent = data.discord_user.global_name || data.discord_user.username;
-    document.getElementById('dc-tag').textContent = '@' + data.discord_user.username;
-
-    const statusDot = document.getElementById('dc-status-dot');
-    const statusColors = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
-    statusDot.style.background = statusColors[data.discord_status] || '#80848e';
-
-    const activity = data.activities?.find(a => a.type === 0);
-    const actEl = document.getElementById('dc-activity');
-    if (activity) {
-      actEl.textContent = 'Playing ' + activity.name;
-    } else if (data.discord_status === 'online') {
-      actEl.textContent = 'Online';
-    } else if (data.discord_status === 'idle') {
-      actEl.textContent = 'Idle';
-    } else if (data.discord_status === 'dnd') {
-      actEl.textContent = 'Do Not Disturb';
-    } else {
-      actEl.textContent = 'Offline';
+  ws.onmessage = function(e) {
+    const msg = JSON.parse(e.data);
+    if (msg.op === 1) {
+      heartbeat = setInterval(function() {
+        if (ws.readyState === 1) ws.send(JSON.stringify({ op: 3 }));
+      }, msg.d.heartbeat_interval);
+      ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: userId } }));
     }
+    if (msg.op === 0) updateDiscord(msg.d);
+  };
 
-    card.style.display = 'block';
-  } catch(e) { console.error('lanyard', e); }
+  ws.onclose = function() {
+    clearInterval(heartbeat);
+    setTimeout(function() { connectLanyard(userId); }, 5000);
+  };
+
+  ws.onerror = function() { ws.close(); };
+}
+
+function updateDiscord(data) {
+  if (!data || !data.discord_user) return;
+  const user = data.discord_user;
+  const wrap = document.getElementById('hero-discord-wrap');
+  const avatarEl = document.getElementById('dc-avatar');
+  const nameEl = document.getElementById('dc-name');
+  const tagEl = document.getElementById('dc-tag');
+  const dotEl = document.getElementById('dc-status-dot');
+  const actEl = document.getElementById('dc-activity');
+  const fileEl = document.getElementById('dc-file');
+  const fileIconEl = document.getElementById('dc-file-icon');
+  const fileNameEl = document.getElementById('dc-file-name');
+  const lineEl = document.getElementById('dc-line');
+
+  const avatarUrl = user.avatar
+    ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png?size=128'
+    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+  avatarEl.src = avatarUrl;
+  nameEl.textContent = user.global_name || user.username;
+  tagEl.textContent = '@' + user.username;
+
+  const statusColors = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
+  dotEl.style.background = statusColors[data.discord_status] || '#80848e';
+
+  const vscode = (data.activities || []).find(function(a) { return a.name === 'Visual Studio Code'; });
+  const roblox = (data.activities || []).find(function(a) { return a.name === 'Roblox Studio'; });
+  const other  = (data.activities || []).find(function(a) { return a.type === 0; });
+
+  fileEl.style.display = 'none';
+
+  if (vscode) {
+    actEl.textContent = 'Editing in VS Code';
+    if (vscode.details) {
+      const ext = vscode.details.split('.').pop();
+      fileIconEl.textContent = getFileIcon(ext);
+      fileNameEl.textContent = vscode.details;
+      lineEl.textContent = vscode.state || '';
+      fileEl.style.display = 'flex';
+    }
+  } else if (roblox) {
+    actEl.textContent = 'Scripting in Roblox Studio';
+    if (roblox.details) {
+      fileIconEl.textContent = getFileIcon('lua');
+      fileNameEl.textContent = roblox.details;
+      lineEl.textContent = roblox.state || '';
+      fileEl.style.display = 'flex';
+    }
+  } else if (other) {
+    actEl.textContent = 'Playing ' + other.name;
+  } else {
+    var statusText = { online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline' };
+    actEl.textContent = statusText[data.discord_status] || 'Offline';
+  }
+
+  wrap.style.display = 'block';
 }
 
 function buildHeroBg(games) {
   const bg = document.getElementById('hero-bg');
   if (!bg || !games.length) return;
-  const thumbs = games.filter(g => g.thumbnail).map(g => g.thumbnail);
+  const thumbs = games.filter(function(g) { return g.thumbnail; }).map(function(g) { return g.thumbnail; });
   if (!thumbs.length) return;
-  const tileSize = 130;
-  const gap = 18;
-  const step = tileSize + gap;
+  const tileSize = 130, gap = 18, step = tileSize + gap;
   const cols = Math.ceil(window.innerWidth / step) + 1;
   const rows = Math.ceil((window.innerHeight * 0.6) / step) + 1;
-  let html = '';
-  let idx = 0;
+  let html = '', idx = 0;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const x = c * step - 40;
-      const y = r * step - 30;
-      const src = thumbs[idx % thumbs.length];
+      const x = c * step - 40, y = r * step - 30;
+      html += '<div class="hero-tile" style="left:' + x + 'px;top:' + y + 'px;width:' + tileSize + 'px;height:' + tileSize + 'px;"><img src="' + esc(thumbs[idx % thumbs.length]) + '" loading="lazy"/></div>';
       idx++;
-      html += '<div class="hero-tile" style="left:'+x+'px;top:'+y+'px;width:'+tileSize+'px;height:'+tileSize+'px;"><img src="'+esc(src)+'" loading="lazy"/></div>';
     }
   }
   bg.innerHTML = html;
@@ -370,7 +419,7 @@ async function loadGames() {
     const data = await r.json();
     const games = data.games || [];
     let totalVisits = 0, totalPlaying = 0;
-    games.forEach(g => { totalVisits += g.visits || 0; totalPlaying += g.playing || 0; });
+    games.forEach(function(g) { totalVisits += g.visits || 0; totalPlaying += g.playing || 0; });
     document.getElementById('s-visits').textContent = fmtNum(totalVisits);
     document.getElementById('s-playing').textContent = fmtNum(totalPlaying);
     document.getElementById('s-games').textContent = games.length;
@@ -379,10 +428,10 @@ async function loadGames() {
     loading.remove();
 
     const mid = Math.ceil(games.length / 2);
-    const rows = [games.slice(0, mid), games.slice(mid)];
-    const dirs = ['r1','r2'];
+    const rowData = [games.slice(0, mid), games.slice(mid)];
+    const dirs = ['r1', 'r2'];
 
-    rows.forEach((row, ri) => {
+    rowData.forEach(function(row, ri) {
       if (!row.length) return;
       const wrapper = document.createElement('div');
       wrapper.className = 'marquee-row-wrap';
@@ -394,31 +443,31 @@ async function loadGames() {
         div.className = 'gcard';
         div.innerHTML =
           '<div class="gcard-img-wrap">' +
-            (g.thumbnail ? '<img class="gcard-img" src="'+g.thumbnail+'" alt="'+esc(g.name)+'" loading="lazy"/>' : '<div class="gcard-ph">no image</div>') +
+            (g.thumbnail ? '<img class="gcard-img" src="' + g.thumbnail + '" alt="' + esc(g.name) + '" loading="lazy"/>' : '<div class="gcard-ph">no image</div>') +
           '</div>' +
           '<div class="gcard-body">' +
-            '<div class="gcard-name">'+esc(g.name)+'</div>' +
-            '<div class="gcard-meta"><span class="gcard-stat">'+EYE_ICON+fmtNum(g.visits)+'</span><span class="gcard-stat">'+USERS_ICON+fmtNum(g.playing)+'</span></div>' +
-            '<div class="gcard-role">'+esc(g.role)+'</div>' +
-            '<a href="'+g.robloxUrl+'" target="_blank" rel="noreferrer" class="gcard-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>Play on Roblox</a>' +
+            '<div class="gcard-name">' + esc(g.name) + '</div>' +
+            '<div class="gcard-meta"><span class="gcard-stat">' + EYE_ICON + fmtNum(g.visits) + '</span><span class="gcard-stat">' + USERS_ICON + fmtNum(g.playing) + '</span></div>' +
+            '<div class="gcard-role">' + esc(g.role) + '</div>' +
+            '<a href="' + g.robloxUrl + '" target="_blank" rel="noreferrer" class="gcard-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>Play on Roblox</a>' +
           '</div>';
         return div;
       }
 
       const cardW = 284, gap2 = 8;
       const screenW = window.innerWidth || 1400;
-      const copiesNeeded = Math.ceil((screenW * 2) / ((cardW + gap2) * row.length)) + 1;
-      const allItems = [];
-      for (let i = 0; i < copiesNeeded; i++) allItems.push(...row);
-      const half = allItems.length;
-      for (let i = 0; i < half * 2; i++) track.appendChild(makeCard(allItems[i % half]));
+      const copies = Math.ceil((screenW * 2) / ((cardW + gap2) * row.length)) + 1;
+      const all = [];
+      for (let i = 0; i < copies; i++) all.push.apply(all, row);
+      const half = all.length;
+      for (let i = 0; i < half * 2; i++) track.appendChild(makeCard(all[i % half]));
 
       wrapper.appendChild(track);
-      wrapper.addEventListener('mouseenter', () => track.style.animationPlayState = 'paused');
-      wrapper.addEventListener('mouseleave', () => track.style.animationPlayState = 'running');
+      wrapper.addEventListener('mouseenter', function() { track.style.animationPlayState = 'paused'; });
+      wrapper.addEventListener('mouseleave', function() { track.style.animationPlayState = 'running'; });
       shell.appendChild(wrapper);
     });
-  } catch(e) { if(loading) loading.textContent = 'Could not load games.'; console.error(e); }
+  } catch(e) { if (loading) loading.textContent = 'Could not load games.'; console.error(e); }
 }
 
 async function loadPortfolio() {
@@ -434,21 +483,21 @@ async function loadPortfolio() {
       document.getElementById('status-text').textContent = data.status.text;
       document.getElementById('status-banner').style.display = 'block';
     }
-  } catch(e) { console.error('portfolio',e); }
+  } catch(e) { console.error('portfolio', e); }
 }
 
 function renderLibraries(libs) {
   const el = document.getElementById('lib-grid');
   if (!libs.length) { el.innerHTML = '<div class="empty-state">No libraries added yet.</div>'; return; }
   el.innerHTML = '';
-  libs.forEach(l => {
+  libs.forEach(function(l) {
     const card = document.createElement('div');
     card.className = 'lib-card';
     card.innerHTML =
-      '<div class="lib-cat">'+esc(l.category||'Library')+'</div>' +
-      '<div class="lib-name">'+esc(l.name)+'</div>' +
-      (l.description ? '<div class="lib-desc">'+esc(l.description)+'</div>' : '') +
-      (l.url ? '<a href="'+esc(l.url)+'" target="_blank" rel="noreferrer" class="lib-link">View docs <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>' : '');
+      '<div class="lib-cat">' + esc(l.category || 'Library') + '</div>' +
+      '<div class="lib-name">' + esc(l.name) + '</div>' +
+      (l.description ? '<div class="lib-desc">' + esc(l.description) + '</div>' : '') +
+      (l.url ? '<a href="' + esc(l.url) + '" target="_blank" rel="noreferrer" class="lib-link">View docs <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>' : '');
     el.appendChild(card);
   });
 }
@@ -458,15 +507,15 @@ function renderGroups(groups) {
   if (!groups.length) { el.innerHTML = '<div class="empty-state">No groups added yet.</div>'; return; }
   let totalMembers = 0;
   el.innerHTML = '';
-  groups.forEach(g => {
+  groups.forEach(function(g) {
     totalMembers += g.memberCount || 0;
     const card = document.createElement('div');
     card.className = 'group-card';
-    const verifiedBadge = g.isVerified ? '<img src="/verified.png" class="verified-img" title="Verified Group" alt="Verified"/>' : '';
+    const badge = g.isVerified ? '<img src="/verified.png" class="verified-img" title="Verified" alt="Verified"/>' : '';
     card.innerHTML =
-      '<div class="group-icon-wrap">' + (g.icon ? '<img class="group-icon" src="'+esc(g.icon)+'" alt="'+esc(g.name)+'"/>' : '<div class="group-icon-ph">?</div>') + '</div>' +
-      '<div class="group-info"><div class="group-name-row">'+esc(g.name)+verifiedBadge+'</div><div class="group-meta"><span>'+fmtNum(g.memberCount)+' members</span><span class="group-rank">'+esc(g.myRank||'Member')+'</span></div></div>' +
-      '<a href="'+esc(g.url)+'" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
+      '<div class="group-icon-wrap">' + (g.icon ? '<img class="group-icon" src="' + esc(g.icon) + '" alt="' + esc(g.name) + '"/>' : '<div class="group-icon-ph">?</div>') + '</div>' +
+      '<div class="group-info"><div class="group-name-row">' + esc(g.name) + badge + '</div><div class="group-meta"><span>' + fmtNum(g.memberCount) + ' members</span><span class="group-rank">' + esc(g.myRank || 'Member') + '</span></div></div>' +
+      '<a href="' + esc(g.url) + '" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     el.appendChild(card);
   });
   document.getElementById('s-members').textContent = fmtNum(totalMembers);
@@ -476,30 +525,30 @@ function renderProjects(projects) {
   const el = document.getElementById('projects-grid');
   if (!projects.length) { el.innerHTML = '<div class="empty-state">No projects added yet.</div>'; return; }
   el.innerHTML = '';
-  projects.forEach(p => {
+  projects.forEach(function(p) {
     const card = document.createElement('div');
     card.className = 'proj-card';
     card.innerHTML =
-      '<div class="proj-top"><div class="proj-name">'+esc(p.name)+'</div>'+(p.language?'<span class="proj-lang">'+esc(p.language)+'</span>':'')+'</div>'+
-      (p.description?'<div class="proj-desc">'+esc(p.description)+'</div>':'')+
-      '<div class="proj-meta"><span>★ '+p.stars+'</span><span>⑂ '+p.forks+'</span></div>'+
-      '<a href="'+esc(p.url)+'" target="_blank" rel="noreferrer" class="lib-link">View on GitHub <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
+      '<div class="proj-top"><div class="proj-name">' + esc(p.name) + '</div>' + (p.language ? '<span class="proj-lang">' + esc(p.language) + '</span>' : '') + '</div>' +
+      (p.description ? '<div class="proj-desc">' + esc(p.description) + '</div>' : '') +
+      '<div class="proj-meta"><span>★ ' + p.stars + '</span><span>⑂ ' + p.forks + '</span></div>' +
+      '<a href="' + esc(p.url) + '" target="_blank" rel="noreferrer" class="lib-link">View on GitHub <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     el.appendChild(card);
   });
 }
 
-function renderTestimonials(testimonials) {
+function renderTestimonials(list) {
   const el = document.getElementById('testimonials-grid');
-  if (!testimonials.length) { el.innerHTML = '<div class="empty-state">No testimonials yet.</div>'; return; }
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No testimonials yet.</div>'; return; }
   el.innerHTML = '';
-  testimonials.forEach(t => {
+  list.forEach(function(t) {
     const card = document.createElement('div');
     card.className = 'testimonial-card';
     card.innerHTML =
-      '<div class="testimonial-quote">"'+esc(t.quote)+'"</div>' +
+      '<div class="testimonial-quote">"' + esc(t.quote) + '"</div>' +
       '<div class="testimonial-author">' +
-        (t.avatar ? '<img class="testimonial-avatar" src="'+esc(t.avatar)+'" alt="'+esc(t.author)+'"/>' : '<div class="testimonial-avatar-ph">'+esc(t.author[0])+'</div>') +
-        '<div><div class="testimonial-name">'+esc(t.author)+'</div>'+(t.role?'<div class="testimonial-role">'+esc(t.role)+'</div>':'')+'</div>' +
+        (t.avatar ? '<img class="testimonial-avatar" src="' + esc(t.avatar) + '" alt="' + esc(t.author) + '"/>' : '<div class="testimonial-avatar-ph">' + esc(t.author[0]) + '</div>') +
+        '<div><div class="testimonial-name">' + esc(t.author) + '</div>' + (t.role ? '<div class="testimonial-role">' + esc(t.role) + '</div>' : '') + '</div>' +
       '</div>';
     el.appendChild(card);
   });
@@ -509,13 +558,13 @@ function renderPricing(pricing) {
   const el = document.getElementById('pricing-grid');
   if (!pricing.length) { el.innerHTML = '<div class="empty-state">Pricing not set yet.</div>'; return; }
   el.innerHTML = '';
-  pricing.forEach(p => {
+  pricing.forEach(function(p) {
     const card = document.createElement('div');
     card.className = 'pricing-card';
     card.innerHTML =
-      '<div class="pricing-name">'+esc(p.name)+'</div>' +
-      '<div class="pricing-price">'+esc(p.price)+'</div>' +
-      (p.description ? '<div class="pricing-desc">'+esc(p.description)+'</div>' : '') +
+      '<div class="pricing-name">' + esc(p.name) + '</div>' +
+      '<div class="pricing-price">' + esc(p.price) + '</div>' +
+      (p.description ? '<div class="pricing-desc">' + esc(p.description) + '</div>' : '') +
       '<a href="#contact" class="btn btn-solid" style="font-size:0.75rem;margin-top:1rem;justify-content:center;">Get a quote</a>';
     el.appendChild(card);
   });
@@ -528,27 +577,27 @@ async function submitContact() {
   const btn = document.getElementById('send-btn');
   const status = document.getElementById('form-status');
   status.className = 'form-status'; status.textContent = '';
-  if (!name||!email||!msg) { status.className='form-status err'; status.textContent='Please fill in all fields.'; return; }
-  if (!_ejs.serviceId||!_ejs.templateId) { status.className='form-status err'; status.textContent='Contact form not configured yet.'; return; }
-  btn.disabled=true; btn.textContent='Sending...';
+  if (!name || !email || !msg) { status.className = 'form-status err'; status.textContent = 'Please fill in all fields.'; return; }
+  if (!_ejs.serviceId || !_ejs.templateId) { status.className = 'form-status err'; status.textContent = 'Contact form not configured yet.'; return; }
+  btn.disabled = true; btn.textContent = 'Sending...';
   try {
-    await emailjs.send(_ejs.serviceId,_ejs.templateId,{from_name:name,from_email:email,message:msg});
-    status.className='form-status ok'; status.textContent='Message sent.';
-    document.getElementById('fn').value=''; document.getElementById('fe').value=''; document.getElementById('fm').value='';
-  } catch(e) { status.className='form-status err'; status.textContent='Send failed. Check EmailJS config.'; }
-  finally { btn.disabled=false; btn.textContent='Send message'; }
+    await emailjs.send(_ejs.serviceId, _ejs.templateId, { from_name: name, from_email: email, message: msg });
+    status.className = 'form-status ok'; status.textContent = 'Message sent.';
+    document.getElementById('fn').value = ''; document.getElementById('fe').value = ''; document.getElementById('fm').value = '';
+  } catch(e) { status.className = 'form-status err'; status.textContent = 'Send failed. Check EmailJS config.'; }
+  finally { btn.disabled = false; btn.textContent = 'Send message'; }
 }
 
-const revObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');revObs.unobserve(e.target);} });
-},{threshold:0.07});
-document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+const revObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); } });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(function(el) { revObs.observe(el); });
 
-const barObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.querySelectorAll('.bar-fill').forEach(b=>{b.style.width=b.dataset.w+'%';}); barObs.unobserve(e.target); } });
-},{threshold:0.3});
+const barObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) { e.target.querySelectorAll('.bar-fill').forEach(function(b) { b.style.width = b.dataset.w + '%'; }); barObs.unobserve(e.target); } });
+}, { threshold: 0.3 });
 const barsEl = document.getElementById('bars');
-if(barsEl) barObs.observe(barsEl);
+if (barsEl) barObs.observe(barsEl);
 
 trackVisit();
 loadConfig();

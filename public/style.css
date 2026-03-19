@@ -996,3 +996,53 @@ footer {
 @media (max-width: 780px) {
   .pricing-grid, .testimonials-grid { grid-template-columns: 1fr; }
 }
+
+.hero-discord {
+  position: absolute;
+  bottom: 4.5rem;
+  right: 2rem;
+  z-index: 3;
+  width: 240px;
+}
+.hero-discord-card {
+  background: rgba(14,14,14,0.85);
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  backdrop-filter: blur(12px);
+}
+.hero-discord-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.hero-discord-activity {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.hero-discord-file {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: #ff8c00;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+.hero-discord-file-icon {
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+.hero-discord-line {
+  color: var(--dim);
+  margin-left: auto;
+}
+.avail-dot { display: none; }
+.status-pulse { display: none; }
+
+@media (max-width: 780px) {
+  .hero-discord { display: none; }
+}
