@@ -16,11 +16,11 @@
   <div class="nav-inner">
     <span class="nav-logo">vvshenok<em>.dev</em></span>
     <ul class="nav-links">
-      <li><a href="#skills">Skills</a></li>
       <li><a href="#games">Games</a></li>
       <li><a href="#libraries">Libraries</a></li>
       <li><a href="#groups">Groups</a></li>
       <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-right">
@@ -31,7 +31,9 @@
 </nav>
 
 <section class="hero" id="top">
-  <div class="wrap">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-bg-overlay"></div>
+  <div class="wrap hero-content">
     <div class="hero-kicker blur-in" id="hero-kicker">Roblox Developer / Lua Scripter</div>
     <div class="hero-name blur-in delay-1" id="hero-name">Vvshenok<em>.</em></div>
     <div class="hero-foot blur-in delay-2">
@@ -47,7 +49,7 @@
 <section class="stats-row">
   <div class="stats-inner">
     <div class="stat">
-      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
+      <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></div>
       <div class="stat-n" id="s-visits">—</div>
       <div class="stat-l">Total visits</div>
     </div>
@@ -74,10 +76,59 @@
   </div>
 </section>
 
-<section class="skills-wrap reveal" id="skills">
+<section class="games-wrap reveal" id="games">
   <div class="wrap">
     <div class="sec-head">
       <span class="sec-n">01</span>
+      <span class="sec-t">Games I've worked on</span>
+    </div>
+  </div>
+  <div class="marquee-shell" id="marquee-shell">
+    <div class="games-loading" id="games-loading">Fetching live data from Roblox...</div>
+  </div>
+</section>
+
+<section class="libraries-wrap reveal" id="libraries">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">02</span>
+      <span class="sec-t">Libraries & Frameworks I've used</span>
+    </div>
+    <p class="sec-sub">Tools and frameworks I have experience working with — not libraries I made, but ones I've built projects with.</p>
+    <div class="lib-grid" id="lib-grid">
+      <div class="games-loading">Loading...</div>
+    </div>
+  </div>
+</section>
+
+<section class="groups-wrap reveal" id="groups">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">03</span>
+      <span class="sec-t">Groups I've worked for</span>
+    </div>
+    <div class="groups-grid" id="groups-grid">
+      <div class="games-loading">Fetching group data...</div>
+    </div>
+  </div>
+</section>
+
+<section class="projects-wrap reveal" id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">04</span>
+      <span class="sec-t">GitHub Projects</span>
+    </div>
+    <div class="projects-grid" id="projects-grid">
+      <div class="games-loading">Loading...</div>
+    </div>
+  </div>
+</section>
+
+<section class="skills-wrap reveal" id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-n">05</span>
       <span class="sec-t">Skills</span>
     </div>
     <div class="skills-grid">
@@ -117,55 +168,6 @@
         <p class="skill-p">Script profiling, memory management, server validation. Fast games that are hard to cheat.</p>
         <div class="skill-tags"><span class="tag">Profiling</span><span class="tag">Server Validation</span><span class="tag">Memory</span></div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="games-wrap reveal" id="games">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="sec-n">02</span>
-      <span class="sec-t">Games I've worked on</span>
-    </div>
-  </div>
-  <div class="marquee-shell" id="marquee-shell">
-    <div class="games-loading" id="games-loading">Fetching live data from Roblox...</div>
-  </div>
-</section>
-
-<section class="libraries-wrap reveal" id="libraries">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="sec-n">03</span>
-      <span class="sec-t">Libraries & Frameworks I've used</span>
-    </div>
-    <p class="sec-sub">Tools and frameworks I have experience working with — not libraries I made, but ones I've built projects with.</p>
-    <div class="lib-grid" id="lib-grid">
-      <div class="games-loading">Loading...</div>
-    </div>
-  </div>
-</section>
-
-<section class="groups-wrap reveal" id="groups">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="sec-n">04</span>
-      <span class="sec-t">Groups I've worked for</span>
-    </div>
-    <div class="groups-grid" id="groups-grid">
-      <div class="games-loading">Fetching group data...</div>
-    </div>
-  </div>
-</section>
-
-<section class="projects-wrap reveal" id="projects">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="sec-n">05</span>
-      <span class="sec-t">GitHub Projects</span>
-    </div>
-    <div class="projects-grid" id="projects-grid">
-      <div class="games-loading">Loading...</div>
     </div>
   </div>
 </section>
@@ -229,8 +231,8 @@
 <footer>
   <div class="foot-copy">© <span id="yr"></span> Vvshenok</div>
   <div class="foot-links">
-    <a href="#skills">Skills</a>
     <a href="#games">Games</a>
+    <a href="#skills">Skills</a>
     <a href="#contact">Contact</a>
     <a href="/login" class="foot-admin-link">Login</a>
   </div>
@@ -252,6 +254,9 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+const EYE_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
+const USERS_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+
 async function loadConfig() {
   try {
     const r = await fetch('/api/config');
@@ -270,6 +275,29 @@ async function loadConfig() {
   } catch(e) { console.error('config',e); }
 }
 
+function buildHeroBg(games) {
+  const bg = document.getElementById('hero-bg');
+  if (!bg || !games.length) return;
+  const thumbs = games.filter(g => g.thumbnail).map(g => g.thumbnail);
+  if (!thumbs.length) return;
+  const cols = 6;
+  const rows = 4;
+  const total = cols * rows;
+  const imgs = [];
+  while (imgs.length < total) imgs.push(...thumbs);
+  imgs.length = total;
+  let html = '';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      const x = (c / (cols - 1)) * 110 - 5;
+      const y = (r / (rows - 1)) * 110 - 5;
+      html += '<div class="hero-tile" style="left:'+x+'%;top:'+y+'%;"><img src="'+esc(imgs[idx])+'" loading="lazy"/></div>';
+    }
+  }
+  bg.innerHTML = html;
+}
+
 async function loadGames() {
   const shell = document.getElementById('marquee-shell');
   const loading = document.getElementById('games-loading');
@@ -281,17 +309,29 @@ async function loadGames() {
     games.forEach(g => { totalVisits += g.visits || 0; totalPlaying += g.playing || 0; });
     document.getElementById('s-visits').textContent = fmtNum(totalVisits);
     document.getElementById('s-playing').textContent = fmtNum(totalPlaying);
-    document.getElementById('s-games').textContent = games.length + '+';
+    document.getElementById('s-games').textContent = games.length;
+
+    buildHeroBg(games);
+
     if (!games.length) { loading.textContent = 'No games listed yet.'; return; }
     loading.remove();
+
     const mid = Math.ceil(games.length / 2);
     const rows = [games.slice(0, mid), games.slice(mid)];
-    const cls = ['r1','r2'];
+    const dirs = ['r1','r2'];
+
     rows.forEach((row, ri) => {
       if (!row.length) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'marquee-row-wrap';
+
       const track = document.createElement('div');
-      track.className = 'm-track ' + cls[ri];
-      const items = [...row,...row];
+      track.className = 'm-track ' + dirs[ri];
+
+      const needed = Math.max(Math.ceil(20 / row.length), 2);
+      const items = [];
+      for (let i = 0; i < needed; i++) items.push(...row);
+
       items.forEach(g => {
         const div = document.createElement('div');
         div.className = 'gcard';
@@ -301,13 +341,20 @@ async function loadGames() {
           '</div>' +
           '<div class="gcard-body">' +
             '<div class="gcard-name">'+esc(g.name)+'</div>' +
-            '<div class="gcard-meta"><span>'+fmtNum(g.visits)+' visits</span><span>'+fmtNum(g.playing)+' playing</span></div>' +
+            '<div class="gcard-meta">'+
+              '<span class="gcard-stat">'+EYE_ICON+fmtNum(g.visits)+'</span>'+
+              '<span class="gcard-stat">'+USERS_ICON+fmtNum(g.playing)+'</span>'+
+            '</div>' +
             '<div class="gcard-role">'+esc(g.role)+'</div>' +
             '<a href="'+g.robloxUrl+'" target="_blank" rel="noreferrer" class="gcard-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>Play on Roblox</a>' +
           '</div>';
         track.appendChild(div);
       });
-      shell.appendChild(track);
+
+      wrapper.appendChild(track);
+      wrapper.addEventListener('mouseenter', () => track.style.animationPlayState = 'paused');
+      wrapper.addEventListener('mouseleave', () => track.style.animationPlayState = 'running');
+      shell.appendChild(wrapper);
     });
   } catch(e) { if(loading) loading.textContent = 'Could not load games.'; console.error(e); }
 }
@@ -347,9 +394,7 @@ function renderGroups(groups) {
     totalMembers += g.memberCount || 0;
     const card = document.createElement('div');
     card.className = 'group-card';
-    const verifiedBadge = g.isVerified
-      ? '<img src="/verified.png" class="verified-img" title="Verified Group" alt="Verified"/>'
-      : '';
+    const verifiedBadge = g.isVerified ? '<img src="/verified.png" class="verified-img" title="Verified Group" alt="Verified"/>' : '';
     card.innerHTML =
       '<div class="group-icon-wrap">' +
         (g.icon ? '<img class="group-icon" src="'+esc(g.icon)+'" alt="'+esc(g.name)+'"/>' : '<div class="group-icon-ph">?</div>') +
@@ -372,15 +417,9 @@ function renderProjects(projects) {
     const card = document.createElement('div');
     card.className = 'proj-card';
     card.innerHTML =
-      '<div class="proj-top">' +
-        '<div class="proj-name">'+esc(p.name)+'</div>' +
-        (p.language ? '<span class="proj-lang">'+esc(p.language)+'</span>' : '') +
-      '</div>' +
-      (p.description ? '<div class="proj-desc">'+esc(p.description)+'</div>' : '') +
-      '<div class="proj-meta">' +
-        '<span>★ '+p.stars+'</span>' +
-        '<span>⑂ '+p.forks+'</span>' +
-      '</div>' +
+      '<div class="proj-top"><div class="proj-name">'+esc(p.name)+'</div>'+(p.language?'<span class="proj-lang">'+esc(p.language)+'</span>':'')+'</div>'+
+      (p.description?'<div class="proj-desc">'+esc(p.description)+'</div>':'')+
+      '<div class="proj-meta"><span>★ '+p.stars+'</span><span>⑂ '+p.forks+'</span></div>'+
       '<a href="'+esc(p.url)+'" target="_blank" rel="noreferrer" class="lib-link">View on GitHub <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     el.appendChild(card);
   });
