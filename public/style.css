@@ -86,7 +86,7 @@ section { border-bottom: 1px solid var(--line); }
 
 .hero {
   padding-top: 52px;
-  min-height: 100vh;
+  min-height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
