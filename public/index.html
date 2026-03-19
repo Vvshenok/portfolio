@@ -187,7 +187,7 @@
           <div class="bar-row"><div class="bar-meta"><span class="bar-lbl">Game Systems</span><span class="bar-pct">90%</span></div><div class="bar-track"><div class="bar-fill" data-w="90"></div></div></div>
           <div class="bar-row"><div class="bar-meta"><span class="bar-lbl">UI Scripting</span><span class="bar-pct">85%</span></div><div class="bar-track"><div class="bar-fill" data-w="85"></div></div></div>
           <div class="bar-row"><div class="bar-meta"><span class="bar-lbl">DataStore</span><span class="bar-pct">80%</span></div><div class="bar-track"><div class="bar-fill" data-w="80"></div></div></div>
-          <div class="bar-row"><div class="bar-meta"><span class="bar-lbl">Anti-Exploit</span><span class="bar-pct">75%</span></div><div class="bar-track"><div class="bar-fill" data-w="75"></div></div></div>
+          <div class="bar-row"><div class="bar-meta"><span class="bar-lbl">Anti-Exploit</span><span class="bar-pct">45%</span></div><div class="bar-track"><div class="bar-fill" data-w="45"></div></div></div>
         </div>
       </div>
       <div class="links-col" id="links-col">
@@ -280,19 +280,22 @@ function buildHeroBg(games) {
   if (!bg || !games.length) return;
   const thumbs = games.filter(g => g.thumbnail).map(g => g.thumbnail);
   if (!thumbs.length) return;
-  const cols = 6;
-  const rows = 4;
-  const total = cols * rows;
-  const imgs = [];
-  while (imgs.length < total) imgs.push(...thumbs);
-  imgs.length = total;
+
+  const tileSize = 130;
+  const gap = 18;
+  const step = tileSize + gap;
+  const cols = Math.ceil(window.innerWidth / step) + 1;
+  const rows = Math.ceil((window.innerHeight * 0.6) / step) + 1;
+
   let html = '';
+  let idx = 0;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const idx = r * cols + c;
-      const x = (c / (cols - 1)) * 110 - 5;
-      const y = (r / (rows - 1)) * 110 - 5;
-      html += '<div class="hero-tile" style="left:'+x+'%;top:'+y+'%;"><img src="'+esc(imgs[idx])+'" loading="lazy"/></div>';
+      const x = c * step - 40;
+      const y = r * step - 30;
+      const src = thumbs[idx % thumbs.length];
+      idx++;
+      html += '<div class="hero-tile" style="left:' + x + 'px;top:' + y + 'px;width:' + tileSize + 'px;height:' + tileSize + 'px;"><img src="' + esc(src) + '" loading="lazy"/></div>';
     }
   }
   bg.innerHTML = html;
