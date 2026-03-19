@@ -325,6 +325,7 @@ async function loadGames() {
 
     rows.forEach((row, ri) => {
       if (!row.length) return;
+
       const wrapper = document.createElement('div');
       wrapper.className = 'marquee-row-wrap';
 
@@ -350,14 +351,17 @@ async function loadGames() {
         return div;
       }
 
-      const set1 = document.createElement('div');
-      set1.className = 'marquee-set';
-      row.forEach(g => set1.appendChild(makeCard(g)));
+      const cardW = 284;
+      const gap = 8;
+      const screenW = window.innerWidth || 1400;
+      const copiesNeeded = Math.ceil((screenW * 2) / ((cardW + gap) * row.length)) + 1;
+      const allItems = [];
+      for (let i = 0; i < copiesNeeded; i++) allItems.push(...row);
 
-      const set2 = set1.cloneNode(true);
-
-      track.appendChild(set1);
-      track.appendChild(set2);
+      const half = allItems.length;
+      for (let i = 0; i < half * 2; i++) {
+        track.appendChild(makeCard(allItems[i % half]));
+      }
 
       wrapper.appendChild(track);
       wrapper.addEventListener('mouseenter', () => track.style.animationPlayState = 'paused');

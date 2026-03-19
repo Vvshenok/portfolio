@@ -219,8 +219,8 @@ section { border-bottom: 1px solid var(--line); }
 .tag {
   font-family: var(--mono);
   font-size: 0.62rem;
-  color: var(--dim);
-  border: 1px solid var(--line2);
+  color: #ff8c00;
+  border: 1px solid rgba(255,140,0,0.25);
   border-radius: 3px;
   padding: 0.15rem 0.45rem;
 }
@@ -794,17 +794,12 @@ footer {
 }
 .m-track {
   display: flex;
+  gap: 8px;
   width: max-content;
   will-change: transform;
 }
-.marquee-set {
-  display: flex;
-  gap: 8px;
-  padding-right: 8px;
-  flex-shrink: 0;
-}
-.m-track.r1 { animation: mLeft 18s linear infinite; }
-.m-track.r2 { animation: mRight 18s linear infinite; }
+.m-track.r1 { animation: mLeft 20s linear infinite; }
+.m-track.r2 { animation: mRight 20s linear infinite; }
 @keyframes mLeft  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 @keyframes mRight { from{transform:translateX(-50%)} to{transform:translateX(0)} }
 
