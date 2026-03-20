@@ -397,8 +397,8 @@ footer { max-width: var(--max); margin: 0 auto; padding: 1.5rem 1.75rem; display
   transition: color 0.12s, border-color 0.12s;
   letter-spacing: 0.05em;
 }
-.etab:hover { color: var(--muted); }
-.etab.active { color: var(--white); border-bottom-color: var(--accent); }
+.etab:hover { color: #ff8c00; }
+.etab.active { color: #ff8c00; border-bottom-color: #ff8c00; }
 
 .epanels { position: relative; }
 .epanel { display: none; padding: 2rem 0 3.5rem; }

@@ -138,17 +138,17 @@
       <span class="sec-t">Explore</span>
     </div>
     <div class="etabs">
-      <button class="etab active" data-tab="libraries">Libraries</button>
-      <button class="etab" data-tab="groups">Groups</button>
+      <button class="etab active" data-tab="groups">Groups</button>
+      <button class="etab" data-tab="libraries">Libraries</button>
       <button class="etab" data-tab="skills">Skills</button>
     </div>
   </div>
   <div class="epanels">
-    <div class="epanel active" id="ep-libraries">
-      <div class="marquee-shell" id="lib-shell"><div class="games-loading">Loading...</div></div>
-    </div>
-    <div class="epanel" id="ep-groups">
+    <div class="epanel active" id="ep-groups">
       <div class="marquee-shell" id="groups-shell"><div class="games-loading">Loading...</div></div>
+    </div>
+    <div class="epanel" id="ep-libraries">
+      <div class="marquee-shell" id="lib-shell"><div class="games-loading">Loading...</div></div>
     </div>
     <div class="epanel" id="ep-skills">
       <div class="marquee-shell" id="skills-shell"></div>
@@ -383,15 +383,9 @@ async function loadGames() {
     if (!games.length) { loading.textContent = 'No games listed yet.'; return; }
     loading.remove();
 
-    // Shuffle games randomly
-    var shuffled = games.slice().sort(function() { return Math.random() - 0.5; });
-    // Split in half — each game appears in exactly one row
-    var mid = Math.ceil(shuffled.length / 2);
-    // If only 1 game, duplicate it across both rows so both rows have content
-    var row1 = shuffled.slice(0, mid);
-    var row2 = shuffled.slice(mid);
-    if (!row2.length) row2 = row1.slice().reverse(); // fallback if odd number leaves row2 empty
-    var rowData = [row1, row2];
+    var half = Math.ceil(games.length / 2);
+    var rowData = [games.slice(0, half), games.slice(half).length ? games.slice(half) : games.slice(0, half)];
+    var dirs = ['r1', 'r2'];
     var dirs = ['r1', 'r2'];
     rowData.forEach(function(row, ri) {
       if (!row.length) return;
@@ -510,11 +504,13 @@ function renderProjects(projects) {
 }
 
 function renderTestimonials(list) {
-  const el = document.getElementById('testimonials-grid');
-  if (!list.length) { el.innerHTML = '<div class="empty-state">No testimonials yet.</div>'; return; }
+  var section = document.getElementById('testimonials');
+  var el = document.getElementById('testimonials-grid');
+  if (!list.length) { if (section) section.style.display = 'none'; return; }
+  if (section) section.style.display = '';
   el.innerHTML = '';
   list.forEach(function(t) {
-    const card = document.createElement('div');
+    var card = document.createElement('div');
     card.className = 'testimonial-card';
     card.innerHTML = '<div class="testimonial-quote">"' + esc(t.quote) + '"</div><div class="testimonial-author">' + (t.avatar ? '<img class="testimonial-avatar" src="' + esc(t.avatar) + '" alt="' + esc(t.author) + '"/>' : '<div class="testimonial-avatar-ph">' + esc(t.author[0]) + '</div>') + '<div><div class="testimonial-name">' + esc(t.author) + '</div>' + (t.role ? '<div class="testimonial-role">' + esc(t.role) + '</div>' : '') + '</div></div>';
     el.appendChild(card);
@@ -522,11 +518,13 @@ function renderTestimonials(list) {
 }
 
 function renderPricing(pricing) {
-  const el = document.getElementById('pricing-grid');
-  if (!pricing.length) { el.innerHTML = '<div class="empty-state">Pricing not set yet.</div>'; return; }
+  var section = document.getElementById('pricing');
+  var el = document.getElementById('pricing-grid');
+  if (!pricing.length) { if (section) section.style.display = 'none'; return; }
+  if (section) section.style.display = '';
   el.innerHTML = '';
   pricing.forEach(function(p) {
-    const card = document.createElement('div');
+    var card = document.createElement('div');
     card.className = 'pricing-card';
     card.innerHTML = '<div class="pricing-name">' + esc(p.name) + '</div><div class="pricing-price">' + esc(p.price) + '</div>' + (p.description ? '<div class="pricing-desc">' + esc(p.description) + '</div>' : '') + '<a href="#contact" class="btn btn-solid" style="font-size:0.75rem;margin-top:1rem;justify-content:center;">Get a quote</a>';
     el.appendChild(card);
