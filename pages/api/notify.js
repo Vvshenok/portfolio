@@ -3,10 +3,10 @@ export default async function handler(req, res) {
 
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const fromNumber = process.env.TWILIO_FROM_NUMBER;
+  const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID;
   const toNumber = process.env.TWILIO_TO_NUMBER;
 
-  if (!accountSid || !authToken || !fromNumber || !toNumber) {
+  if (!accountSid || !authToken || !messagingServiceSid || !toNumber) {
     return res.status(200).json({ ok: false, reason: 'Twilio not configured' });
   }
 
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         'Authorization': `Basic ${creds}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({ To: toNumber, From: fromNumber, Body: body }),
+      body: new URLSearchParams({ To: toNumber, MessagingServiceSid: messagingServiceSid, Body: body }),
     });
     const data = await r.json();
     if (data.sid) return res.status(200).json({ ok: true });
