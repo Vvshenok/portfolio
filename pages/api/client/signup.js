@@ -12,10 +12,13 @@ export default async function handler(req, res) {
 
   try {
     const result = await createClient({ username, email, password });
-    if (result.error) return res.status(400).json({ error: result.error });
+    if (result.error) {
+      console.error('[signup] createClient error:', result.error);
+      return res.status(400).json({ error: result.error });
+    }
 
     const otp = await saveOTP(email, 'verify');
-    console.log('[signup] OTP for', email, ':', otp); // visible in Vercel logs
+    console.log('[signup] created account for', email, '| OTP:', otp);
 
     const emailResult = await sendEmail({
       to: email,
@@ -24,14 +27,11 @@ export default async function handler(req, res) {
       mergeFields: { name: username, otp_code: otp, expiry_minutes: '10' },
     });
 
-    if (!emailResult.ok) {
-      console.error('[signup] Email failed:', emailResult.error);
-      // Still return ok — account created, OTP saved. User can request resend.
-    }
+    console.log('[signup] email result:', JSON.stringify(emailResult));
 
     return res.status(200).json({ ok: true });
   } catch (e) {
     console.error('[signup] error:', e.message);
-    return res.status(500).json({ error: 'Signup failed' });
+    return res.status(500).json({ error: e.message });
   }
 }

@@ -7,7 +7,9 @@ export default async function handler(req, res) {
   if (!email || !otp) return res.status(400).json({ error: 'Missing fields' });
 
   try {
+    console.log('[verify] attempt for', email, '| otp:', otp);
     const valid = await verifyOTP(email, 'verify', otp);
+    console.log('[verify] OTP valid:', valid);
     if (!valid) return res.status(400).json({ error: 'Invalid or expired code' });
 
     await verifyClient(email);
