@@ -225,7 +225,7 @@ async function doLogin() {
     if (d.unverified) {
       _verifyEmail = email;
       _verifyMode = 'signup';
-      document.getElementById('v-sub').textContent = 'Your email is not verified yet. Enter the code we sent to ' + email;
+      document.getElementById('v-sub').textContent = 'A fresh verification code was just sent to ' + email + '. Check your inbox (and junk folder).';
       switchView('verify');
       return;
     }

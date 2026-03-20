@@ -10,7 +10,20 @@ export default async function handler(req, res) {
     console.log('[login] client found:', !!client, '| email:', email);
     if (!client) return res.status(401).json({ error: 'Invalid email or password' });
     if (!checkPassword(client, password)) return res.status(401).json({ error: 'Invalid email or password' });
-    if (!client.verified) return res.status(403).json({ error: 'Please verify your email first', unverified: true });
+    if (!client.verified) {
+      // Resend a fresh OTP so they can verify
+      const { saveOTP } = require('../../../lib/clients');
+      const { sendEmail } = require('../../../lib/email');
+      const otp = await saveOTP(email, 'verify');
+      console.log('[login] unverified, resending OTP for', email, '| OTP:', otp);
+      await sendEmail({
+        to: email,
+        subject: 'Verify your email — Vvshenok.dev',
+        template: process.env.ELASTIC_OTP_TEMPLATE,
+        mergeFields: { name: client.username, otp_code: otp, expiry_minutes: '10' },
+      });
+      return res.status(403).json({ error: 'Please verify your email first', unverified: true });
+    }
 
     const token = await createClientSession(email);
     setClientCookie(res, token);
