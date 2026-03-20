@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         },
       }).then(r => console.log('[login] email result:', JSON.stringify(r)))
         .catch(e => console.error('[login] email error:', e.message));
-      return res.status(403).json({ error: 'Please verify your email first', unverified: true });
+      return res.status(403).json({ error: 'Please verify your email first', unverified: true, otp, username: client.username });
     }
 
     const token = await createClientSession(email);

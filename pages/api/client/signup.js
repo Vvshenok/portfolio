@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     }).then(r => console.log('[signup] email result:', JSON.stringify(r)))
       .catch(e => console.error('[signup] email error:', e.message));
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, otp, username });
   } catch (e) {
     console.error('[signup] error:', e.message);
     return res.status(500).json({ error: e.message });

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/style.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 .auth-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:1.75rem;}
 .auth-tab{flex:1;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--dim);padding:0.65rem;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:color .12s,border-color .12s;letter-spacing:.04em;}
@@ -141,6 +142,39 @@ var _verifyEmail = '';
 var _resetEmail = '';
 var _verifyMode = 'signup';
 
+function sendOTPEmail(to_email, username, otp, purpose, subject) {
+  var serviceId = window._EMAILJS2_SERVICE_ID;
+  var templateId = window._EMAILJS2_OTP_TEMPLATE;
+  if (!serviceId || !templateId) { console.warn('[emailjs] account2 not configured'); return; }
+  emailjs.send(serviceId, templateId, {
+    to_email, name: username, subject, purpose,
+    otp_code: otp, expiry_minutes: '10'
+  }).then(function(){ console.log('[emailjs] OTP sent to', to_email); })
+    .catch(function(e){ console.error('[emailjs] send error:', e); });
+}
+
+function sendWelcomeEmail(to_email, username) {
+  var serviceId = window._EMAILJS2_SERVICE_ID;
+  var templateId = window._EMAILJS2_WELCOME_TEMPLATE;
+  if (!serviceId || !templateId) return;
+  emailjs.send(serviceId, templateId, { to_email, name: username })
+    .catch(function(e){ console.error('[emailjs] welcome error:', e); });
+}
+
+// Load EmailJS account 2 config
+(async function(){
+  try {
+    var r = await fetch('/api/config');
+    var c = await r.json();
+    if (c.emailjs2) {
+      window._EMAILJS2_SERVICE_ID = c.emailjs2.serviceId;
+      window._EMAILJS2_OTP_TEMPLATE = c.emailjs2.otpTemplate;
+      window._EMAILJS2_WELCOME_TEMPLATE = c.emailjs2.welcomeTemplate;
+      if (c.emailjs2.publicKey) emailjs.init(c.emailjs2.publicKey);
+    }
+  } catch(e) { console.error('[portal-auth] config load failed:', e); }
+})();
+
 // Check if already logged in
 (async function(){
   try {
@@ -224,7 +258,7 @@ async function doLogin() {
     if (d.ok) { window.location.href = '/portal'; return; }
     if (d.unverified) {
       _verifyEmail = email;
-      _verifyMode = 'signup';
+      sendOTPEmail(email, d.username, d.otp, 'verification', 'Verify your email — Vvshenok.dev');
       document.getElementById('v-sub').textContent = 'A fresh verification code was just sent to ' + email + '. Check your inbox (and junk folder).';
       switchView('verify');
       return;
@@ -243,7 +277,7 @@ async function doSignup() {
     var d = await r.json();
     if (d.ok) {
       _verifyEmail = email;
-      _verifyMode = 'signup';
+      sendOTPEmail(email, d.username, d.otp, 'verification', 'Verify your email — Vvshenok.dev');
       document.getElementById('v-sub').textContent = 'Enter the 6-digit code sent to ' + email;
       switchView('verify');
       return;
@@ -258,7 +292,11 @@ async function doVerify() {
   try {
     var r = await fetch('/api/client/verify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email: _verifyEmail, otp}) });
     var d = await r.json();
-    if (d.ok) { window.location.href = '/portal'; return; }
+    if (d.ok) {
+      sendWelcomeEmail(_verifyEmail, d.username);
+      window.location.href = '/portal';
+      return;
+    }
     setErr('v-err', d.error || 'Invalid code');
   } catch { setErr('v-err', 'Network error'); }
 }
@@ -268,7 +306,11 @@ async function doForgot() {
   if (!email) { setErr('f-err', 'Enter your email'); return; }
   try {
     var r = await fetch('/api/client/forgot', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email}) });
+    var d = await r.json();
     _resetEmail = email;
+    if (d.ok && d.otp) {
+      sendOTPEmail(email, d.username, d.otp, 'password reset', 'Reset your password — Vvshenok.dev');
+    }
     setErr('f-err', 'If that email exists, a reset code was sent.', true);
     setTimeout(function(){ switchView('reset'); }, 1500);
   } catch { setErr('f-err', 'Network error'); }

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }).then(r => console.log('[forgot] email result:', JSON.stringify(r)))
       .catch(e => console.error('[forgot] email error:', e.message));
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, otp, username: client.username });
   } catch (e) {
     console.error('[forgot] error:', e.message);
     return res.status(500).json({ error: 'Failed' });

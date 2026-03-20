@@ -18,5 +18,11 @@ export default function handler(req, res) {
       autoReplyTemplateId: cfg.emailjs.autoReplyTemplateId || "",
       publicKey: cfg.emailjs.publicKey || "",
     },
+    emailjs2: {
+      serviceId: process.env.EMAILJS2_SERVICE_ID || "",
+      publicKey: process.env.EMAILJS2_PUBLIC_KEY || "",
+      otpTemplate: process.env.EMAILJS2_OTP_TEMPLATE || "",
+      welcomeTemplate: process.env.EMAILJS2_WELCOME_TEMPLATE || "",
+    },
   });
 }
