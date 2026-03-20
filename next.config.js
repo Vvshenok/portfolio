@@ -10,6 +10,9 @@ const nextConfig = {
       { source: "/dashboard", destination: "/dashboard.html" },
     ];
   },
+  async redirects() {
+    return [];
+  },
 };
 
 module.exports = nextConfig;

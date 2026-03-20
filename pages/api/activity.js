@@ -2,11 +2,16 @@ const { kvGet, kvSet } = require("../../lib/kv");
 
 const KEY = "vs:activity";
 const API_KEY_ENV = "ACTIVITY_API_KEY";
+const STALE_MS = 60 * 1000; // 60 seconds
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
     const activity = await kvGet(KEY);
-    return res.status(200).json({ activity: activity || null });
+    if (!activity) return res.status(200).json({ activity: null });
+    // Return null if data is stale (VS Code closed or went idle)
+    const age = Date.now() - (activity.updatedAt || 0);
+    if (age > STALE_MS) return res.status(200).json({ activity: null });
+    return res.status(200).json({ activity });
   }
 
   if (req.method === "POST") {
@@ -16,11 +21,15 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     const { active, app, state, file, line, fileType, workspace } = req.body || {};
+    // Only persist when actively editing a file — ignore offline/idle signals
+    if (!active || state === "offline" || !file) {
+      return res.status(200).json({ ok: true });
+    }
     const payload = {
-      active: !!active,
+      active: true,
       app: app || null,
-      state: state || "idle",
-      file: file || null,
+      state: "editing",
+      file,
       line: line || null,
       fileType: fileType || null,
       workspace: workspace || null,

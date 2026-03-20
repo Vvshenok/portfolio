@@ -615,14 +615,19 @@ async function loadActivity() {
   try {
     var r=await fetch('/api/activity'); var d=await r.json(); var a=d.activity;
     var wrap=document.getElementById('hero-activity-wrap');
-    if (!a||!a.active||!a.file){if(wrap)wrap.style.display='none';return;}
+    if (!a || !a.file) {
+      // Only hide if we never showed it before, don't flash it away if already visible
+      if (wrap && wrap.style.display === 'none') return;
+      if (!a) { if(wrap) wrap.style.display='none'; return; }
+      return;
+    }
     if(a.app==='vscode'){document.getElementById('act-app-icon').innerHTML=VSCODE_ICON;document.getElementById('act-app-name').textContent='Visual Studio Code';}
     else if(a.app==='robloxstudio'){document.getElementById('act-app-icon').innerHTML=ROBLOX_ICON;document.getElementById('act-app-name').textContent='Roblox Studio';}
     document.getElementById('act-file-icon').textContent=getFileIcon(a.fileType||a.file.split('.').pop()||'');
     document.getElementById('act-file-name').textContent=a.file;
     var parts=[]; if(a.line)parts.push('Line '+a.line); if(a.workspace)parts.push(a.workspace);
     document.getElementById('act-meta').textContent=parts.join(' · ');
-    wrap.style.display='block';
+    if(wrap) wrap.style.display='block';
     var dw=document.getElementById('hero-discord-wrap');
     if(dw&&dw.style.display!=='none'){wrap.style.bottom='calc(4.5rem + '+(dw.offsetHeight||110)+8+'px)';}
   } catch{}
