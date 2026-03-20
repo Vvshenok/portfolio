@@ -24,6 +24,7 @@
     </ul>
     <div class="nav-right">
       <a href="/portal" class="btn btn-solid" id="portal-btn" style="display:none;font-size:0.7rem;padding:0.4rem 0.9rem;">My Orders</a>
+      <a href="/portal-auth" class="btn btn-ghost" id="signin-btn" style="display:none;font-size:0.7rem;padding:0.4rem 0.9rem;">Sign In</a>
       <span class="avail-badge" id="avail-badge" style="display:none;">
         Available for hire
       </span>
@@ -44,6 +45,8 @@
   <a href="#projects" onclick="closeMobileMenu()">Projects</a>
   <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
   <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <a href="/portal-auth" id="mobile-signin" onclick="closeMobileMenu()">Sign In</a>
+  <a href="/portal" id="mobile-portal" style="display:none;color:#ff8c00;" onclick="closeMobileMenu()">My Orders</a>
 </div>
 
 <section class="hero" id="top">
@@ -648,13 +651,21 @@ var barsEl=document.getElementById('bars'); if(barsEl) barObs.observe(barsEl);
 trackVisit(); loadConfig(); loadGames(); loadPortfolio(); loadActivity();
 setInterval(loadActivity, 2000);
 
-// Show My Orders button if client is logged in
+// Show My Orders or Sign In based on client session
 (async function(){
   try{
-    var r=await fetch('/api/client/me');
-    var d=await r.json();
-    if(d.authed){var btn=document.getElementById('portal-btn');if(btn)btn.style.display='inline-flex';}
-  }catch{}
+    var r = await fetch('/api/client/me');
+    var d = await r.json();
+    if(d.authed){
+      var btn=document.getElementById('portal-btn'); if(btn) btn.style.display='inline-flex';
+      var mb=document.getElementById('mobile-portal'); if(mb) mb.style.display='block';
+      var ms=document.getElementById('mobile-signin'); if(ms) ms.style.display='none';
+    } else {
+      var btn=document.getElementById('signin-btn'); if(btn) btn.style.display='inline-flex';
+    }
+  } catch {
+    var btn=document.getElementById('signin-btn'); if(btn) btn.style.display='inline-flex';
+  }
 })();
 
 (function(){
