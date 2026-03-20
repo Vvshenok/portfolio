@@ -15,6 +15,7 @@ export default function handler(req, res) {
     emailjs: {
       serviceId: cfg.emailjs.serviceId || "",
       templateId: cfg.emailjs.templateId || "",
+      autoReplyTemplateId: cfg.emailjs.autoReplyTemplateId || "",
       publicKey: cfg.emailjs.publicKey || "",
     },
   });
