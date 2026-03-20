@@ -17,10 +17,8 @@
     <span class="nav-logo">vvshenok<em>.dev</em></span>
     <ul class="nav-links">
       <li><a href="#games">Games</a></li>
-      <li><a href="#libraries">Libraries</a></li>
-      <li><a href="#groups">Groups</a></li>
+      <li><a href="#explore">Explore</a></li>
       <li><a href="#projects">Projects</a></li>
-      <li><a href="#skills">Skills</a></li>
       <li><a href="#pricing">Pricing</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -133,58 +131,45 @@
   </div>
 </section>
 
-<section class="libraries-wrap reveal" id="libraries">
+<section class="explore-wrap reveal" id="explore">
   <div class="wrap">
     <div class="sec-head">
       <span class="sec-n">02</span>
-      <span class="sec-t">Libraries and Frameworks I've used</span>
+      <span class="sec-t">Explore</span>
     </div>
-    <p class="sec-sub">Tools and frameworks I have experience working with. Not libraries I made, but ones I've built projects with.</p>
-    <div class="lib-grid" id="lib-grid"><div class="games-loading">Loading...</div></div>
+    <div class="etabs">
+      <button class="etab active" data-tab="libraries">Libraries</button>
+      <button class="etab" data-tab="groups">Groups</button>
+      <button class="etab" data-tab="skills">Skills</button>
+    </div>
   </div>
-</section>
-
-<section class="groups-wrap reveal" id="groups">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="sec-n">03</span>
-      <span class="sec-t">Groups I've worked for</span>
+  <div class="epanels">
+    <div class="epanel active" id="ep-libraries">
+      <div class="marquee-shell" id="lib-shell"><div class="games-loading">Loading...</div></div>
     </div>
-    <div class="groups-grid" id="groups-grid"><div class="games-loading">Fetching group data...</div></div>
+    <div class="epanel" id="ep-groups">
+      <div class="marquee-shell" id="groups-shell"><div class="games-loading">Loading...</div></div>
+    </div>
+    <div class="epanel" id="ep-skills">
+      <div class="marquee-shell" id="skills-shell"></div>
+    </div>
   </div>
 </section>
 
 <section class="projects-wrap reveal" id="projects">
   <div class="wrap">
     <div class="sec-head">
-      <span class="sec-n">04</span>
+      <span class="sec-n">03</span>
       <span class="sec-t">GitHub Projects</span>
     </div>
     <div class="projects-grid" id="projects-grid"><div class="games-loading">Loading...</div></div>
   </div>
 </section>
 
-<section class="skills-wrap reveal" id="skills">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="sec-n">05</span>
-      <span class="sec-t">Skills</span>
-    </div>
-    <div class="skills-grid">
-      <div class="skill"><div class="skill-i">01</div><div class="skill-h">Core Gameplay Systems</div><p class="skill-p">Combat, movement, round logic, win conditions. The mechanics that make a game feel right to play.</p><div class="skill-tags"><span class="tag">Lua</span><span class="tag">State Machines</span><span class="tag">Game Logic</span></div></div>
-      <div class="skill"><div class="skill-i">02</div><div class="skill-h">Client-Server Architecture</div><p class="skill-p">RemoteEvents, server-authoritative validation, clean replication. Secure and performant by design.</p><div class="skill-tags"><span class="tag">RemoteEvents</span><span class="tag">Server Auth</span><span class="tag">Replication</span></div></div>
-      <div class="skill"><div class="skill-i">03</div><div class="skill-h">DataStore and Persistence</div><p class="skill-p">Session locking, retry logic, safe migrations. Players never lose their data.</p><div class="skill-tags"><span class="tag">DataStore2</span><span class="tag">ProfileService</span><span class="tag">Data Safety</span></div></div>
-      <div class="skill"><div class="skill-i">04</div><div class="skill-h">UI Scripting</div><p class="skill-p">Tweening, reactive layouts, inventory systems, HUDs that feel instant and polished.</p><div class="skill-tags"><span class="tag">TweenService</span><span class="tag">ScreenGui</span><span class="tag">Animations</span></div></div>
-      <div class="skill"><div class="skill-i">05</div><div class="skill-h">Monetization</div><p class="skill-p">Gamepasses, Developer Products, shops with proper receipt handling and server-side checks.</p><div class="skill-tags"><span class="tag">Gamepasses</span><span class="tag">Dev Products</span><span class="tag">MarketplaceService</span></div></div>
-      <div class="skill"><div class="skill-i">06</div><div class="skill-h">Optimization and Anti-Exploit</div><p class="skill-p">Script profiling, memory management, server validation. Fast games that are hard to cheat.</p><div class="skill-tags"><span class="tag">Profiling</span><span class="tag">Server Validation</span><span class="tag">Memory</span></div></div>
-    </div>
-  </div>
-</section>
-
 <section class="pricing-wrap reveal" id="pricing">
   <div class="wrap">
     <div class="sec-head">
-      <span class="sec-n">06</span>
+      <span class="sec-n">04</span>
       <span class="sec-t">Rates</span>
     </div>
     <div class="pricing-grid" id="pricing-grid"><div class="games-loading">Loading...</div></div>
@@ -194,7 +179,7 @@
 <section class="testimonials-wrap reveal" id="testimonials">
   <div class="wrap">
     <div class="sec-head">
-      <span class="sec-n">07</span>
+      <span class="sec-n">05</span>
       <span class="sec-t">What people say</span>
     </div>
     <div class="testimonials-grid" id="testimonials-grid"><div class="games-loading">Loading...</div></div>
@@ -397,9 +382,17 @@ async function loadGames() {
     buildHeroBg(games);
     if (!games.length) { loading.textContent = 'No games listed yet.'; return; }
     loading.remove();
-    const mid = Math.ceil(games.length / 2);
-    const rowData = [games.slice(0, mid), games.slice(mid)];
-    const dirs = ['r1', 'r2'];
+
+    // Shuffle games randomly
+    var shuffled = games.slice().sort(function() { return Math.random() - 0.5; });
+    // Split in half — each game appears in exactly one row
+    var mid = Math.ceil(shuffled.length / 2);
+    // If only 1 game, duplicate it across both rows so both rows have content
+    var row1 = shuffled.slice(0, mid);
+    var row2 = shuffled.slice(mid);
+    if (!row2.length) row2 = row1.slice().reverse(); // fallback if odd number leaves row2 empty
+    var rowData = [row1, row2];
+    var dirs = ['r1', 'r2'];
     rowData.forEach(function(row, ri) {
       if (!row.length) return;
       const wrapper = document.createElement('div');
@@ -449,32 +442,59 @@ async function loadPortfolio() {
   } catch(e) { console.error('portfolio', e); }
 }
 
+function switchExplore(tab) {
+  document.querySelectorAll('.etab').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
+  document.querySelectorAll('.epanel').forEach(function(p) { p.classList.toggle('active', p.id === 'ep-' + tab); });
+}
+document.querySelectorAll('.etab').forEach(function(b) {
+  b.addEventListener('click', function() { switchExplore(b.dataset.tab); });
+});
+
+function buildMarquee(shell, items, makeCard, speed) {
+  speed = speed || 25;
+  if (!items.length) { shell.innerHTML = '<div class="games-loading" style="padding:1.5rem 1.75rem;">Nothing added yet.</div>'; return; }
+  shell.innerHTML = '';
+  var wrapper = document.createElement('div');
+  wrapper.className = 'marquee-row-wrap';
+  var track = document.createElement('div');
+  track.className = 'm-track r1';
+  track.style.animationDuration = speed + 's';
+  var cardW = 280, gap = 8, screenW = window.innerWidth || 1400;
+  var copies = Math.ceil((screenW * 2) / ((cardW + gap) * items.length)) + 1;
+  var all = [];
+  for (var i = 0; i < copies; i++) all.push.apply(all, items);
+  var half = all.length;
+  for (var j = 0; j < half * 2; j++) track.appendChild(makeCard(all[j % half]));
+  wrapper.appendChild(track);
+  wrapper.addEventListener('mouseenter', function() { track.style.animationPlayState = 'paused'; });
+  wrapper.addEventListener('mouseleave', function() { track.style.animationPlayState = 'running'; });
+  shell.appendChild(wrapper);
+}
+
 function renderLibraries(libs) {
-  const el = document.getElementById('lib-grid');
-  if (!libs.length) { el.innerHTML = '<div class="empty-state">No libraries added yet.</div>'; return; }
-  el.innerHTML = '';
-  libs.forEach(function(l) {
-    const card = document.createElement('div');
+  var shell = document.getElementById('lib-shell');
+  buildMarquee(shell, libs, function(l) {
+    var card = document.createElement('div');
     card.className = 'lib-card';
+    card.style.cssText = 'width:260px;flex-shrink:0;';
     card.innerHTML = '<div class="lib-cat">' + esc(l.category || 'Library') + '</div><div class="lib-name">' + esc(l.name) + '</div>' + (l.description ? '<div class="lib-desc">' + esc(l.description) + '</div>' : '') + (l.url ? '<a href="' + esc(l.url) + '" target="_blank" rel="noreferrer" class="lib-link">View docs <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>' : '');
-    el.appendChild(card);
-  });
+    return card;
+  }, 20);
 }
 
 function renderGroups(groups) {
-  const el = document.getElementById('groups-grid');
-  if (!groups.length) { el.innerHTML = '<div class="empty-state">No groups added yet.</div>'; return; }
-  let totalMembers = 0;
-  el.innerHTML = '';
-  groups.forEach(function(g) {
-    totalMembers += g.memberCount || 0;
-    const card = document.createElement('div');
+  var totalMembers = 0;
+  groups.forEach(function(g) { totalMembers += g.memberCount || 0; });
+  if (totalMembers) document.getElementById('s-members').textContent = fmtNum(totalMembers);
+  var shell = document.getElementById('groups-shell');
+  buildMarquee(shell, groups, function(g) {
+    var card = document.createElement('div');
     card.className = 'group-card';
-    const badge = g.isVerified ? '<img src="/verified.png" class="verified-img" title="Verified" alt="Verified"/>' : '';
+    card.style.cssText = 'width:260px;flex-shrink:0;';
+    var badge = g.isVerified ? '<img src="/verified.png" class="verified-img" title="Verified" alt="Verified"/>' : '';
     card.innerHTML = '<div class="group-icon-wrap">' + (g.icon ? '<img class="group-icon" src="' + esc(g.icon) + '" alt="' + esc(g.name) + '"/>' : '<div class="group-icon-ph">?</div>') + '</div><div class="group-info"><div class="group-name-row">' + esc(g.name) + badge + '</div><div class="group-meta"><span>' + fmtNum(g.memberCount) + ' members</span><span class="group-rank">' + esc(g.myRank || 'Member') + '</span></div></div><a href="' + esc(g.url) + '" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
-    el.appendChild(card);
-  });
-  document.getElementById('s-members').textContent = fmtNum(totalMembers);
+    return card;
+  }, 20);
 }
 
 function renderProjects(projects) {
@@ -594,6 +614,27 @@ loadGames();
 loadPortfolio();
 loadActivity();
 setInterval(loadActivity, 5000);
+
+// Build skills marquee from static skill cards
+(function() {
+  var skills = [
+    { i:'01', h:'Core Gameplay Systems', p:'Combat, movement, round logic, win conditions.', tags:['Lua','State Machines','Game Logic'] },
+    { i:'02', h:'Client-Server Architecture', p:'RemoteEvents, server-authoritative validation, clean replication.', tags:['RemoteEvents','Server Auth','Replication'] },
+    { i:'03', h:'DataStore and Persistence', p:'Session locking, retry logic, safe migrations.', tags:['DataStore2','ProfileService','Data Safety'] },
+    { i:'04', h:'UI Scripting', p:'Tweening, reactive layouts, inventory systems, HUDs.', tags:['TweenService','ScreenGui','Animations'] },
+    { i:'05', h:'Monetization', p:'Gamepasses, Developer Products, shops with proper receipt handling.', tags:['Gamepasses','Dev Products','MarketplaceService'] },
+    { i:'06', h:'Optimization and Anti-Exploit', p:'Script profiling, memory management, server validation.', tags:['Profiling','Server Validation','Memory'] },
+  ];
+  var shell = document.getElementById('skills-shell');
+  if (!shell) return;
+  buildMarquee(shell, skills, function(s) {
+    var card = document.createElement('div');
+    card.className = 'skill';
+    card.style.cssText = 'width:280px;flex-shrink:0;';
+    card.innerHTML = '<div class="skill-i">' + s.i + '</div><div class="skill-h">' + s.h + '</div><p class="skill-p">' + s.p + '</p><div class="skill-tags">' + s.tags.map(function(t){ return '<span class="tag">'+t+'</span>'; }).join('') + '</div>';
+    return card;
+  }, 30);
+})();
 </script>
 </body>
 </html>
