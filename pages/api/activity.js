@@ -2,7 +2,7 @@ const { kvGet, kvSet } = require("../../lib/kv");
 
 const KEY = "vs:activity";
 const API_KEY_ENV = "ACTIVITY_API_KEY";
-const STALE_MS = 60 * 1000; // 60 seconds
+const STALE_MS = 90 * 1000; // 90 seconds
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
