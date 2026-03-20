@@ -2,7 +2,6 @@ const { sendEmail } = require('../../lib/email');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
-
   const { from_name, from_email, message } = req.body || {};
   if (!from_name || !from_email || !message) return res.status(400).json({ error: 'Missing fields' });
 
@@ -10,33 +9,17 @@ export default async function handler(req, res) {
   if (!toEmail) return res.status(500).json({ error: 'Email not configured' });
 
   const timestamp = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
-  const mergeFields = { from_name, from_email, message, timestamp };
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const contactHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#0c0c0c;font-family:Inter,-apple-system,sans-serif;color:#d8d8d8;}.w{max-width:560px;margin:0 auto;padding:40px 20px;}.c{background:#141414;border:1px solid #242424;border-radius:8px;overflow:hidden;}.h{padding:32px 36px 28px;border-bottom:1px solid #242424;}.logo{font-family:monospace;font-size:13px;color:#777;margin-bottom:20px;}.logo em{color:#c8ff00;font-style:normal;}.badge{display:inline-block;background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.2);color:#c8ff00;font-family:monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:4px;margin-bottom:16px;}.title{font-size:20px;font-weight:700;color:#f0f0f0;}.b{padding:28px 36px;}.lbl{font-family:monospace;font-size:10px;color:#404040;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}.val{font-size:14px;color:#d8d8d8;margin-bottom:22px;line-height:1.6;}.msgbox{background:#0c0c0c;border:1px solid #242424;border-radius:6px;padding:16px 18px;margin-bottom:28px;}.msgbox .val{margin-bottom:0;white-space:pre-wrap;}.div{height:1px;background:#242424;margin:0 36px;}.f{padding:20px 36px;font-family:monospace;font-size:11px;color:#404040;line-height:1.7;}.f a{color:#777;text-decoration:none;}</style></head><body><div class="w"><div class="c"><div class="h"><div class="logo">vvshenok<em>.dev</em></div><div class="badge">New Message</div><div class="title">You've got a new contact request</div></div><div class="b"><div class="lbl">From</div><div class="val">${esc(from_name)}</div><div class="lbl">Email</div><div class="val">${esc(from_email)}</div><div class="lbl">Message</div><div class="msgbox"><div class="val">${esc(message)}</div></div><div class="lbl">Received</div><div class="val">${timestamp}</div></div><div class="div"></div><div class="f">Reply directly to this email to respond to ${esc(from_name)}.<br/>Sent via <a href="https://vvshenok.is-a.dev">vvshenok.is-a.dev</a></div></div></div></body></html>`;
+
+  const autoReplyHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#0c0c0c;font-family:Inter,-apple-system,sans-serif;color:#d8d8d8;}.w{max-width:560px;margin:0 auto;padding:40px 20px;}.c{background:#141414;border:1px solid #242424;border-radius:8px;overflow:hidden;}.h{background:#0c0c0c;padding:32px 36px;border-bottom:1px solid #242424;text-align:center;}.logo{font-family:monospace;font-size:16px;color:#777;margin-bottom:24px;}.logo em{color:#c8ff00;font-style:normal;}.icon{font-size:36px;margin-bottom:16px;}.title{font-size:22px;font-weight:700;color:#f0f0f0;margin-bottom:8px;}.sub{font-size:14px;color:#777;}.b{padding:32px 36px;}.txt{font-size:14px;color:#777;line-height:1.7;margin-bottom:24px;}.box{background:#0c0c0c;border-left:3px solid #c8ff00;padding:14px 18px;border-radius:0 6px 6px 0;margin-bottom:24px;font-size:13px;color:#777;font-family:monospace;line-height:1.6;white-space:pre-wrap;}.pill{display:inline-block;background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.15);color:#c8ff00;font-family:monospace;font-size:11px;padding:6px 14px;border-radius:20px;margin-bottom:24px;}.cta{text-align:center;}.btn{display:inline-block;background:#f0f0f0;color:#000;font-size:13px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:6px;}.div{height:1px;background:#242424;margin:0 36px;}.f{padding:20px 36px;text-align:center;font-family:monospace;font-size:11px;color:#404040;line-height:1.7;}.f a{color:#777;text-decoration:none;}</style></head><body><div class="w"><div class="c"><div class="h"><div class="logo">vvshenok<em>.dev</em></div><div class="icon">✓</div><div class="title">Got your message, ${esc(from_name)}</div><div class="sub">I'll get back to you shortly.</div></div><div class="b"><p class="txt">Hey ${esc(from_name)}, thanks for reaching out. I've received your message and will get back to you as soon as possible. Here's a copy of what you sent:</p><div class="box">${esc(message)}</div><div class="pill">Usually replies within 24 hours</div><p class="txt">In the meantime feel free to check out my games and previous work.</p><div class="cta"><a href="https://vvshenok.is-a.dev" class="btn">View Portfolio</a></div></div><div class="div"></div><div class="f">You're receiving this because you contacted <a href="https://vvshenok.is-a.dev">vvshenok.is-a.dev</a><br/>If you didn't send a message you can ignore this email.</div></div></div></body></html>`;
 
   try {
-    // Contact Us — goes to you
-    await sendEmail({
-      to: toEmail,
-      subject: `New message from ${from_name}`,
-      replyTo: from_email,
-      template: process.env.ELASTIC_CONTACT_TEMPLATE,
-      mergeFields,
-    });
+    await sendEmail({ to: toEmail, subject: `New message from ${from_name}`, html: contactHtml, replyTo: from_email });
+    await sendEmail({ to: from_email, subject: `Got your message, ${from_name}`, html: autoReplyHtml, replyTo: toEmail });
 
-    // Auto-reply — goes to sender
-    await sendEmail({
-      to: from_email,
-      subject: `Got your message, ${from_name}`,
-      replyTo: toEmail,
-      template: process.env.ELASTIC_AUTOREPLY_TEMPLATE,
-      mergeFields,
-    });
-
-    // SMS (fire and forget)
-    fetch('/api/notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from_name, from_email, message }),
-    }).catch(() => {});
+    fetch('/api/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ from_name, from_email, message }) }).catch(() => {});
 
     return res.status(200).json({ ok: true });
   } catch (e) {
