@@ -615,12 +615,7 @@ async function loadActivity() {
   try {
     var r=await fetch('/api/activity'); var d=await r.json(); var a=d.activity;
     var wrap=document.getElementById('hero-activity-wrap');
-    if (!a || !a.file) {
-      // Only hide if we never showed it before, don't flash it away if already visible
-      if (wrap && wrap.style.display === 'none') return;
-      if (!a) { if(wrap) wrap.style.display='none'; return; }
-      return;
-    }
+    if (!a || !a.file) return; // just do nothing if no data, never hide
     if(a.app==='vscode'){document.getElementById('act-app-icon').innerHTML=VSCODE_ICON;document.getElementById('act-app-name').textContent='Visual Studio Code';}
     else if(a.app==='robloxstudio'){document.getElementById('act-app-icon').innerHTML=ROBLOX_ICON;document.getElementById('act-app-name').textContent='Roblox Studio';}
     document.getElementById('act-file-icon').textContent=getFileIcon(a.fileType||a.file.split('.').pop()||'');

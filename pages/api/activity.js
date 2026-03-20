@@ -7,10 +7,7 @@ const STALE_MS = 90 * 1000; // 90 seconds
 export default async function handler(req, res) {
   if (req.method === "GET") {
     const activity = await kvGet(KEY);
-    if (!activity) return res.status(200).json({ activity: null });
-    // Return null if data is stale (VS Code closed or went idle)
-    const age = Date.now() - (activity.updatedAt || 0);
-    if (age > STALE_MS) return res.status(200).json({ activity: null });
+    if (!activity || !activity.file) return res.status(200).json({ activity: null });
     return res.status(200).json({ activity });
   }
 
