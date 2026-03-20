@@ -290,7 +290,7 @@ section { border-bottom: 1px solid var(--line); }
 .contact-response { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); margin-top: 1rem; }
 .field { margin-bottom: 0.9rem; }
 .field-label { display: block; font-family: var(--mono); font-size: 0.62rem; color: var(--dim); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
-.field-input { width: 100%; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.65rem 0.85rem; color: var(--text); font-family: var(--sans); font-size: 0.85rem; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
+.field-input { width: 100%; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.65rem 0.85rem; color: var(--text); font-family: var(--sans); font-size: 0.85rem; outline: none; transition: border-color 0.15s; appearance: none; -webkit-appearance: none; }
 .field-input:focus { border-color: var(--line2); }
 .field-input::placeholder { color: var(--dim); }
 textarea.field-input { resize: vertical; min-height: 110px; }
