@@ -59,7 +59,9 @@
       <p class="hero-bio" id="hero-bio"></p>
       <div class="hero-btns">
         <a href="#games" class="btn btn-solid">View games</a>
+        <a href="/portal" class="btn btn-solid" id="hero-portal-btn" style="display:none;">My Orders</a>
         <a href="#contact" class="btn btn-ghost">Contact</a>
+        <button class="btn btn-ghost" id="hero-logout-btn" style="display:none;" onclick="doLogout()">Log out</button>
       </div>
     </div>
   </div>
@@ -657,9 +659,13 @@ setInterval(loadActivity, 2000);
     var r = await fetch('/api/client/me');
     var d = await r.json();
     if(d.authed){
+      // Nav
       var btn=document.getElementById('portal-btn'); if(btn) btn.style.display='inline-flex';
       var mb=document.getElementById('mobile-portal'); if(mb) mb.style.display='block';
       var ms=document.getElementById('mobile-signin'); if(ms) ms.style.display='none';
+      // Hero
+      var hp=document.getElementById('hero-portal-btn'); if(hp) hp.style.display='inline-flex';
+      var hl=document.getElementById('hero-logout-btn'); if(hl) hl.style.display='inline-flex';
     } else {
       var btn=document.getElementById('signin-btn'); if(btn) btn.style.display='inline-flex';
     }
@@ -667,6 +673,11 @@ setInterval(loadActivity, 2000);
     var btn=document.getElementById('signin-btn'); if(btn) btn.style.display='inline-flex';
   }
 })();
+
+async function doLogout() {
+  await fetch('/api/client/logout', { method:'POST' });
+  window.location.reload();
+}
 
 (function(){
   var skills=[
