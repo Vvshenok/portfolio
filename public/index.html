@@ -74,7 +74,7 @@
       <div class="hero-discord-activity" id="dc-activity"></div>
     </div>
   </div>
-  <div class="hero-activity blur-in delay-2" id="hero-activity-wrap" style="display:none;">
+  <div class="hero-activity" id="hero-activity-wrap" style="display:none;">
     <div class="hero-activity-card">
       <div class="hero-activity-header">
         <span class="hero-activity-app-icon" id="act-app-icon"></span>
@@ -612,7 +612,9 @@ async function submitContact() {
     if (_ejs.autoReplyTemplateId) {
       await emailjs.send(_ejs.serviceId, _ejs.autoReplyTemplateId, params);
     }
-    status.className='form-status ok'; status.textContent='Message sent.';
+    // SMS notification (fire and forget — don't block on this)
+    fetch('/api/notify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ from_name: name, from_email: email, message: msg }) }).catch(function(){});
+    status.className='form-status ok'; status.textContent='Message sent. Check your junk/spam folder for the confirmation email.';
     document.getElementById('fn').value=''; document.getElementById('fe').value=''; document.getElementById('fm').value='';
   } catch(e){status.className='form-status err';status.textContent='Send failed. Check EmailJS config.';}
   finally{btn.disabled=false;btn.textContent='Send message';}
@@ -622,20 +624,26 @@ async function trackVisit() {
   try { var r=await fetch('/api/visits',{method:'POST'}); var d=await r.json(); document.getElementById('s-pageviews').textContent=fmtNum(d.visits); } catch{}
 }
 
+var _activityPositioned = false;
 async function loadActivity() {
   try {
     var r=await fetch('/api/activity'); var d=await r.json(); var a=d.activity;
+    if (!a || !a.file) return;
     var wrap=document.getElementById('hero-activity-wrap');
-    if (!a || !a.file) return; // just do nothing if no data, never hide
     if(a.app==='vscode'){document.getElementById('act-app-icon').innerHTML=VSCODE_ICON;document.getElementById('act-app-name').textContent='Visual Studio Code';}
     else if(a.app==='robloxstudio'){document.getElementById('act-app-icon').innerHTML=ROBLOX_ICON;document.getElementById('act-app-name').textContent='Roblox Studio';}
     document.getElementById('act-file-icon').textContent=getFileIcon(a.fileType||a.file.split('.').pop()||'');
     document.getElementById('act-file-name').textContent=a.file;
     var parts=[]; if(a.line)parts.push('Line '+a.line); if(a.workspace)parts.push(a.workspace);
     document.getElementById('act-meta').textContent=parts.join(' · ');
-    if(wrap) wrap.style.display='block';
-    var dw=document.getElementById('hero-discord-wrap');
-    if(dw&&dw.style.display!=='none'){wrap.style.bottom='calc(4.5rem + '+(dw.offsetHeight||110)+8+'px)';}
+    if(wrap && wrap.style.display==='none') {
+      // Only position and show once — never touch again after that
+      var dw=document.getElementById('hero-discord-wrap');
+      if(dw && dw.style.display!=='none') {
+        wrap.style.bottom='calc(4.5rem + '+(dw.offsetHeight||100)+12+'px)';
+      }
+      wrap.style.display='block';
+    }
   } catch{}
 }
 
