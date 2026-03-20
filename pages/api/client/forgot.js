@@ -1,4 +1,5 @@
 const { getClientByEmail, saveOTP } = require('../../../lib/clients');
+const { sendEmail } = require('../../../lib/email');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -7,33 +8,26 @@ export default async function handler(req, res) {
 
   try {
     const client = await getClientByEmail(email);
-    // Always return ok to prevent email enumeration
-    if (!client) return res.status(200).json({ ok: true });
+    if (!client) return res.status(200).json({ ok: true }); // prevent enumeration
 
     const otp = await saveOTP(email, 'reset');
-    const apiKey = process.env.ELASTIC_EMAIL_API_KEY;
-    const fromEmail = process.env.CONTACT_FROM_EMAIL;
-    const resetTemplate = process.env.ELASTIC_RESET_TEMPLATE;
+    console.log('[forgot] reset OTP for', email, ':', otp);
 
-    if (apiKey && fromEmail) {
-      const params = {
-        apikey: apiKey, to: email, from: fromEmail,
-        fromName: 'Vvshenok.dev', subject: 'Reset your password — Vvshenok.dev',
-        isTransactional: 'true',
-        ...(resetTemplate ? { template: resetTemplate } : {}),
-        merge_name: client.username,
-        merge_otp_code: otp,
-        merge_expiry_minutes: '10',
-        merge_reset_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://vvshenok.is-a.dev'}/portal?reset=1&email=${encodeURIComponent(email)}`,
-      };
-      await fetch('https://api.elasticemail.com/v2/email/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(params),
-      });
-    }
+    await sendEmail({
+      to: email,
+      subject: 'Reset your password — Vvshenok.dev',
+      template: process.env.ELASTIC_RESET_TEMPLATE,
+      mergeFields: {
+        name: client.username,
+        otp_code: otp,
+        expiry_minutes: '10',
+        reset_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://vvshenok.is-a.dev'}/portal-auth?reset=1&email=${encodeURIComponent(email)}`,
+      },
+    });
+
     return res.status(200).json({ ok: true });
   } catch (e) {
+    console.error('[forgot] error:', e.message);
     return res.status(500).json({ error: 'Failed' });
   }
 }

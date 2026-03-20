@@ -1,24 +1,5 @@
 const { createClient, saveOTP } = require('../../../lib/clients');
-
-async function sendEmail(apiKey, fromEmail, { to, subject, template, mergeFields, replyTo }) {
-  const params = {
-    apikey: apiKey,
-    to,
-    from: fromEmail,
-    fromName: 'Vvshenok.dev',
-    subject,
-    isTransactional: 'true',
-    ...(replyTo ? { replyTo } : {}),
-    ...(template ? { template } : {}),
-  };
-  Object.entries(mergeFields || {}).forEach(([k, v]) => { params['merge_' + k] = v; });
-  const r = await fetch('https://api.elasticemail.com/v2/email/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams(params),
-  });
-  return r.json();
-}
+const { sendEmail } = require('../../../lib/email');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -34,24 +15,23 @@ export default async function handler(req, res) {
     if (result.error) return res.status(400).json({ error: result.error });
 
     const otp = await saveOTP(email, 'verify');
+    console.log('[signup] OTP for', email, ':', otp); // visible in Vercel logs
 
-    const apiKey = process.env.ELASTIC_EMAIL_API_KEY;
-    const fromEmail = process.env.CONTACT_FROM_EMAIL;
-    const otpTemplate = process.env.ELASTIC_OTP_TEMPLATE;
-    const welcomeTemplate = process.env.ELASTIC_WELCOME_TEMPLATE;
+    const emailResult = await sendEmail({
+      to: email,
+      subject: 'Verify your email — Vvshenok.dev',
+      template: process.env.ELASTIC_OTP_TEMPLATE,
+      mergeFields: { name: username, otp_code: otp, expiry_minutes: '10' },
+    });
 
-    if (apiKey && fromEmail) {
-      await sendEmail(apiKey, fromEmail, {
-        to: email,
-        subject: 'Verify your email — Vvshenok.dev',
-        template: otpTemplate,
-        mergeFields: { name: username, otp_code: otp, expiry_minutes: '10' },
-      });
+    if (!emailResult.ok) {
+      console.error('[signup] Email failed:', emailResult.error);
+      // Still return ok — account created, OTP saved. User can request resend.
     }
 
-    return res.status(200).json({ ok: true, message: 'Account created. Check your email for a verification code.' });
+    return res.status(200).json({ ok: true });
   } catch (e) {
-    console.error('signup error', e);
+    console.error('[signup] error:', e.message);
     return res.status(500).json({ error: 'Signup failed' });
   }
 }

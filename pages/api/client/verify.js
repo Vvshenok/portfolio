@@ -1,22 +1,5 @@
 const { verifyOTP, verifyClient, getClientByEmail, createClientSession, setClientCookie } = require('../../../lib/clients');
-
-async function sendWelcome(email, username) {
-  const apiKey = process.env.ELASTIC_EMAIL_API_KEY;
-  const fromEmail = process.env.CONTACT_FROM_EMAIL;
-  const welcomeTemplate = process.env.ELASTIC_WELCOME_TEMPLATE;
-  if (!apiKey || !fromEmail || !welcomeTemplate) return;
-  const params = {
-    apikey: apiKey, to: email, from: fromEmail,
-    fromName: 'Vvshenok.dev', subject: 'Welcome to Vvshenok.dev',
-    isTransactional: 'true', template: welcomeTemplate,
-    merge_name: username,
-  };
-  await fetch('https://api.elasticemail.com/v2/email/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams(params),
-  });
-}
+const { sendEmail } = require('../../../lib/email');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -29,12 +12,20 @@ export default async function handler(req, res) {
 
     await verifyClient(email);
     const client = await getClientByEmail(email);
-    await sendWelcome(email, client.username).catch(() => {});
+
+    // Send welcome email (non-blocking)
+    sendEmail({
+      to: email,
+      subject: 'Welcome to Vvshenok.dev',
+      template: process.env.ELASTIC_WELCOME_TEMPLATE,
+      mergeFields: { name: client.username },
+    }).catch(e => console.error('[verify] welcome email failed:', e.message));
 
     const token = await createClientSession(email);
     setClientCookie(res, token);
     return res.status(200).json({ ok: true, username: client.username });
   } catch (e) {
+    console.error('[verify] error:', e.message);
     return res.status(500).json({ error: 'Verification failed' });
   }
 }
