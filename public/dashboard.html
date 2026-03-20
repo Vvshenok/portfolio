@@ -54,6 +54,7 @@
     <div class="dash-tab" onclick="switchTab('projects')">Projects</div>
     <div class="dash-tab" onclick="switchTab('testimonials')">Testimonials</div>
     <div class="dash-tab" onclick="switchTab('statuspricing')">Status & Pricing</div>
+    <div class="dash-tab" onclick="switchTab('orders')">Client Orders</div>
   </div>
 
   <!-- GAMES TAB -->
@@ -201,6 +202,29 @@
     <div id="pricing-list"></div>
   </div>
 
+  <div class="tab-panel" id="tab-orders">
+    <div class="dash-sec">Create Order</div>
+    <div class="add-box">
+      <div class="add-grid">
+        <div class="field"><label class="field-label">Title</label><input class="field-input" type="text" id="o-title" placeholder="e.g. Combat System"/></div>
+        <div class="field"><label class="field-label">Client Username</label><input class="field-input" type="text" id="o-client" placeholder="their portal username"/></div>
+        <div class="field full"><label class="field-label">Description</label><textarea class="field-input" id="o-desc" placeholder="Describe the project scope..." style="min-height:70px;"></textarea></div>
+        <div class="field"><label class="field-label">Status</label>
+          <select class="field-input" id="o-status" style="-webkit-appearance:none;">
+            <option value="in_progress">In Progress</option>
+            <option value="review">In Review</option>
+            <option value="completed">Completed</option>
+            <option value="on_hold">On Hold</option>
+          </select>
+        </div>
+        <div class="field"><label class="field-label">Progress %</label><input class="field-input" type="number" id="o-progress" placeholder="0" min="0" max="100"/></div>
+      </div>
+      <div class="add-foot"><button class="btn btn-solid" onclick="createOrder()" style="font-size:0.75rem;">Create order</button></div>
+    </div>
+    <div class="dash-sec">All Orders</div>
+    <div id="orders-admin-list"></div>
+  </div>
+
 </div>
 
 <script>
@@ -210,10 +234,11 @@
 })();
 
 function switchTab(name){
-  const names=['games','libraries','groups','projects','testimonials','statuspricing'];
+  const names=['games','libraries','groups','projects','testimonials','statuspricing','orders'];
   document.querySelectorAll('.dash-tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
+  if(name==='orders') loadOrders();
 }
 
 function msg(text,type){
@@ -488,6 +513,106 @@ async function removePricing(i){
     msg('Removed.','ok');loadStatusPricing();
   }catch{msg('Network error.','err');}
 }
+
+// ── ORDERS ─────────────────────────────────────────
+const statusLabels={in_progress:'In Progress',completed:'Completed',review:'In Review',on_hold:'On Hold'};
+const statusColors={in_progress:'#f0b232',completed:'#23a55a',review:'#007ACC',on_hold:'#555'};
+
+async function loadOrders(){
+  try{
+    const r=await fetch('/api/admin/orders');
+    const d=await r.json();
+    renderOrders(d.orders||[]);
+  }catch{msg('Failed to load orders.','err');}
+}
+
+function renderOrders(orders){
+  const el=document.getElementById('orders-admin-list');
+  if(!orders.length){el.innerHTML='<div style="font-family:var(--mono);font-size:.68rem;color:var(--dim);padding:1rem 0;">No orders yet.</div>';return;}
+  el.innerHTML='';
+  orders.slice().reverse().forEach(function(o){
+    const card=document.createElement('div');
+    card.style.cssText='background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden;';
+    const statusColor=statusColors[o.status]||'#555';
+    const statusLabel=statusLabels[o.status]||o.status;
+    const progress=Number(o.progress)||0;
+    card.innerHTML=
+      '<div style="padding:1.1rem 1.25rem;border-bottom:1px solid var(--line);">'+
+        '<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.65rem;">'+
+          '<div style="flex:1;font-size:.88rem;font-weight:600;color:var(--white);">'+esc(o.title)+'</div>'+
+          '<span style="font-family:var(--mono);font-size:.6rem;color:'+statusColor+';border:1px solid '+statusColor+'44;padding:2px 8px;border-radius:20px;">'+statusLabel+'</span>'+
+          '<button class="sm-btn del" onclick="deleteOrder(\''+o.id+'\')">Delete</button>'+
+        '</div>'+
+        '<div style="font-family:var(--mono);font-size:.62rem;color:var(--dim);margin-bottom:0.5rem;">Client: <span style="color:#ff8c00;">'+esc(o.clientUsername||'unassigned')+'</span></div>'+
+        '<div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.65rem;">'+
+          '<div style="flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;"><div style="height:100%;background:var(--accent);border-radius:2px;width:'+progress+'%"></div></div>'+
+          '<span style="font-family:var(--mono);font-size:.6rem;color:var(--dim);">'+progress+'%</span>'+
+        '</div>'+
+        '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">'+
+          '<select style="font-family:var(--mono);font-size:.62rem;background:var(--bg3);border:1px solid var(--line);color:var(--muted);padding:3px 6px;border-radius:3px;cursor:pointer;" onchange="updateStatus(\''+o.id+'\',this.value)">'+
+            Object.entries(statusLabels).map(([v,l])=>'<option value="'+v+'"'+(o.status===v?' selected':'')+'>'+l+'</option>').join('')+
+          '</select>'+
+          '<input type="number" min="0" max="100" value="'+progress+'" style="width:60px;font-family:var(--mono);font-size:.62rem;background:var(--bg3);border:1px solid var(--line);color:var(--muted);padding:3px 6px;border-radius:3px;" id="prog-'+o.id+'"/>'+
+          '<button class="sm-btn" onclick="updateProgress(\''+o.id+'\')">Set %</button>'+
+          '<input type="text" placeholder="Add changelog note..." style="flex:1;min-width:140px;font-family:var(--mono);font-size:.62rem;background:var(--bg3);border:1px solid var(--line);color:var(--muted);padding:3px 8px;border-radius:3px;" id="cl-'+o.id+'"/>'+
+          '<button class="sm-btn" onclick="addChangelog(\''+o.id+'\')">Add note</button>'+
+        '</div>'+
+      '</div>'+
+      (o.changelog&&o.changelog.length?
+        '<div style="padding:.75rem 1.25rem;">'+
+          o.changelog.slice(0,3).map(function(cl){
+            return '<div style="display:flex;gap:.6rem;margin-bottom:.4rem;font-size:.75rem;color:var(--muted);">'+
+              '<span style="color:var(--accent);flex-shrink:0;">›</span>'+
+              '<span>'+esc(cl.text)+'</span>'+
+              '<span style="font-family:var(--mono);font-size:.58rem;color:var(--dim);flex-shrink:0;">'+new Date(cl.ts).toLocaleDateString()+'</span>'+
+            '</div>';
+          }).join('')+
+          (o.changelog.length>3?'<div style="font-family:var(--mono);font-size:.58rem;color:var(--dim);">+'+( o.changelog.length-3)+' more entries</div>':'')+
+        '</div>'
+      :'');
+    el.appendChild(card);
+  });
+}
+
+async function createOrder(){
+  const title=document.getElementById('o-title').value.trim();
+  const client=document.getElementById('o-client').value.trim();
+  const desc=document.getElementById('o-desc').value.trim();
+  const status=document.getElementById('o-status').value;
+  const progress=document.getElementById('o-progress').value||0;
+  if(!title){msg('Title is required.','err');return;}
+  try{
+    const r=await fetch('/api/admin/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,clientUsername:client,description:desc,status,progress})});
+    const d=await r.json();
+    if(d.order){msg('Order created.','ok');document.getElementById('o-title').value='';document.getElementById('o-client').value='';document.getElementById('o-desc').value='';document.getElementById('o-progress').value='';loadOrders();}
+    else msg(d.error||'Failed.','err');
+  }catch{msg('Network error.','err');}
+}
+
+async function updateStatus(id,status){
+  try{await fetch('/api/admin/orders',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status})});msg('Status updated.','ok');loadOrders();}
+  catch{msg('Network error.','err');}
+}
+
+async function updateProgress(id){
+  const val=parseInt(document.getElementById('prog-'+id).value)||0;
+  try{await fetch('/api/admin/orders',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,progress:val})});msg('Progress updated.','ok');loadOrders();}
+  catch{msg('Network error.','err');}
+}
+
+async function addChangelog(id){
+  const text=document.getElementById('cl-'+id).value.trim();
+  if(!text){msg('Enter a changelog note.','err');return;}
+  try{await fetch('/api/admin/orders',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,changelog:text})});msg('Note added.','ok');loadOrders();}
+  catch{msg('Network error.','err');}
+}
+
+async function deleteOrder(id){
+  if(!confirm('Delete this order?'))return;
+  try{await fetch('/api/admin/orders',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});msg('Deleted.','ok');loadOrders();}
+  catch{msg('Network error.','err');}
+}
+
 </script>
 </body>
 </html>

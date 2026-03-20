@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Client Portal — Vvshenok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/style.css"/>
+<style>
+.auth-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:1.75rem;}
+.auth-tab{flex:1;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--dim);padding:0.65rem;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:color .12s,border-color .12s;letter-spacing:.04em;}
+.auth-tab.active{color:#ff8c00;border-bottom-color:#ff8c00;}
+.auth-panel{display:none;}
+.auth-panel.active{display:block;}
+.otp-inputs{display:flex;gap:0.5rem;justify-content:center;margin:1rem 0;}
+.otp-digit{width:44px;height:52px;text-align:center;font-family:var(--mono);font-size:1.4rem;font-weight:700;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--radius);color:var(--white);outline:none;transition:border-color .15s;}
+.otp-digit:focus{border-color:#ff8c00;}
+.strength-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:0.4rem;overflow:hidden;}
+.strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;}
+.divider-text{display:flex;align-items:center;gap:.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--dim);margin:1.25rem 0;}
+.divider-text::before,.divider-text::after{content:'';flex:1;height:1px;background:var(--line);}
+.back-link{font-family:var(--mono);font-size:0.68rem;color:var(--dim);text-align:center;margin-top:1.25rem;display:block;cursor:pointer;transition:color .12s;}
+.back-link:hover{color:var(--muted);}
+.input-wrap{position:relative;}
+.input-wrap .toggle-pw{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--dim);padding:0;}
+</style>
+</head>
+<body class="admin-page">
+<div class="admin-box" style="width:380px;">
+  <div class="admin-brand">vvshenok<em>.dev</em> / portal</div>
+
+  <!-- LOGIN -->
+  <div id="view-login">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login')">Sign in</button>
+      <button class="auth-tab" onclick="switchAuth('signup')">Create account</button>
+    </div>
+    <div class="field">
+      <label class="field-label">Email</label>
+      <input class="field-input" type="email" id="l-email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+    <div class="field">
+      <label class="field-label">Password</label>
+      <div class="input-wrap">
+        <input class="field-input" type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" style="padding-right:2.5rem;"/>
+        <button class="toggle-pw" onclick="togglePw('l-pass',this)" tabindex="-1">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+    <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doLogin()">Sign in</button>
+    <div class="admin-err" id="l-err"></div>
+    <div class="divider-text">or</div>
+    <span class="back-link" onclick="switchView('forgot')">Forgot password?</span>
+  </div>
+
+  <!-- SIGNUP -->
+  <div id="view-signup" style="display:none;">
+    <div class="auth-tabs">
+      <button class="auth-tab" onclick="switchAuth('login')">Sign in</button>
+      <button class="auth-tab active" onclick="switchAuth('signup')">Create account</button>
+    </div>
+    <div class="field">
+      <label class="field-label">Username</label>
+      <input class="field-input" type="text" id="s-user" placeholder="yourcoolname" autocomplete="username"/>
+    </div>
+    <div class="field">
+      <label class="field-label">Email</label>
+      <input class="field-input" type="email" id="s-email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+    <div class="field">
+      <label class="field-label">Password</label>
+      <div class="input-wrap">
+        <input class="field-input" type="password" id="s-pass" placeholder="Min 8 characters" autocomplete="new-password" oninput="checkStrength(this)" style="padding-right:2.5rem;"/>
+        <button class="toggle-pw" onclick="togglePw('s-pass',this)" tabindex="-1">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0"></div></div>
+    </div>
+    <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doSignup()">Create account</button>
+    <div class="admin-err" id="s-err"></div>
+  </div>
+
+  <!-- VERIFY OTP -->
+  <div id="view-verify" style="display:none;">
+    <div class="admin-h">Check your email</div>
+    <div class="admin-sub" id="v-sub">Enter the 6-digit code we sent to your email.</div>
+    <div class="otp-inputs" id="otp-inputs">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+    </div>
+    <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doVerify()">Verify</button>
+    <div class="admin-err" id="v-err"></div>
+    <span class="back-link" onclick="switchView('login')">Back to sign in</span>
+  </div>
+
+  <!-- FORGOT -->
+  <div id="view-forgot" style="display:none;">
+    <div class="admin-h">Reset password</div>
+    <div class="admin-sub">Enter your email and we'll send a reset code.</div>
+    <div class="field">
+      <label class="field-label">Email</label>
+      <input class="field-input" type="email" id="f-email" placeholder="your@email.com"/>
+    </div>
+    <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doForgot()">Send reset code</button>
+    <div class="admin-err" id="f-err"></div>
+    <span class="back-link" onclick="switchView('login')">Back to sign in</span>
+  </div>
+
+  <!-- RESET PASSWORD -->
+  <div id="view-reset" style="display:none;">
+    <div class="admin-h">New password</div>
+    <div class="admin-sub">Enter the code from your email and choose a new password.</div>
+    <div class="otp-inputs" id="otp-reset">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+    </div>
+    <div class="field" style="margin-top:.5rem;">
+      <label class="field-label">New Password</label>
+      <input class="field-input" type="password" id="r-pass" placeholder="Min 8 characters"/>
+    </div>
+    <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doReset()">Set new password</button>
+    <div class="admin-err" id="r-err"></div>
+    <span class="back-link" onclick="switchView('login')">Back to sign in</span>
+  </div>
+</div>
+
+<script>
+var _verifyEmail = '';
+var _resetEmail = '';
+var _verifyMode = 'signup';
+
+// Check if already logged in
+(async function(){
+  try {
+    var r = await fetch('/api/client/me');
+    var d = await r.json();
+    if (d.authed) window.location.href = '/portal';
+  } catch {}
+
+  // Check URL params for reset flow
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('reset')) {
+    _resetEmail = params.get('email') || '';
+    switchView('reset');
+  }
+})();
+
+function switchAuth(tab) {
+  switchView(tab === 'login' ? 'login' : 'signup');
+}
+
+function switchView(view) {
+  ['login','signup','verify','forgot','reset'].forEach(function(v) {
+    document.getElementById('view-'+v).style.display = v === view ? 'block' : 'none';
+  });
+}
+
+function togglePw(id, btn) {
+  var input = document.getElementById(id);
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function checkStrength(input) {
+  var v = input.value;
+  var score = 0;
+  if (v.length >= 8) score++;
+  if (v.length >= 12) score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  var colors = ['#f55','#ff8c00','#f0b232','#23a55a','#23a55a'];
+  var fill = document.getElementById('strength-fill');
+  fill.style.width = (score * 20) + '%';
+  fill.style.background = colors[score - 1] || '#f55';
+}
+
+// OTP input auto-advance
+document.querySelectorAll('.otp-digit').forEach(function(el, i, all) {
+  el.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g,'');
+    if (this.value && i < all.length - 1) all[i+1].focus();
+  });
+  el.addEventListener('keydown', function(e) {
+    if (e.key === 'Backspace' && !this.value && i > 0) all[i-1].focus();
+  });
+  el.addEventListener('paste', function(e) {
+    e.preventDefault();
+    var text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'');
+    all.forEach(function(inp, j) { inp.value = text[j] || ''; });
+    var last = Math.min(text.length, all.length) - 1;
+    if (all[last]) all[last].focus();
+  });
+});
+
+function getOTP(containerId) {
+  return Array.from(document.querySelectorAll('#'+containerId+' .otp-digit')).map(function(el){ return el.value; }).join('');
+}
+
+function setErr(id, msg, ok) {
+  var el = document.getElementById(id);
+  el.style.color = ok ? 'var(--accent)' : '#f55';
+  el.textContent = msg;
+}
+
+async function doLogin() {
+  var email = document.getElementById('l-email').value.trim();
+  var pass = document.getElementById('l-pass').value;
+  if (!email || !pass) { setErr('l-err', 'Fill in all fields'); return; }
+  try {
+    var r = await fetch('/api/client/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password: pass}) });
+    var d = await r.json();
+    if (d.ok) { window.location.href = '/portal'; return; }
+    if (d.unverified) {
+      _verifyEmail = email;
+      _verifyMode = 'signup';
+      document.getElementById('v-sub').textContent = 'Your email is not verified yet. Enter the code we sent to ' + email;
+      switchView('verify');
+      return;
+    }
+    setErr('l-err', d.error || 'Login failed');
+  } catch { setErr('l-err', 'Network error'); }
+}
+
+async function doSignup() {
+  var username = document.getElementById('s-user').value.trim();
+  var email = document.getElementById('s-email').value.trim();
+  var pass = document.getElementById('s-pass').value;
+  if (!username || !email || !pass) { setErr('s-err', 'Fill in all fields'); return; }
+  try {
+    var r = await fetch('/api/client/signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, email, password: pass}) });
+    var d = await r.json();
+    if (d.ok) {
+      _verifyEmail = email;
+      _verifyMode = 'signup';
+      document.getElementById('v-sub').textContent = 'Enter the 6-digit code sent to ' + email;
+      switchView('verify');
+      return;
+    }
+    setErr('s-err', d.error || 'Signup failed');
+  } catch { setErr('s-err', 'Network error'); }
+}
+
+async function doVerify() {
+  var otp = getOTP('otp-inputs');
+  if (otp.length !== 6) { setErr('v-err', 'Enter the full 6-digit code'); return; }
+  try {
+    var r = await fetch('/api/client/verify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email: _verifyEmail, otp}) });
+    var d = await r.json();
+    if (d.ok) { window.location.href = '/portal'; return; }
+    setErr('v-err', d.error || 'Invalid code');
+  } catch { setErr('v-err', 'Network error'); }
+}
+
+async function doForgot() {
+  var email = document.getElementById('f-email').value.trim();
+  if (!email) { setErr('f-err', 'Enter your email'); return; }
+  try {
+    var r = await fetch('/api/client/forgot', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email}) });
+    _resetEmail = email;
+    setErr('f-err', 'If that email exists, a reset code was sent.', true);
+    setTimeout(function(){ switchView('reset'); }, 1500);
+  } catch { setErr('f-err', 'Network error'); }
+}
+
+async function doReset() {
+  var otp = getOTP('otp-reset');
+  var pass = document.getElementById('r-pass').value;
+  if (otp.length !== 6) { setErr('r-err', 'Enter the full 6-digit code'); return; }
+  if (pass.length < 8) { setErr('r-err', 'Password must be at least 8 characters'); return; }
+  try {
+    var r = await fetch('/api/client/reset', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email: _resetEmail, otp, password: pass}) });
+    var d = await r.json();
+    if (d.ok) { window.location.href = '/portal'; return; }
+    setErr('r-err', d.error || 'Reset failed');
+  } catch { setErr('r-err', 'Network error'); }
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var active = document.querySelector('[id^="view-"]:not([style*="none"])');
+  if (!active) return;
+  var id = active.id.replace('view-','');
+  if (id === 'login') doLogin();
+  else if (id === 'signup') doSignup();
+  else if (id === 'verify') doVerify();
+  else if (id === 'forgot') doForgot();
+  else if (id === 'reset') doReset();
+});
+</script>
+</body>
+</html>

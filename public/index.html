@@ -23,6 +23,7 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-right">
+      <a href="/portal" class="btn btn-solid" id="portal-btn" style="display:none;font-size:0.7rem;padding:0.4rem 0.9rem;">My Orders</a>
       <span class="avail-badge" id="avail-badge" style="display:none;">
         Available for hire
       </span>
@@ -272,10 +273,8 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
-let _ejs = {};
 let _discordTag = '';
 
 // ── THEME ──────────────────────────────────────────
@@ -360,7 +359,6 @@ async function loadConfig() {
     if (soc.twitter) { document.getElementById('link-twitter').href = soc.twitter; document.getElementById('tw-val').textContent = '@' + soc.twitter.split('/').pop(); }
     if (soc.discord) { _discordTag = soc.discord; document.getElementById('disc-val').textContent = soc.discord; }
     if (c.responseTime) document.getElementById('contact-response').textContent = c.responseTime;
-    if (c.emailjs) { _ejs = c.emailjs; if (_ejs.publicKey) emailjs.init(_ejs.publicKey); }
     if (c.discordId) connectLanyard(c.discordId);
   } catch(e) { console.error('config', e); }
 }
@@ -597,26 +595,21 @@ async function submitContact() {
   var btn=document.getElementById('send-btn'), status=document.getElementById('form-status');
   status.className='form-status'; status.textContent='';
   if(!name||!email||!msg){status.className='form-status err';status.textContent='Please fill in all fields.';return;}
-  if(!_ejs.serviceId||!_ejs.templateId){status.className='form-status err';status.textContent='Contact form not configured yet.';return;}
   btn.disabled=true; btn.textContent='Sending...';
-  var params = {
-    from_name: name,
-    from_email: email,
-    message: msg,
-    timestamp: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
-  };
   try {
-    // Send contact notification to you
-    await emailjs.send(_ejs.serviceId, _ejs.templateId, params);
-    // Send auto-reply to the person if template is configured
-    if (_ejs.autoReplyTemplateId) {
-      await emailjs.send(_ejs.serviceId, _ejs.autoReplyTemplateId, params);
+    var r = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from_name: name, from_email: email, message: msg }),
+    });
+    var d = await r.json();
+    if (d.ok) {
+      status.className='form-status ok'; status.textContent='Message sent. Check your junk/spam folder for the confirmation email.';
+      document.getElementById('fn').value=''; document.getElementById('fe').value=''; document.getElementById('fm').value='';
+    } else {
+      status.className='form-status err'; status.textContent='Send failed. Please try again.';
     }
-    // SMS notification (fire and forget — don't block on this)
-    fetch('/api/notify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ from_name: name, from_email: email, message: msg }) }).catch(function(){});
-    status.className='form-status ok'; status.textContent='Message sent. Check your junk/spam folder for the confirmation email.';
-    document.getElementById('fn').value=''; document.getElementById('fe').value=''; document.getElementById('fm').value='';
-  } catch(e){status.className='form-status err';status.textContent='Send failed. Check EmailJS config.';}
+  } catch(e){status.className='form-status err';status.textContent='Network error. Please try again.';}
   finally{btn.disabled=false;btn.textContent='Send message';}
 }
 
@@ -654,6 +647,15 @@ var barsEl=document.getElementById('bars'); if(barsEl) barObs.observe(barsEl);
 
 trackVisit(); loadConfig(); loadGames(); loadPortfolio(); loadActivity();
 setInterval(loadActivity, 2000);
+
+// Show My Orders button if client is logged in
+(async function(){
+  try{
+    var r=await fetch('/api/client/me');
+    var d=await r.json();
+    if(d.authed){var btn=document.getElementById('portal-btn');if(btn)btn.style.display='inline-flex';}
+  }catch{}
+})();
 
 (function(){
   var skills=[

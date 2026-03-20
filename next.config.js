@@ -8,10 +8,9 @@ const nextConfig = {
       { source: "/", destination: "/index.html" },
       { source: "/login", destination: "/login.html" },
       { source: "/dashboard", destination: "/dashboard.html" },
+      { source: "/portal", destination: "/portal.html" },
+      { source: "/portal-auth", destination: "/portal-auth.html" },
     ];
-  },
-  async redirects() {
-    return [];
   },
 };
 
