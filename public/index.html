@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -15,7 +15,7 @@
 <nav class="nav">
   <div class="nav-inner">
     <span class="nav-logo">vvshenok<em>.dev</em></span>
-    <ul class="nav-links">
+    <ul class="nav-links" id="nav-links">
       <li><a href="#games">Games</a></li>
       <li><a href="#explore">Explore</a></li>
       <li><a href="#projects">Projects</a></li>
@@ -23,10 +23,28 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <span class="avail-text" id="avail-text"></span>
+      <span class="avail-badge" id="avail-badge" style="display:none;">
+        <span class="avail-badge-dot"></span>
+        Available for hire
+      </span>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+        <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#games" onclick="closeMobileMenu()">Games</a>
+  <a href="#explore" onclick="closeMobileMenu()">Explore</a>
+  <a href="#projects" onclick="closeMobileMenu()">Projects</a>
+  <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
 
 <section class="hero" id="top">
   <div class="hero-bg" id="hero-bg"></div>
@@ -42,8 +60,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Discord presence card -->
   <div class="hero-discord blur-in delay-2" id="hero-discord-wrap" style="display:none;">
     <div class="hero-discord-card">
       <div class="hero-discord-top">
@@ -59,14 +75,11 @@
       <div class="hero-discord-activity" id="dc-activity"></div>
     </div>
   </div>
-
-  <!-- Activity card (VS Code / Roblox Studio) -->
   <div class="hero-activity blur-in delay-2" id="hero-activity-wrap" style="display:none;">
     <div class="hero-activity-card">
       <div class="hero-activity-header">
         <span class="hero-activity-app-icon" id="act-app-icon"></span>
         <span class="hero-activity-app-name" id="act-app-name"></span>
-        <span class="hero-activity-dot"></span>
       </div>
       <div class="hero-activity-file" id="act-file-row">
         <span class="hero-activity-file-icon" id="act-file-icon"></span>
@@ -119,15 +132,21 @@
   </div>
 </section>
 
-<section class="games-wrap reveal" id="games">
+<!-- FEATURED GAME -->
+<section class="featured-wrap reveal" id="games">
   <div class="wrap">
     <div class="sec-head">
       <span class="sec-n">01</span>
-      <span class="sec-t">Games I've worked on</span>
+      <span class="sec-t">Featured Game</span>
+    </div>
+    <div id="featured-game"><div class="games-loading">Fetching live data from Roblox...</div></div>
+    <div class="sec-head" style="padding-top:2.5rem;padding-bottom:1.5rem;">
+      <span class="sec-n"></span>
+      <span class="sec-t">More Games</span>
     </div>
   </div>
   <div class="marquee-shell" id="marquee-shell">
-    <div class="games-loading" id="games-loading">Fetching live data from Roblox...</div>
+    <div class="games-loading" id="games-loading"></div>
   </div>
 </section>
 
@@ -189,7 +208,7 @@
 <section class="about-wrap reveal" id="about">
   <div class="wrap">
     <div class="sec-head">
-      <span class="sec-n">08</span>
+      <span class="sec-n">06</span>
       <span class="sec-t">About</span>
     </div>
     <div class="about-grid">
@@ -213,8 +232,9 @@
           <div><div class="slink-lbl">Twitter / X</div><div class="slink-val" id="tw-val">@</div></div>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
         </a>
-        <div class="slink" style="cursor:default">
+        <div class="slink slink-copy" id="discord-copy" onclick="copyDiscord()">
           <div><div class="slink-lbl">Discord</div><div class="slink-val" id="disc-val"></div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         </div>
       </div>
     </div>
@@ -224,7 +244,7 @@
 <section class="contact-wrap reveal" id="contact">
   <div class="wrap">
     <div class="sec-head">
-      <span class="sec-n">09</span>
+      <span class="sec-n">07</span>
       <span class="sec-t">Contact</span>
     </div>
     <div class="contact-grid">
@@ -247,7 +267,7 @@
   <div class="foot-copy">© <span id="yr"></span> Vvshenok</div>
   <div class="foot-links">
     <a href="#games">Games</a>
-    <a href="#skills">Skills</a>
+    <a href="#explore">Explore</a>
     <a href="#contact">Contact</a>
     <a href="/login" class="foot-admin-link">Login</a>
   </div>
@@ -257,7 +277,53 @@
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
 let _ejs = {};
+let _discordTag = '';
 
+// ── THEME ──────────────────────────────────────────
+var savedTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+document.getElementById('theme-toggle').addEventListener('click', function() {
+  var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+});
+
+// ── PAGE TITLE ANIMATION ───────────────────────────
+var titles = ['hire me! — vvshenok', 'need a scripter? — vvshenok', 'Vvshenok — Roblox Dev', 'Vvshenok — Lua Scripter'];
+var ti = 0;
+setInterval(function() {
+  if (document.hidden) { ti = (ti + 1) % titles.length; document.title = titles[ti]; }
+}, 3000);
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) document.title = 'Vvshenok — Roblox Developer';
+});
+
+// ── MOBILE MENU ────────────────────────────────────
+document.getElementById('nav-hamburger').addEventListener('click', function() {
+  var m = document.getElementById('mobile-menu');
+  var open = m.classList.toggle('open');
+  this.classList.toggle('open', open);
+});
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('nav-hamburger').classList.remove('open');
+}
+
+// ── COPY DISCORD ───────────────────────────────────
+function copyDiscord() {
+  var tag = _discordTag;
+  if (!tag) return;
+  navigator.clipboard.writeText(tag).then(function() {
+    var el = document.getElementById('discord-copy');
+    el.classList.add('copied');
+    var val = document.querySelector('#discord-copy .slink-val');
+    var orig = val.textContent;
+    val.textContent = 'Copied!';
+    setTimeout(function() { el.classList.remove('copied'); val.textContent = orig; }, 1500);
+  });
+}
+
+// ── UTILS ──────────────────────────────────────────
 function fmtNum(n) {
   if (!n) return '0';
   if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
@@ -271,57 +337,43 @@ function esc(s) {
 
 const EYE_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
 const USERS_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
-
-const VSCODE_ICON = '<svg width="14" height="14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><path fill-rule="evenodd" clip-rule="evenodd" d="M70.9 4.4L28.7 43.7 9.5 28.6 0 33.8v32.4l9.5 5.2 19.2-15.1 42.2 39.3L100 88V12L70.9 4.4zM9.5 53.5v-7l14 7-14 7v-7z" fill="white"/></mask><g mask="url(#m)"><path d="M0 33.8l70.9-29.4L100 12v76l-29.1 7.6L0 66.2V33.8z" fill="#007ACC"/><path d="M100 12L70.9 4.4 28.7 43.7l41.1-2.6L100 12zM100 88l-29.1 7.6-41.1-39.3 41.1-2.6L100 88z" fill="#007ACC" opacity=".5"/><path d="M9.5 66.2L0 61V39l9.5-5.2v32.4zM28.7 43.7L9.5 28.6 0 33.8l9.5 5.2 19.2-10.3zM28.7 56.3L9.5 71.4 0 66.2l9.5-5.2 19.2 10.3-41.1 39.3" fill="black" opacity=".25"/></g></svg>';
-
+const VSCODE_ICON = '<svg width="14" height="14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><path fill-rule="evenodd" clip-rule="evenodd" d="M70.9 4.4L28.7 43.7 9.5 28.6 0 33.8v32.4l9.5 5.2 19.2-15.1 42.2 39.3L100 88V12L70.9 4.4zM9.5 53.5v-7l14 7-14 7v-7z" fill="white"/></mask><g mask="url(#m)"><path d="M0 33.8l70.9-29.4L100 12v76l-29.1 7.6L0 66.2V33.8z" fill="#007ACC"/></g></svg>';
 const ROBLOX_ICON = '<svg width="14" height="14" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="16" fill="#e8e8e8"/><path d="M28 14l44 12-12 44-44-12z" fill="#cc0000"/><path d="M40 42l12 4-4 12-12-4z" fill="#fff"/></svg>';
 
 function getFileIcon(ext) {
-  const map = {
-    lua:'🌙', luau:'🌙',
-    js:'󰌞', ts:'󰛦', jsx:'⚛', tsx:'⚛',
-    json:'{}', html:'󰌝', css:'󰌜',
-    py:'🐍', md:'󰍔', sh:'󰆍', txt:'󰈙',
-    rbxl:'🎮', rbxlx:'🎮', rbxm:'🧩', rbxmx:'🧩',
-  };
+  var map = { lua:'🌙',luau:'🌙',js:'JS',ts:'TS',json:'{}',html:'HTML',css:'CSS',py:'PY',md:'MD' };
   return map[(ext||'').toLowerCase()] || '📄';
 }
 
-async function trackVisit() {
-  try {
-    const r = await fetch('/api/visits', { method: 'POST' });
-    const d = await r.json();
-    document.getElementById('s-pageviews').textContent = fmtNum(d.visits);
-  } catch {}
-}
-
+// ── CONFIG ─────────────────────────────────────────
 async function loadConfig() {
   try {
-    const r = await fetch('/api/config');
-    const c = await r.json();
-    document.getElementById('avail-text').textContent = c.available ? 'Available' : 'Unavailable';
+    var r = await fetch('/api/config');
+    var c = await r.json();
+    if (c.available) {
+      document.getElementById('avail-badge').style.display = 'flex';
+    }
     if (c.bio) { document.getElementById('hero-bio').textContent = c.bio; document.getElementById('about-p1').textContent = c.bio; }
     if (c.bioExtra) document.getElementById('about-p2').textContent = c.bioExtra;
     if (c.stats && c.stats.years) document.getElementById('s-years').textContent = c.stats.years + ' yrs';
-    const soc = c.socials || {};
+    var soc = c.socials || {};
     if (soc.roblox) document.getElementById('link-roblox').href = soc.roblox;
     if (soc.twitter) { document.getElementById('link-twitter').href = soc.twitter; document.getElementById('tw-val').textContent = '@' + soc.twitter.split('/').pop(); }
-    if (soc.discord) document.getElementById('disc-val').textContent = soc.discord;
+    if (soc.discord) { _discordTag = soc.discord; document.getElementById('disc-val').textContent = soc.discord; }
     if (c.responseTime) document.getElementById('contact-response').textContent = c.responseTime;
     if (c.emailjs) { _ejs = c.emailjs; if (_ejs.publicKey) emailjs.init(_ejs.publicKey); }
     if (c.discordId) connectLanyard(c.discordId);
   } catch(e) { console.error('config', e); }
 }
 
+// ── LANYARD ────────────────────────────────────────
 function connectLanyard(userId) {
-  const ws = new WebSocket('wss://api.lanyard.rest/socket');
-  let heartbeat = null;
+  var ws = new WebSocket('wss://api.lanyard.rest/socket');
+  var heartbeat = null;
   ws.onmessage = function(e) {
-    const msg = JSON.parse(e.data);
+    var msg = JSON.parse(e.data);
     if (msg.op === 1) {
-      heartbeat = setInterval(function() {
-        if (ws.readyState === 1) ws.send(JSON.stringify({ op: 3 }));
-      }, msg.d.heartbeat_interval);
+      heartbeat = setInterval(function() { if (ws.readyState === 1) ws.send(JSON.stringify({ op: 3 })); }, msg.d.heartbeat_interval);
       ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: userId } }));
     }
     if (msg.op === 0) updateDiscord(msg.d);
@@ -332,306 +384,274 @@ function connectLanyard(userId) {
 
 function updateDiscord(data) {
   if (!data || !data.discord_user) return;
-  const user = data.discord_user;
-  const wrap = document.getElementById('hero-discord-wrap');
-  const avatarUrl = user.avatar
-    ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png?size=128'
-    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+  var user = data.discord_user;
+  var avatarUrl = user.avatar ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png?size=128' : 'https://cdn.discordapp.com/embed/avatars/0.png';
   document.getElementById('dc-avatar').src = avatarUrl;
   document.getElementById('dc-name').textContent = user.global_name || user.username;
   document.getElementById('dc-tag').textContent = '@' + user.username;
-  const statusColors = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
+  var statusColors = { online:'#23a55a', idle:'#f0b232', dnd:'#f23f43', offline:'#80848e' };
   document.getElementById('dc-status-dot').style.background = statusColors[data.discord_status] || '#80848e';
-  const other = (data.activities || []).find(function(a) { return a.type === 0 && a.name !== 'Visual Studio Code' && a.name !== 'Roblox Studio'; });
-  const statusText = { online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline' };
+  var other = (data.activities||[]).find(function(a){ return a.type===0 && a.name!=='Visual Studio Code' && a.name!=='Roblox Studio'; });
+  var statusText = { online:'Online', idle:'Idle', dnd:'Do Not Disturb', offline:'Offline' };
   document.getElementById('dc-activity').textContent = other ? 'Playing ' + other.name : (statusText[data.discord_status] || 'Offline');
-  wrap.style.display = 'block';
+  document.getElementById('hero-discord-wrap').style.display = 'block';
 }
 
+// ── HERO BG ────────────────────────────────────────
 function buildHeroBg(games) {
-  const bg = document.getElementById('hero-bg');
+  var bg = document.getElementById('hero-bg');
   if (!bg || !games.length) return;
-  const thumbs = games.filter(function(g) { return g.thumbnail; }).map(function(g) { return g.thumbnail; });
+  var thumbs = games.filter(function(g){ return g.thumbnail; }).map(function(g){ return g.thumbnail; });
   if (!thumbs.length) return;
-  const tileSize = 130, gap = 18, step = tileSize + gap;
-  const cols = Math.ceil(window.innerWidth / step) + 1;
-  const rows = Math.ceil((window.innerHeight * 0.6) / step) + 1;
-  let html = '', idx = 0;
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const x = c * step - 40, y = r * step - 30;
-      html += '<div class="hero-tile" style="left:' + x + 'px;top:' + y + 'px;width:' + tileSize + 'px;height:' + tileSize + 'px;"><img src="' + esc(thumbs[idx % thumbs.length]) + '" loading="lazy"/></div>';
-      idx++;
-    }
+  var tileSize=130, gap=18, step=tileSize+gap;
+  var cols=Math.ceil(window.innerWidth/step)+1, rows=Math.ceil((window.innerHeight*0.6)/step)+1;
+  var html='', idx=0;
+  for (var r=0;r<rows;r++) for (var c=0;c<cols;c++) {
+    html+='<div class="hero-tile" style="left:'+(c*step-40)+'px;top:'+(r*step-30)+'px;width:'+tileSize+'px;height:'+tileSize+'px;"><img src="'+esc(thumbs[idx%thumbs.length])+'" loading="lazy"/></div>';
+    idx++;
   }
   bg.innerHTML = html;
 }
 
+// ── GAMES ──────────────────────────────────────────
 async function loadGames() {
-  const shell = document.getElementById('marquee-shell');
-  const loading = document.getElementById('games-loading');
+  var shell = document.getElementById('marquee-shell');
+  var loading = document.getElementById('games-loading');
   try {
-    const r = await fetch('/api/games');
-    const data = await r.json();
-    const games = data.games || [];
-    let totalVisits = 0, totalPlaying = 0;
-    games.forEach(function(g) { totalVisits += g.visits || 0; totalPlaying += g.playing || 0; });
+    var r = await fetch('/api/games');
+    var data = await r.json();
+    var games = data.games || [];
+    var totalVisits=0, totalPlaying=0;
+    games.forEach(function(g){ totalVisits+=g.visits||0; totalPlaying+=g.playing||0; });
     document.getElementById('s-visits').textContent = fmtNum(totalVisits);
     document.getElementById('s-playing').textContent = fmtNum(totalPlaying);
     document.getElementById('s-games').textContent = games.length;
     buildHeroBg(games);
-    if (!games.length) { loading.textContent = 'No games listed yet.'; return; }
-    loading.remove();
+    if (!games.length) { if(loading) loading.textContent='No games listed yet.'; return; }
+    if (loading) loading.remove();
 
-    var half = Math.ceil(games.length / 2);
-    var rowData = [games.slice(0, half), games.slice(half).length ? games.slice(half) : games.slice(0, half)];
-    var dirs = ['r1', 'r2'];
-    var dirs = ['r1', 'r2'];
+    // Featured game = highest playing count
+    var featured = games.slice().sort(function(a,b){ return (b.playing||0)-(a.playing||0); })[0];
+    renderFeaturedGame(featured);
+
+    // More games marquee — split first half row1, second half row2
+    var rest = games.filter(function(g){ return g.universeId !== featured.universeId; });
+    if (!rest.length) rest = games;
+    var half = Math.ceil(rest.length/2);
+    var rowData = [rest.slice(0,half), rest.slice(half).length ? rest.slice(half) : rest.slice(0,half)];
+    var dirs = ['r1','r2'];
     rowData.forEach(function(row, ri) {
       if (!row.length) return;
-      const wrapper = document.createElement('div');
+      var wrapper = document.createElement('div');
       wrapper.className = 'marquee-row-wrap';
-      const track = document.createElement('div');
+      var track = document.createElement('div');
       track.className = 'm-track ' + dirs[ri];
-      function makeCard(g) {
-        const div = document.createElement('div');
-        div.className = 'gcard';
-        div.innerHTML =
-          '<div class="gcard-img-wrap">' + (g.thumbnail ? '<img class="gcard-img" src="' + g.thumbnail + '" alt="' + esc(g.name) + '" loading="lazy"/>' : '<div class="gcard-ph">no image</div>') + '</div>' +
-          '<div class="gcard-body">' +
-            '<div class="gcard-name">' + esc(g.name) + '</div>' +
-            '<div class="gcard-meta"><span class="gcard-stat">' + EYE_ICON + fmtNum(g.visits) + '</span><span class="gcard-stat">' + USERS_ICON + fmtNum(g.playing) + '</span></div>' +
-            '<div class="gcard-role">' + esc(g.role) + '</div>' +
-            '<a href="' + g.robloxUrl + '" target="_blank" rel="noreferrer" class="gcard-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>Play on Roblox</a>' +
-          '</div>';
-        return div;
-      }
-      const cardW = 284, gap2 = 8, screenW = window.innerWidth || 1400;
-      const copies = Math.ceil((screenW * 2) / ((cardW + gap2) * row.length)) + 1;
-      const all = [];
-      for (let i = 0; i < copies; i++) all.push.apply(all, row);
-      const half = all.length;
-      for (let i = 0; i < half * 2; i++) track.appendChild(makeCard(all[i % half]));
+      var cardW=284, gap2=8, screenW=window.innerWidth||1400;
+      var copies=Math.ceil((screenW*2)/((cardW+gap2)*row.length))+1;
+      var all=[];
+      for (var i=0;i<copies;i++) all.push.apply(all,row);
+      var halfLen=all.length;
+      for (var j=0;j<halfLen*2;j++) track.appendChild(makeGameCard(all[j%halfLen]));
       wrapper.appendChild(track);
-      wrapper.addEventListener('mouseenter', function() { track.style.animationPlayState = 'paused'; });
-      wrapper.addEventListener('mouseleave', function() { track.style.animationPlayState = 'running'; });
+      wrapper.addEventListener('mouseenter', function(){ track.style.animationPlayState='paused'; });
+      wrapper.addEventListener('mouseleave', function(){ track.style.animationPlayState='running'; });
       shell.appendChild(wrapper);
     });
-  } catch(e) { if (loading) loading.textContent = 'Could not load games.'; console.error(e); }
+  } catch(e) { if(loading) loading.textContent='Could not load games.'; console.error(e); }
 }
 
-async function loadPortfolio() {
-  try {
-    const r = await fetch('/api/portfolio');
-    const data = await r.json();
-    renderLibraries(data.libraries || []);
-    renderGroups(data.groups || []);
-    renderProjects(data.projects || []);
-    renderTestimonials(data.testimonials || []);
-    renderPricing(data.pricing || []);
-    if (data.status && data.status.active && data.status.text) {
-      document.getElementById('status-text').textContent = data.status.text;
-      document.getElementById('status-banner').style.display = 'block';
-    }
-  } catch(e) { console.error('portfolio', e); }
+function renderFeaturedGame(g) {
+  var el = document.getElementById('featured-game');
+  if (!g) { el.innerHTML=''; return; }
+  el.innerHTML =
+    '<div class="featured-card">' +
+      '<div class="featured-img-wrap">' +
+        (g.thumbnail ? '<img class="featured-img" src="'+g.thumbnail+'" alt="'+esc(g.name)+'"/>' : '') +
+        '<div class="featured-live"><span class="featured-live-dot"></span>'+fmtNum(g.playing)+' playing</div>' +
+      '</div>' +
+      '<div class="featured-body">' +
+        '<div class="featured-role">'+esc(g.role)+'</div>' +
+        '<div class="featured-name">'+esc(g.name)+'</div>' +
+        '<div class="featured-stats">' +
+          '<span>'+EYE_ICON+' '+fmtNum(g.visits)+' visits</span>' +
+          '<span>'+USERS_ICON+' '+fmtNum(g.playing)+' playing now</span>' +
+        '</div>' +
+        '<a href="'+g.robloxUrl+'" target="_blank" rel="noreferrer" class="btn btn-solid featured-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>Play on Roblox</a>' +
+      '</div>' +
+    '</div>';
 }
 
+function makeGameCard(g) {
+  var div = document.createElement('div');
+  div.className = 'gcard';
+  div.innerHTML =
+    '<div class="gcard-img-wrap">'+(g.thumbnail?'<img class="gcard-img" src="'+g.thumbnail+'" alt="'+esc(g.name)+'" loading="lazy"/>':'<div class="gcard-ph">no image</div>')+'</div>'+
+    '<div class="gcard-body">'+
+      '<div class="gcard-name">'+esc(g.name)+'</div>'+
+      '<div class="gcard-meta"><span class="gcard-stat">'+EYE_ICON+fmtNum(g.visits)+'</span><span class="gcard-stat">'+USERS_ICON+fmtNum(g.playing)+'</span></div>'+
+      '<div class="gcard-role">'+esc(g.role)+'</div>'+
+      '<a href="'+g.robloxUrl+'" target="_blank" rel="noreferrer" class="gcard-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>Play on Roblox</a>'+
+    '</div>';
+  return div;
+}
+
+// ── EXPLORE TABS ───────────────────────────────────
 function switchExplore(tab) {
-  document.querySelectorAll('.etab').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
-  document.querySelectorAll('.epanel').forEach(function(p) { p.classList.toggle('active', p.id === 'ep-' + tab); });
+  document.querySelectorAll('.etab').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===tab); });
+  document.querySelectorAll('.epanel').forEach(function(p){ p.classList.toggle('active', p.id==='ep-'+tab); });
 }
-document.querySelectorAll('.etab').forEach(function(b) {
-  b.addEventListener('click', function() { switchExplore(b.dataset.tab); });
+document.querySelectorAll('.etab').forEach(function(b){
+  b.addEventListener('click', function(){ switchExplore(b.dataset.tab); });
 });
 
 function buildMarquee(shell, items, makeCard, speed) {
   speed = speed || 25;
-  if (!items.length) { shell.innerHTML = '<div class="games-loading" style="padding:1.5rem 1.75rem;">Nothing added yet.</div>'; return; }
+  if (!items.length) { shell.innerHTML='<div class="games-loading" style="padding:1.5rem 1.75rem;">Nothing added yet.</div>'; return; }
   shell.innerHTML = '';
-  var wrapper = document.createElement('div');
-  wrapper.className = 'marquee-row-wrap';
-  var track = document.createElement('div');
-  track.className = 'm-track r1';
-  track.style.animationDuration = speed + 's';
-  var cardW = 280, gap = 8, screenW = window.innerWidth || 1400;
-  var copies = Math.ceil((screenW * 2) / ((cardW + gap) * items.length)) + 1;
-  var all = [];
-  for (var i = 0; i < copies; i++) all.push.apply(all, items);
-  var half = all.length;
-  for (var j = 0; j < half * 2; j++) track.appendChild(makeCard(all[j % half]));
+  var wrapper=document.createElement('div'); wrapper.className='marquee-row-wrap';
+  var track=document.createElement('div'); track.className='m-track r1'; track.style.animationDuration=speed+'s';
+  var cardW=280, gap=8, screenW=window.innerWidth||1400;
+  var copies=Math.ceil((screenW*2)/((cardW+gap)*items.length))+1;
+  var all=[];
+  for (var i=0;i<copies;i++) all.push.apply(all,items);
+  var half=all.length;
+  for (var j=0;j<half*2;j++) track.appendChild(makeCard(all[j%half]));
   wrapper.appendChild(track);
-  wrapper.addEventListener('mouseenter', function() { track.style.animationPlayState = 'paused'; });
-  wrapper.addEventListener('mouseleave', function() { track.style.animationPlayState = 'running'; });
+  wrapper.addEventListener('mouseenter',function(){track.style.animationPlayState='paused';});
+  wrapper.addEventListener('mouseleave',function(){track.style.animationPlayState='running';});
   shell.appendChild(wrapper);
 }
 
+// ── PORTFOLIO ──────────────────────────────────────
+async function loadPortfolio() {
+  try {
+    var r = await fetch('/api/portfolio');
+    var data = await r.json();
+    renderLibraries(data.libraries||[]);
+    renderGroups(data.groups||[]);
+    renderProjects(data.projects||[]);
+    renderTestimonials(data.testimonials||[]);
+    renderPricing(data.pricing||[]);
+    if (data.status&&data.status.active&&data.status.text) {
+      document.getElementById('status-text').textContent=data.status.text;
+      document.getElementById('status-banner').style.display='block';
+    }
+  } catch(e){ console.error('portfolio',e); }
+}
+
 function renderLibraries(libs) {
-  var shell = document.getElementById('lib-shell');
-  buildMarquee(shell, libs, function(l) {
-    var card = document.createElement('div');
-    card.className = 'lib-card';
-    card.style.cssText = 'width:260px;flex-shrink:0;';
-    card.innerHTML = '<div class="lib-cat">' + esc(l.category || 'Library') + '</div><div class="lib-name">' + esc(l.name) + '</div>' + (l.description ? '<div class="lib-desc">' + esc(l.description) + '</div>' : '') + (l.url ? '<a href="' + esc(l.url) + '" target="_blank" rel="noreferrer" class="lib-link">View docs <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>' : '');
+  buildMarquee(document.getElementById('lib-shell'), libs, function(l) {
+    var card=document.createElement('div'); card.className='lib-card'; card.style.cssText='width:260px;flex-shrink:0;';
+    card.innerHTML='<div class="lib-cat">'+esc(l.category||'Library')+'</div><div class="lib-name">'+esc(l.name)+'</div>'+(l.description?'<div class="lib-desc">'+esc(l.description)+'</div>':'')+(l.url?'<a href="'+esc(l.url)+'" target="_blank" rel="noreferrer" class="lib-link">View docs <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>':'');
     return card;
   }, 20);
 }
 
 function renderGroups(groups) {
-  var totalMembers = 0;
-  groups.forEach(function(g) { totalMembers += g.memberCount || 0; });
-  if (totalMembers) document.getElementById('s-members').textContent = fmtNum(totalMembers);
-  var shell = document.getElementById('groups-shell');
-  buildMarquee(shell, groups, function(g) {
-    var card = document.createElement('div');
-    card.className = 'group-card';
-    card.style.cssText = 'width:260px;flex-shrink:0;';
-    var badge = g.isVerified ? '<img src="/verified.png" class="verified-img" title="Verified" alt="Verified"/>' : '';
-    card.innerHTML = '<div class="group-icon-wrap">' + (g.icon ? '<img class="group-icon" src="' + esc(g.icon) + '" alt="' + esc(g.name) + '"/>' : '<div class="group-icon-ph">?</div>') + '</div><div class="group-info"><div class="group-name-row">' + esc(g.name) + badge + '</div><div class="group-meta"><span>' + fmtNum(g.memberCount) + ' members</span><span class="group-rank">' + esc(g.myRank || 'Member') + '</span></div></div><a href="' + esc(g.url) + '" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
+  var totalMembers=0; groups.forEach(function(g){totalMembers+=g.memberCount||0;});
+  if (totalMembers) document.getElementById('s-members').textContent=fmtNum(totalMembers);
+  buildMarquee(document.getElementById('groups-shell'), groups, function(g) {
+    var card=document.createElement('div'); card.className='group-card'; card.style.cssText='width:260px;flex-shrink:0;';
+    var badge=g.isVerified?'<img src="/verified.png" class="verified-img" title="Verified" alt="Verified"/>':'';
+    card.innerHTML='<div class="group-icon-wrap">'+(g.icon?'<img class="group-icon" src="'+esc(g.icon)+'" alt="'+esc(g.name)+'"/>':'<div class="group-icon-ph">?</div>')+'</div><div class="group-info"><div class="group-name-row">'+esc(g.name)+badge+'</div><div class="group-meta"><span>'+fmtNum(g.memberCount)+' members</span><span class="group-rank">'+esc(g.myRank||'Member')+'</span></div></div><a href="'+esc(g.url)+'" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     return card;
   }, 20);
 }
 
 function renderProjects(projects) {
-  const el = document.getElementById('projects-grid');
-  if (!projects.length) { el.innerHTML = '<div class="empty-state">No projects added yet.</div>'; return; }
-  el.innerHTML = '';
-  projects.forEach(function(p) {
-    const card = document.createElement('div');
-    card.className = 'proj-card';
-    card.innerHTML = '<div class="proj-top"><div class="proj-name">' + esc(p.name) + '</div>' + (p.language ? '<span class="proj-lang">' + esc(p.language) + '</span>' : '') + '</div>' + (p.description ? '<div class="proj-desc">' + esc(p.description) + '</div>' : '') + '<div class="proj-meta"><span>★ ' + p.stars + '</span><span>⑂ ' + p.forks + '</span></div><a href="' + esc(p.url) + '" target="_blank" rel="noreferrer" class="lib-link">View on GitHub <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
+  var el=document.getElementById('projects-grid');
+  if (!projects.length){el.innerHTML='<div class="empty-state">No projects added yet.</div>';return;}
+  el.innerHTML='';
+  projects.forEach(function(p){
+    var card=document.createElement('div'); card.className='proj-card';
+    card.innerHTML='<div class="proj-top"><div class="proj-name">'+esc(p.name)+'</div>'+(p.language?'<span class="proj-lang">'+esc(p.language)+'</span>':'')+'</div>'+(p.description?'<div class="proj-desc">'+esc(p.description)+'</div>':'')+'<div class="proj-meta"><span>★ '+p.stars+'</span><span>⑂ '+p.forks+'</span></div><a href="'+esc(p.url)+'" target="_blank" rel="noreferrer" class="lib-link">View on GitHub <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     el.appendChild(card);
   });
 }
 
 function renderTestimonials(list) {
-  var section = document.getElementById('testimonials');
-  var el = document.getElementById('testimonials-grid');
-  if (!list.length) { if (section) section.style.display = 'none'; return; }
-  if (section) section.style.display = '';
-  el.innerHTML = '';
-  list.forEach(function(t) {
-    var card = document.createElement('div');
-    card.className = 'testimonial-card';
-    card.innerHTML = '<div class="testimonial-quote">"' + esc(t.quote) + '"</div><div class="testimonial-author">' + (t.avatar ? '<img class="testimonial-avatar" src="' + esc(t.avatar) + '" alt="' + esc(t.author) + '"/>' : '<div class="testimonial-avatar-ph">' + esc(t.author[0]) + '</div>') + '<div><div class="testimonial-name">' + esc(t.author) + '</div>' + (t.role ? '<div class="testimonial-role">' + esc(t.role) + '</div>' : '') + '</div></div>';
+  var section=document.getElementById('testimonials'), el=document.getElementById('testimonials-grid');
+  if (!list.length){if(section)section.style.display='none';return;}
+  if(section)section.style.display='';
+  el.innerHTML='';
+  list.forEach(function(t){
+    var card=document.createElement('div'); card.className='testimonial-card';
+    card.innerHTML='<div class="testimonial-quote">"'+esc(t.quote)+'"</div><div class="testimonial-author">'+(t.avatar?'<img class="testimonial-avatar" src="'+esc(t.avatar)+'" alt="'+esc(t.author)+'"/>':'<div class="testimonial-avatar-ph">'+esc(t.author[0])+'</div>')+'<div><div class="testimonial-name">'+esc(t.author)+'</div>'+(t.role?'<div class="testimonial-role">'+esc(t.role)+'</div>':'')+'</div></div>';
     el.appendChild(card);
   });
 }
 
 function renderPricing(pricing) {
-  var section = document.getElementById('pricing');
-  var el = document.getElementById('pricing-grid');
-  if (!pricing.length) { if (section) section.style.display = 'none'; return; }
-  if (section) section.style.display = '';
-  el.innerHTML = '';
-  pricing.forEach(function(p) {
-    var card = document.createElement('div');
-    card.className = 'pricing-card';
-    card.innerHTML = '<div class="pricing-name">' + esc(p.name) + '</div><div class="pricing-price">' + esc(p.price) + '</div>' + (p.description ? '<div class="pricing-desc">' + esc(p.description) + '</div>' : '') + '<a href="#contact" class="btn btn-solid" style="font-size:0.75rem;margin-top:1rem;justify-content:center;">Get a quote</a>';
+  var section=document.getElementById('pricing'), el=document.getElementById('pricing-grid');
+  if (!pricing.length){if(section)section.style.display='none';return;}
+  if(section)section.style.display='';
+  el.innerHTML='';
+  pricing.forEach(function(p){
+    var card=document.createElement('div'); card.className='pricing-card';
+    card.innerHTML='<div class="pricing-name">'+esc(p.name)+'</div><div class="pricing-price">'+esc(p.price)+'</div>'+(p.description?'<div class="pricing-desc">'+esc(p.description)+'</div>':'')+'<a href="#contact" class="btn btn-solid" style="font-size:0.75rem;margin-top:1rem;justify-content:center;">Get a quote</a>';
     el.appendChild(card);
   });
 }
 
 async function submitContact() {
-  const name = document.getElementById('fn').value.trim();
-  const email = document.getElementById('fe').value.trim();
-  const msg = document.getElementById('fm').value.trim();
-  const btn = document.getElementById('send-btn');
-  const status = document.getElementById('form-status');
-  status.className = 'form-status'; status.textContent = '';
-  if (!name || !email || !msg) { status.className = 'form-status err'; status.textContent = 'Please fill in all fields.'; return; }
-  if (!_ejs.serviceId || !_ejs.templateId) { status.className = 'form-status err'; status.textContent = 'Contact form not configured yet.'; return; }
-  btn.disabled = true; btn.textContent = 'Sending...';
+  var name=document.getElementById('fn').value.trim(), email=document.getElementById('fe').value.trim(), msg=document.getElementById('fm').value.trim();
+  var btn=document.getElementById('send-btn'), status=document.getElementById('form-status');
+  status.className='form-status'; status.textContent='';
+  if(!name||!email||!msg){status.className='form-status err';status.textContent='Please fill in all fields.';return;}
+  if(!_ejs.serviceId||!_ejs.templateId){status.className='form-status err';status.textContent='Contact form not configured yet.';return;}
+  btn.disabled=true; btn.textContent='Sending...';
   try {
-    await emailjs.send(_ejs.serviceId, _ejs.templateId, { from_name: name, from_email: email, message: msg });
-    status.className = 'form-status ok'; status.textContent = 'Message sent.';
-    document.getElementById('fn').value = ''; document.getElementById('fe').value = ''; document.getElementById('fm').value = '';
-  } catch(e) { status.className = 'form-status err'; status.textContent = 'Send failed. Check EmailJS config.'; }
-  finally { btn.disabled = false; btn.textContent = 'Send message'; }
+    await emailjs.send(_ejs.serviceId,_ejs.templateId,{from_name:name,from_email:email,message:msg});
+    status.className='form-status ok'; status.textContent='Message sent.';
+    document.getElementById('fn').value=''; document.getElementById('fe').value=''; document.getElementById('fm').value='';
+  } catch(e){status.className='form-status err';status.textContent='Send failed. Check EmailJS config.';}
+  finally{btn.disabled=false;btn.textContent='Send message';}
+}
+
+async function trackVisit() {
+  try { var r=await fetch('/api/visits',{method:'POST'}); var d=await r.json(); document.getElementById('s-pageviews').textContent=fmtNum(d.visits); } catch{}
 }
 
 async function loadActivity() {
   try {
-    const r = await fetch('/api/activity');
-    const d = await r.json();
-    const a = d.activity;
-    const wrap = document.getElementById('hero-activity-wrap');
-
-    if (!a || !a.active || !a.file) {
-      if (wrap) wrap.style.display = 'none';
-      return;
-    }
-
-    const appIconEl = document.getElementById('act-app-icon');
-    const appNameEl = document.getElementById('act-app-name');
-    const fileIconEl = document.getElementById('act-file-icon');
-    const fileNameEl = document.getElementById('act-file-name');
-    const metaEl = document.getElementById('act-meta');
-
-    if (a.app === 'vscode') {
-      appIconEl.innerHTML = VSCODE_ICON;
-      appNameEl.textContent = 'Visual Studio Code';
-    } else if (a.app === 'robloxstudio') {
-      appIconEl.innerHTML = ROBLOX_ICON;
-      appNameEl.textContent = 'Roblox Studio';
-    }
-
-    const ext = (a.fileType || a.file.split('.').pop() || '');
-    fileIconEl.textContent = getFileIcon(ext);
-    fileNameEl.textContent = a.file;
-
-    const parts = [];
-    if (a.line) parts.push('Line ' + a.line);
-    if (a.workspace) parts.push(a.workspace);
-    metaEl.textContent = parts.join(' · ');
-
-    wrap.style.display = 'block';
-
-    // Stack above discord card if it's also visible
-    const discordWrap = document.getElementById('hero-discord-wrap');
-    if (discordWrap && discordWrap.style.display !== 'none') {
-      const discordH = discordWrap.offsetHeight || 110;
-      wrap.style.bottom = 'calc(4.5rem + ' + (discordH + 8) + 'px)';
-    }
-  } catch {}
+    var r=await fetch('/api/activity'); var d=await r.json(); var a=d.activity;
+    var wrap=document.getElementById('hero-activity-wrap');
+    if (!a||!a.active||!a.file){if(wrap)wrap.style.display='none';return;}
+    if(a.app==='vscode'){document.getElementById('act-app-icon').innerHTML=VSCODE_ICON;document.getElementById('act-app-name').textContent='Visual Studio Code';}
+    else if(a.app==='robloxstudio'){document.getElementById('act-app-icon').innerHTML=ROBLOX_ICON;document.getElementById('act-app-name').textContent='Roblox Studio';}
+    document.getElementById('act-file-icon').textContent=getFileIcon(a.fileType||a.file.split('.').pop()||'');
+    document.getElementById('act-file-name').textContent=a.file;
+    var parts=[]; if(a.line)parts.push('Line '+a.line); if(a.workspace)parts.push(a.workspace);
+    document.getElementById('act-meta').textContent=parts.join(' · ');
+    wrap.style.display='block';
+    var dw=document.getElementById('hero-discord-wrap');
+    if(dw&&dw.style.display!=='none'){wrap.style.bottom='calc(4.5rem + '+(dw.offsetHeight||110)+8+'px)';}
+  } catch{}
 }
 
-const revObs = new IntersectionObserver(function(entries) {
-  entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); } });
-}, { threshold: 0.07 });
-document.querySelectorAll('.reveal').forEach(function(el) { revObs.observe(el); });
+const revObs = new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');revObs.unobserve(e.target);}});},{threshold:0.07});
+document.querySelectorAll('.reveal').forEach(function(el){revObs.observe(el);});
+const barObs = new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll('.bar-fill').forEach(function(b){b.style.width=b.dataset.w+'%';});barObs.unobserve(e.target);}});},{threshold:0.3});
+var barsEl=document.getElementById('bars'); if(barsEl) barObs.observe(barsEl);
 
-const barObs = new IntersectionObserver(function(entries) {
-  entries.forEach(function(e) { if (e.isIntersecting) { e.target.querySelectorAll('.bar-fill').forEach(function(b) { b.style.width = b.dataset.w + '%'; }); barObs.unobserve(e.target); } });
-}, { threshold: 0.3 });
-const barsEl = document.getElementById('bars');
-if (barsEl) barObs.observe(barsEl);
-
-trackVisit();
-loadConfig();
-loadGames();
-loadPortfolio();
-loadActivity();
+trackVisit(); loadConfig(); loadGames(); loadPortfolio(); loadActivity();
 setInterval(loadActivity, 5000);
 
-// Build skills marquee from static skill cards
-(function() {
-  var skills = [
-    { i:'01', h:'Core Gameplay Systems', p:'Combat, movement, round logic, win conditions.', tags:['Lua','State Machines','Game Logic'] },
-    { i:'02', h:'Client-Server Architecture', p:'RemoteEvents, server-authoritative validation, clean replication.', tags:['RemoteEvents','Server Auth','Replication'] },
-    { i:'03', h:'DataStore and Persistence', p:'Session locking, retry logic, safe migrations.', tags:['DataStore2','ProfileService','Data Safety'] },
-    { i:'04', h:'UI Scripting', p:'Tweening, reactive layouts, inventory systems, HUDs.', tags:['TweenService','ScreenGui','Animations'] },
-    { i:'05', h:'Monetization', p:'Gamepasses, Developer Products, shops with proper receipt handling.', tags:['Gamepasses','Dev Products','MarketplaceService'] },
-    { i:'06', h:'Optimization and Anti-Exploit', p:'Script profiling, memory management, server validation.', tags:['Profiling','Server Validation','Memory'] },
+(function(){
+  var skills=[
+    {i:'01',h:'Core Gameplay Systems',p:'Combat, movement, round logic, win conditions.',tags:['Lua','State Machines','Game Logic']},
+    {i:'02',h:'Client-Server Architecture',p:'RemoteEvents, server-authoritative validation, clean replication.',tags:['RemoteEvents','Server Auth','Replication']},
+    {i:'03',h:'DataStore and Persistence',p:'Session locking, retry logic, safe migrations.',tags:['DataStore2','ProfileService','Data Safety']},
+    {i:'04',h:'UI Scripting',p:'Tweening, reactive layouts, inventory systems, HUDs.',tags:['TweenService','ScreenGui','Animations']},
+    {i:'05',h:'Monetization',p:'Gamepasses, Developer Products, proper receipt handling.',tags:['Gamepasses','Dev Products','MarketplaceService']},
+    {i:'06',h:'Optimization and Anti-Exploit',p:'Script profiling, memory management, server validation.',tags:['Profiling','Server Validation','Memory']},
   ];
-  var shell = document.getElementById('skills-shell');
-  if (!shell) return;
-  buildMarquee(shell, skills, function(s) {
-    var card = document.createElement('div');
-    card.className = 'skill';
-    card.style.cssText = 'width:280px;flex-shrink:0;';
-    card.innerHTML = '<div class="skill-i">' + s.i + '</div><div class="skill-h">' + s.h + '</div><p class="skill-p">' + s.p + '</p><div class="skill-tags">' + s.tags.map(function(t){ return '<span class="tag">'+t+'</span>'; }).join('') + '</div>';
+  var shell=document.getElementById('skills-shell'); if(!shell) return;
+  buildMarquee(shell,skills,function(s){
+    var card=document.createElement('div'); card.className='skill'; card.style.cssText='width:280px;flex-shrink:0;';
+    card.innerHTML='<div class="skill-i">'+s.i+'</div><div class="skill-h">'+s.h+'</div><p class="skill-p">'+s.p+'</p><div class="skill-tags">'+s.tags.map(function(t){return'<span class="tag">'+t+'</span>';}).join('')+'</div>';
     return card;
-  }, 30);
+  },30);
 })();
 </script>
 </body>
