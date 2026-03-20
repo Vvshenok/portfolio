@@ -30,7 +30,7 @@ const config = {
   },
 
   stats: {
-    years: "3+",
+    years: "4+",
     gamesWorkedOn: "13",
     totalVisits: "555M+",
     totalFavorites: "18M+",

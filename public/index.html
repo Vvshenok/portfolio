@@ -603,6 +603,39 @@ trackVisit();
 loadConfig();
 loadGames();
 loadPortfolio();
+
+async function loadActivity() {
+  try {
+    const r = await fetch('/api/activity');
+    const d = await r.json();
+    const a = d.activity;
+    if (!a || !a.active) return;
+
+    const wrap = document.getElementById('hero-discord-wrap');
+    const actEl = document.getElementById('dc-activity');
+    const fileEl = document.getElementById('dc-file');
+    const fileIconEl = document.getElementById('dc-file-icon');
+    const fileNameEl = document.getElementById('dc-file-name');
+    const lineEl = document.getElementById('dc-line');
+
+    if (a.app === 'vscode') {
+      if (actEl) actEl.textContent = 'Editing in Visual Studio Code';
+    } else if (a.app === 'robloxstudio') {
+      if (actEl) actEl.textContent = 'Scripting in Roblox Studio';
+    }
+
+    if (a.file && fileEl) {
+      if (fileIconEl) fileIconEl.textContent = getFileIcon(a.fileType || a.file.split('.').pop());
+      if (fileNameEl) fileNameEl.textContent = a.file;
+      if (lineEl) lineEl.textContent = a.line ? 'line ' + a.line : '';
+      fileEl.style.display = 'flex';
+      if (wrap) wrap.style.display = 'block';
+    }
+  } catch {}
+}
+
+loadActivity();
+setInterval(loadActivity, 5000);
 </script>
 </body>
 </html>
