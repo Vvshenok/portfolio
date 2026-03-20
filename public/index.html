@@ -24,7 +24,6 @@
     </ul>
     <div class="nav-right">
       <span class="avail-badge" id="avail-badge" style="display:none;">
-        <span class="avail-badge-dot"></span>
         Available for hire
       </span>
       <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
@@ -635,7 +634,7 @@ const barObs = new IntersectionObserver(function(entries){entries.forEach(functi
 var barsEl=document.getElementById('bars'); if(barsEl) barObs.observe(barsEl);
 
 trackVisit(); loadConfig(); loadGames(); loadPortfolio(); loadActivity();
-setInterval(loadActivity, 5000);
+setInterval(loadActivity, 2000);
 
 (function(){
   var skills=[
