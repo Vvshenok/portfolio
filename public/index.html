@@ -44,6 +44,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Discord presence card -->
   <div class="hero-discord blur-in delay-2" id="hero-discord-wrap" style="display:none;">
     <div class="hero-discord-card">
       <div class="hero-discord-top">
@@ -57,11 +59,22 @@
         </div>
       </div>
       <div class="hero-discord-activity" id="dc-activity"></div>
-      <div class="hero-discord-file" id="dc-file" style="display:none;">
-        <span class="hero-discord-file-icon" id="dc-file-icon"></span>
-        <span id="dc-file-name"></span>
-        <span class="hero-discord-line" id="dc-line"></span>
+    </div>
+  </div>
+
+  <!-- Activity card (VS Code / Roblox Studio) -->
+  <div class="hero-activity blur-in delay-2" id="hero-activity-wrap" style="display:none;">
+    <div class="hero-activity-card">
+      <div class="hero-activity-header">
+        <span class="hero-activity-app-icon" id="act-app-icon"></span>
+        <span class="hero-activity-app-name" id="act-app-name"></span>
+        <span class="hero-activity-dot"></span>
       </div>
+      <div class="hero-activity-file" id="act-file-row">
+        <span class="hero-activity-file-icon" id="act-file-icon"></span>
+        <span class="hero-activity-file-name" id="act-file-name"></span>
+      </div>
+      <div class="hero-activity-meta" id="act-meta"></div>
     </div>
   </div>
 </section>
@@ -267,7 +280,6 @@ function fmtNum(n) {
   if (n >= 1e3) return (n/1e3).toFixed(0)+'K';
   return String(n);
 }
-
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -275,9 +287,19 @@ function esc(s) {
 const EYE_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
 const USERS_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
 
+const VSCODE_ICON = '<svg width="14" height="14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><path fill-rule="evenodd" clip-rule="evenodd" d="M70.9 4.4L28.7 43.7 9.5 28.6 0 33.8v32.4l9.5 5.2 19.2-15.1 42.2 39.3L100 88V12L70.9 4.4zM9.5 53.5v-7l14 7-14 7v-7z" fill="white"/></mask><g mask="url(#m)"><path d="M0 33.8l70.9-29.4L100 12v76l-29.1 7.6L0 66.2V33.8z" fill="#007ACC"/><path d="M100 12L70.9 4.4 28.7 43.7l41.1-2.6L100 12zM100 88l-29.1 7.6-41.1-39.3 41.1-2.6L100 88z" fill="#007ACC" opacity=".5"/><path d="M9.5 66.2L0 61V39l9.5-5.2v32.4zM28.7 43.7L9.5 28.6 0 33.8l9.5 5.2 19.2-10.3zM28.7 56.3L9.5 71.4 0 66.2l9.5-5.2 19.2 10.3-41.1 39.3" fill="black" opacity=".25"/></g></svg>';
+
+const ROBLOX_ICON = '<svg width="14" height="14" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="16" fill="#e8e8e8"/><path d="M28 14l44 12-12 44-44-12z" fill="#cc0000"/><path d="M40 42l12 4-4 12-12-4z" fill="#fff"/></svg>';
+
 function getFileIcon(ext) {
-  const icons = { lua:'🌙', luau:'🌙', js:'JS', ts:'TS', jsx:'JSX', tsx:'TSX', json:'{}', html:'HTML', css:'CSS', py:'PY', md:'MD', sh:'SH', txt:'TXT' };
-  return icons[(ext||'').toLowerCase()] || '📄';
+  const map = {
+    lua:'🌙', luau:'🌙',
+    js:'󰌞', ts:'󰛦', jsx:'⚛', tsx:'⚛',
+    json:'{}', html:'󰌝', css:'󰌜',
+    py:'🐍', md:'󰍔', sh:'󰆍', txt:'󰈙',
+    rbxl:'🎮', rbxlx:'🎮', rbxm:'🧩', rbxmx:'🧩',
+  };
+  return map[(ext||'').toLowerCase()] || '📄';
 }
 
 async function trackVisit() {
@@ -292,15 +314,10 @@ async function loadConfig() {
   try {
     const r = await fetch('/api/config');
     const c = await r.json();
-    if (c.available) {
-      document.getElementById('avail-text').textContent = 'Available';
-    } else {
-      document.getElementById('avail-text').textContent = 'Unavailable';
-    }
+    document.getElementById('avail-text').textContent = c.available ? 'Available' : 'Unavailable';
     if (c.bio) { document.getElementById('hero-bio').textContent = c.bio; document.getElementById('about-p1').textContent = c.bio; }
     if (c.bioExtra) document.getElementById('about-p2').textContent = c.bioExtra;
-    const st = c.stats || {};
-    if (st.years) document.getElementById('s-years').textContent = st.years + ' yrs';
+    if (c.stats && c.stats.years) document.getElementById('s-years').textContent = c.stats.years + ' yrs';
     const soc = c.socials || {};
     if (soc.roblox) document.getElementById('link-roblox').href = soc.roblox;
     if (soc.twitter) { document.getElementById('link-twitter').href = soc.twitter; document.getElementById('tw-val').textContent = '@' + soc.twitter.split('/').pop(); }
@@ -314,7 +331,6 @@ async function loadConfig() {
 function connectLanyard(userId) {
   const ws = new WebSocket('wss://api.lanyard.rest/socket');
   let heartbeat = null;
-
   ws.onmessage = function(e) {
     const msg = JSON.parse(e.data);
     if (msg.op === 1) {
@@ -325,12 +341,7 @@ function connectLanyard(userId) {
     }
     if (msg.op === 0) updateDiscord(msg.d);
   };
-
-  ws.onclose = function() {
-    clearInterval(heartbeat);
-    setTimeout(function() { connectLanyard(userId); }, 5000);
-  };
-
+  ws.onclose = function() { clearInterval(heartbeat); setTimeout(function() { connectLanyard(userId); }, 5000); };
   ws.onerror = function() { ws.close(); };
 }
 
@@ -338,57 +349,17 @@ function updateDiscord(data) {
   if (!data || !data.discord_user) return;
   const user = data.discord_user;
   const wrap = document.getElementById('hero-discord-wrap');
-  const avatarEl = document.getElementById('dc-avatar');
-  const nameEl = document.getElementById('dc-name');
-  const tagEl = document.getElementById('dc-tag');
-  const dotEl = document.getElementById('dc-status-dot');
-  const actEl = document.getElementById('dc-activity');
-  const fileEl = document.getElementById('dc-file');
-  const fileIconEl = document.getElementById('dc-file-icon');
-  const fileNameEl = document.getElementById('dc-file-name');
-  const lineEl = document.getElementById('dc-line');
-
   const avatarUrl = user.avatar
     ? 'https://cdn.discordapp.com/avatars/' + user.id + '/' + user.avatar + '.png?size=128'
     : 'https://cdn.discordapp.com/embed/avatars/0.png';
-
-  avatarEl.src = avatarUrl;
-  nameEl.textContent = user.global_name || user.username;
-  tagEl.textContent = '@' + user.username;
-
+  document.getElementById('dc-avatar').src = avatarUrl;
+  document.getElementById('dc-name').textContent = user.global_name || user.username;
+  document.getElementById('dc-tag').textContent = '@' + user.username;
   const statusColors = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
-  dotEl.style.background = statusColors[data.discord_status] || '#80848e';
-
-  const vscode = (data.activities || []).find(function(a) { return a.name === 'Visual Studio Code'; });
-  const roblox = (data.activities || []).find(function(a) { return a.name === 'Roblox Studio'; });
-  const other  = (data.activities || []).find(function(a) { return a.type === 0; });
-
-  fileEl.style.display = 'none';
-
-  if (vscode) {
-    actEl.textContent = 'Editing in VS Code';
-    if (vscode.details) {
-      const ext = vscode.details.split('.').pop();
-      fileIconEl.textContent = getFileIcon(ext);
-      fileNameEl.textContent = vscode.details;
-      lineEl.textContent = vscode.state || '';
-      fileEl.style.display = 'flex';
-    }
-  } else if (roblox) {
-    actEl.textContent = 'Scripting in Roblox Studio';
-    if (roblox.details) {
-      fileIconEl.textContent = getFileIcon('lua');
-      fileNameEl.textContent = roblox.details;
-      lineEl.textContent = roblox.state || '';
-      fileEl.style.display = 'flex';
-    }
-  } else if (other) {
-    actEl.textContent = 'Playing ' + other.name;
-  } else {
-    var statusText = { online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline' };
-    actEl.textContent = statusText[data.discord_status] || 'Offline';
-  }
-
+  document.getElementById('dc-status-dot').style.background = statusColors[data.discord_status] || '#80848e';
+  const other = (data.activities || []).find(function(a) { return a.type === 0 && a.name !== 'Visual Studio Code' && a.name !== 'Roblox Studio'; });
+  const statusText = { online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline' };
+  document.getElementById('dc-activity').textContent = other ? 'Playing ' + other.name : (statusText[data.discord_status] || 'Offline');
   wrap.style.display = 'block';
 }
 
@@ -426,25 +397,20 @@ async function loadGames() {
     buildHeroBg(games);
     if (!games.length) { loading.textContent = 'No games listed yet.'; return; }
     loading.remove();
-
     const mid = Math.ceil(games.length / 2);
     const rowData = [games.slice(0, mid), games.slice(mid)];
     const dirs = ['r1', 'r2'];
-
     rowData.forEach(function(row, ri) {
       if (!row.length) return;
       const wrapper = document.createElement('div');
       wrapper.className = 'marquee-row-wrap';
       const track = document.createElement('div');
       track.className = 'm-track ' + dirs[ri];
-
       function makeCard(g) {
         const div = document.createElement('div');
         div.className = 'gcard';
         div.innerHTML =
-          '<div class="gcard-img-wrap">' +
-            (g.thumbnail ? '<img class="gcard-img" src="' + g.thumbnail + '" alt="' + esc(g.name) + '" loading="lazy"/>' : '<div class="gcard-ph">no image</div>') +
-          '</div>' +
+          '<div class="gcard-img-wrap">' + (g.thumbnail ? '<img class="gcard-img" src="' + g.thumbnail + '" alt="' + esc(g.name) + '" loading="lazy"/>' : '<div class="gcard-ph">no image</div>') + '</div>' +
           '<div class="gcard-body">' +
             '<div class="gcard-name">' + esc(g.name) + '</div>' +
             '<div class="gcard-meta"><span class="gcard-stat">' + EYE_ICON + fmtNum(g.visits) + '</span><span class="gcard-stat">' + USERS_ICON + fmtNum(g.playing) + '</span></div>' +
@@ -453,15 +419,12 @@ async function loadGames() {
           '</div>';
         return div;
       }
-
-      const cardW = 284, gap2 = 8;
-      const screenW = window.innerWidth || 1400;
+      const cardW = 284, gap2 = 8, screenW = window.innerWidth || 1400;
       const copies = Math.ceil((screenW * 2) / ((cardW + gap2) * row.length)) + 1;
       const all = [];
       for (let i = 0; i < copies; i++) all.push.apply(all, row);
       const half = all.length;
       for (let i = 0; i < half * 2; i++) track.appendChild(makeCard(all[i % half]));
-
       wrapper.appendChild(track);
       wrapper.addEventListener('mouseenter', function() { track.style.animationPlayState = 'paused'; });
       wrapper.addEventListener('mouseleave', function() { track.style.animationPlayState = 'running'; });
@@ -493,11 +456,7 @@ function renderLibraries(libs) {
   libs.forEach(function(l) {
     const card = document.createElement('div');
     card.className = 'lib-card';
-    card.innerHTML =
-      '<div class="lib-cat">' + esc(l.category || 'Library') + '</div>' +
-      '<div class="lib-name">' + esc(l.name) + '</div>' +
-      (l.description ? '<div class="lib-desc">' + esc(l.description) + '</div>' : '') +
-      (l.url ? '<a href="' + esc(l.url) + '" target="_blank" rel="noreferrer" class="lib-link">View docs <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>' : '');
+    card.innerHTML = '<div class="lib-cat">' + esc(l.category || 'Library') + '</div><div class="lib-name">' + esc(l.name) + '</div>' + (l.description ? '<div class="lib-desc">' + esc(l.description) + '</div>' : '') + (l.url ? '<a href="' + esc(l.url) + '" target="_blank" rel="noreferrer" class="lib-link">View docs <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>' : '');
     el.appendChild(card);
   });
 }
@@ -512,10 +471,7 @@ function renderGroups(groups) {
     const card = document.createElement('div');
     card.className = 'group-card';
     const badge = g.isVerified ? '<img src="/verified.png" class="verified-img" title="Verified" alt="Verified"/>' : '';
-    card.innerHTML =
-      '<div class="group-icon-wrap">' + (g.icon ? '<img class="group-icon" src="' + esc(g.icon) + '" alt="' + esc(g.name) + '"/>' : '<div class="group-icon-ph">?</div>') + '</div>' +
-      '<div class="group-info"><div class="group-name-row">' + esc(g.name) + badge + '</div><div class="group-meta"><span>' + fmtNum(g.memberCount) + ' members</span><span class="group-rank">' + esc(g.myRank || 'Member') + '</span></div></div>' +
-      '<a href="' + esc(g.url) + '" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
+    card.innerHTML = '<div class="group-icon-wrap">' + (g.icon ? '<img class="group-icon" src="' + esc(g.icon) + '" alt="' + esc(g.name) + '"/>' : '<div class="group-icon-ph">?</div>') + '</div><div class="group-info"><div class="group-name-row">' + esc(g.name) + badge + '</div><div class="group-meta"><span>' + fmtNum(g.memberCount) + ' members</span><span class="group-rank">' + esc(g.myRank || 'Member') + '</span></div></div><a href="' + esc(g.url) + '" target="_blank" rel="noreferrer" class="group-link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     el.appendChild(card);
   });
   document.getElementById('s-members').textContent = fmtNum(totalMembers);
@@ -528,11 +484,7 @@ function renderProjects(projects) {
   projects.forEach(function(p) {
     const card = document.createElement('div');
     card.className = 'proj-card';
-    card.innerHTML =
-      '<div class="proj-top"><div class="proj-name">' + esc(p.name) + '</div>' + (p.language ? '<span class="proj-lang">' + esc(p.language) + '</span>' : '') + '</div>' +
-      (p.description ? '<div class="proj-desc">' + esc(p.description) + '</div>' : '') +
-      '<div class="proj-meta"><span>★ ' + p.stars + '</span><span>⑂ ' + p.forks + '</span></div>' +
-      '<a href="' + esc(p.url) + '" target="_blank" rel="noreferrer" class="lib-link">View on GitHub <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
+    card.innerHTML = '<div class="proj-top"><div class="proj-name">' + esc(p.name) + '</div>' + (p.language ? '<span class="proj-lang">' + esc(p.language) + '</span>' : '') + '</div>' + (p.description ? '<div class="proj-desc">' + esc(p.description) + '</div>' : '') + '<div class="proj-meta"><span>★ ' + p.stars + '</span><span>⑂ ' + p.forks + '</span></div><a href="' + esc(p.url) + '" target="_blank" rel="noreferrer" class="lib-link">View on GitHub <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a>';
     el.appendChild(card);
   });
 }
@@ -544,12 +496,7 @@ function renderTestimonials(list) {
   list.forEach(function(t) {
     const card = document.createElement('div');
     card.className = 'testimonial-card';
-    card.innerHTML =
-      '<div class="testimonial-quote">"' + esc(t.quote) + '"</div>' +
-      '<div class="testimonial-author">' +
-        (t.avatar ? '<img class="testimonial-avatar" src="' + esc(t.avatar) + '" alt="' + esc(t.author) + '"/>' : '<div class="testimonial-avatar-ph">' + esc(t.author[0]) + '</div>') +
-        '<div><div class="testimonial-name">' + esc(t.author) + '</div>' + (t.role ? '<div class="testimonial-role">' + esc(t.role) + '</div>' : '') + '</div>' +
-      '</div>';
+    card.innerHTML = '<div class="testimonial-quote">"' + esc(t.quote) + '"</div><div class="testimonial-author">' + (t.avatar ? '<img class="testimonial-avatar" src="' + esc(t.avatar) + '" alt="' + esc(t.author) + '"/>' : '<div class="testimonial-avatar-ph">' + esc(t.author[0]) + '</div>') + '<div><div class="testimonial-name">' + esc(t.author) + '</div>' + (t.role ? '<div class="testimonial-role">' + esc(t.role) + '</div>' : '') + '</div></div>';
     el.appendChild(card);
   });
 }
@@ -561,11 +508,7 @@ function renderPricing(pricing) {
   pricing.forEach(function(p) {
     const card = document.createElement('div');
     card.className = 'pricing-card';
-    card.innerHTML =
-      '<div class="pricing-name">' + esc(p.name) + '</div>' +
-      '<div class="pricing-price">' + esc(p.price) + '</div>' +
-      (p.description ? '<div class="pricing-desc">' + esc(p.description) + '</div>' : '') +
-      '<a href="#contact" class="btn btn-solid" style="font-size:0.75rem;margin-top:1rem;justify-content:center;">Get a quote</a>';
+    card.innerHTML = '<div class="pricing-name">' + esc(p.name) + '</div><div class="pricing-price">' + esc(p.price) + '</div>' + (p.description ? '<div class="pricing-desc">' + esc(p.description) + '</div>' : '') + '<a href="#contact" class="btn btn-solid" style="font-size:0.75rem;margin-top:1rem;justify-content:center;">Get a quote</a>';
     el.appendChild(card);
   });
 }
@@ -588,6 +531,52 @@ async function submitContact() {
   finally { btn.disabled = false; btn.textContent = 'Send message'; }
 }
 
+async function loadActivity() {
+  try {
+    const r = await fetch('/api/activity');
+    const d = await r.json();
+    const a = d.activity;
+    const wrap = document.getElementById('hero-activity-wrap');
+
+    if (!a || !a.active || !a.file) {
+      if (wrap) wrap.style.display = 'none';
+      return;
+    }
+
+    const appIconEl = document.getElementById('act-app-icon');
+    const appNameEl = document.getElementById('act-app-name');
+    const fileIconEl = document.getElementById('act-file-icon');
+    const fileNameEl = document.getElementById('act-file-name');
+    const metaEl = document.getElementById('act-meta');
+
+    if (a.app === 'vscode') {
+      appIconEl.innerHTML = VSCODE_ICON;
+      appNameEl.textContent = 'Visual Studio Code';
+    } else if (a.app === 'robloxstudio') {
+      appIconEl.innerHTML = ROBLOX_ICON;
+      appNameEl.textContent = 'Roblox Studio';
+    }
+
+    const ext = (a.fileType || a.file.split('.').pop() || '');
+    fileIconEl.textContent = getFileIcon(ext);
+    fileNameEl.textContent = a.file;
+
+    const parts = [];
+    if (a.line) parts.push('Line ' + a.line);
+    if (a.workspace) parts.push(a.workspace);
+    metaEl.textContent = parts.join(' · ');
+
+    wrap.style.display = 'block';
+
+    // Stack above discord card if it's also visible
+    const discordWrap = document.getElementById('hero-discord-wrap');
+    if (discordWrap && discordWrap.style.display !== 'none') {
+      const discordH = discordWrap.offsetHeight || 110;
+      wrap.style.bottom = 'calc(4.5rem + ' + (discordH + 8) + 'px)';
+    }
+  } catch {}
+}
+
 const revObs = new IntersectionObserver(function(entries) {
   entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); } });
 }, { threshold: 0.07 });
@@ -603,37 +592,6 @@ trackVisit();
 loadConfig();
 loadGames();
 loadPortfolio();
-
-async function loadActivity() {
-  try {
-    const r = await fetch('/api/activity');
-    const d = await r.json();
-    const a = d.activity;
-    if (!a || !a.active) return;
-
-    const wrap = document.getElementById('hero-discord-wrap');
-    const actEl = document.getElementById('dc-activity');
-    const fileEl = document.getElementById('dc-file');
-    const fileIconEl = document.getElementById('dc-file-icon');
-    const fileNameEl = document.getElementById('dc-file-name');
-    const lineEl = document.getElementById('dc-line');
-
-    if (a.app === 'vscode') {
-      if (actEl) actEl.textContent = 'Editing in Visual Studio Code';
-    } else if (a.app === 'robloxstudio') {
-      if (actEl) actEl.textContent = 'Scripting in Roblox Studio';
-    }
-
-    if (a.file && fileEl) {
-      if (fileIconEl) fileIconEl.textContent = getFileIcon(a.fileType || a.file.split('.').pop());
-      if (fileNameEl) fileNameEl.textContent = a.file;
-      if (lineEl) lineEl.textContent = a.line ? 'line ' + a.line : '';
-      fileEl.style.display = 'flex';
-      if (wrap) wrap.style.display = 'block';
-    }
-  } catch {}
-}
-
 loadActivity();
 setInterval(loadActivity, 5000);
 </script>
