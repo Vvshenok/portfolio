@@ -13,19 +13,6 @@ export default async function handler(req, res) {
     const otp = await saveOTP(email, 'reset');
     console.log('[forgot] reset OTP for', email, '| OTP:', otp);
 
-    sendTransactionalEmail({
-      templateId: process.env.EMAILJS2_OTP_TEMPLATE,
-      templateParams: {
-        to_email: email,
-        name: client.username,
-        subject: 'Reset your password — Vvshenok.dev',
-        purpose: 'password reset',
-        otp_code: otp,
-        expiry_minutes: '10',
-      },
-    }).then(r => console.log('[forgot] email result:', JSON.stringify(r)))
-      .catch(e => console.error('[forgot] email error:', e.message));
-
     return res.status(200).json({ ok: true, otp, username: client.username });
   } catch (e) {
     console.error('[forgot] error:', e.message);
