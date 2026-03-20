@@ -20,14 +20,13 @@ export default async function handler(req, res) {
     const otp = await saveOTP(email, 'verify');
     console.log('[signup] created account for', email, '| OTP:', otp);
 
-    const emailResult = await sendEmail({
+    const emailResult = sendEmail({
       to: email,
       subject: 'Verify your email — Vvshenok.dev',
       template: process.env.ELASTIC_OTP_TEMPLATE,
       mergeFields: { name: username, otp_code: otp, expiry_minutes: '10' },
-    });
-
-    console.log('[signup] email result:', JSON.stringify(emailResult));
+    }).then(r => console.log('[signup] email result:', JSON.stringify(r)))
+      .catch(e => console.error('[signup] email error:', e.message));
 
     return res.status(200).json({ ok: true });
   } catch (e) {

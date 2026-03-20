@@ -1,4 +1,5 @@
-const { getClientByEmail, checkPassword, createClientSession, setClientCookie } = require('../../../lib/clients');
+const { getClientByEmail, checkPassword, createClientSession, setClientCookie, saveOTP } = require('../../../lib/clients');
+const { sendEmail } = require('../../../lib/email');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -11,17 +12,16 @@ export default async function handler(req, res) {
     if (!client) return res.status(401).json({ error: 'Invalid email or password' });
     if (!checkPassword(client, password)) return res.status(401).json({ error: 'Invalid email or password' });
     if (!client.verified) {
-      // Resend a fresh OTP so they can verify
-      const { saveOTP } = require('../../../lib/clients');
-      const { sendEmail } = require('../../../lib/email');
       const otp = await saveOTP(email, 'verify');
       console.log('[login] unverified, resending OTP for', email, '| OTP:', otp);
-      await sendEmail({
+      // Fire and forget — don't block the response on email sending
+      sendEmail({
         to: email,
         subject: 'Verify your email — Vvshenok.dev',
         template: process.env.ELASTIC_OTP_TEMPLATE,
         mergeFields: { name: client.username, otp_code: otp, expiry_minutes: '10' },
-      });
+      }).then(r => console.log('[login] email result:', JSON.stringify(r)))
+        .catch(e => console.error('[login] email error:', e.message));
       return res.status(403).json({ error: 'Please verify your email first', unverified: true });
     }
 
