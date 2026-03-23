@@ -190,11 +190,11 @@ section { border-bottom: 1px solid var(--line); }
 
 /* ── MARQUEE / GAMES ─────────────────────────────── */
 .games-wrap { padding-bottom: 0; }
-.marquee-shell { display: flex; flex-direction: column; gap: 8px; overflow: hidden; position: relative; padding-bottom: 1rem; }
-.marquee-shell::before, .marquee-shell::after { content: ''; position: absolute; top: 0; bottom: 0; width: 64px; z-index: 2; pointer-events: none; }
+.marquee-shell { display: flex; flex-direction: column; gap: 8px; overflow: hidden; position: relative; padding-bottom: 1rem; padding-top: 8px; }
+.marquee-shell::before, .marquee-shell::after { content: ''; position: absolute; top: 0; bottom: 0; width: 64px; z-index: 10; pointer-events: none; }
 .marquee-shell::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
 .marquee-shell::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
-.marquee-row-wrap { overflow: hidden; position: relative; }
+.marquee-row-wrap { overflow: visible; position: relative; }
 .m-track { display: flex; gap: 8px; width: max-content; will-change: transform; }
 .m-track.r1 { animation: mLeft 20s linear infinite; }
 .m-track.r2 { animation: mRight 20s linear infinite; }
@@ -456,3 +456,72 @@ footer { max-width: var(--max); margin: 0 auto; padding: 1.5rem 1.75rem; display
 
 /* ── LAST SEEN ───────────────────────────────────── */
 .hero-activity-lastseen { font-family: var(--mono); font-size: 0.58rem; color: var(--dim); margin-top: 0.25rem; }
+
+/* ── SECTION DIVIDERS ────────────────────────────── */
+.section-divider {
+  position: relative;
+  height: 60px;
+  overflow: hidden;
+  margin: 0;
+  border: none;
+  background: transparent;
+}
+.section-divider::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 110%;
+  height: 100%;
+  background: var(--bg2);
+  transform: skewY(-1.5deg);
+  transform-origin: bottom left;
+}
+.section-divider.alt::before {
+  background: var(--bg);
+  transform: skewY(1.5deg);
+  transform-origin: bottom right;
+}
+
+/* ── ANIMATED COUNTERS ───────────────────────────── */
+.stat-n { transition: color 0.3s; }
+.stat-n.counting { color: var(--accent); }
+
+/* ── GAME CARD HOVER POPUP ───────────────────────── */
+.gcard { position: relative; }
+.gcard-popup {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  width: 220px;
+  background: var(--bg);
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  padding: 0.85rem;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.gcard:hover .gcard-popup {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.gcard-popup-name { font-size: 0.82rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
+.gcard-popup-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.65rem; }
+.gcard-popup-stats { display: flex; flex-direction: column; gap: 0.3rem; }
+.gcard-popup-stat { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.62rem; }
+.gcard-popup-stat-label { color: var(--dim); }
+.gcard-popup-stat-value { color: #ff8c00; }
+/* Arrow */
+.gcard-popup::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--line2);
+}

@@ -168,6 +168,7 @@
 </section>
 
 <!-- FEATURED GAME -->
+<div class="section-divider"></div>
 <section class="featured-wrap reveal" id="games">
   <div class="wrap">
     <div class="sec-head">
@@ -188,6 +189,7 @@
   </div>
 </section>
 
+<div class="section-divider alt"></div>
 <section class="explore-wrap reveal" id="explore">
   <div class="wrap">
     <div class="sec-head">
@@ -581,7 +583,21 @@ function renderFeaturedGame(g) {
 function makeGameCard(g) {
   var div = document.createElement('div');
   div.className = 'gcard';
+
+  var joined = new Date(g.created || Date.now()).getFullYear();
+  var desc = g.description ? esc(g.description).slice(0, 80) + (g.description.length > 80 ? '…' : '') : 'No description available.';
+
   div.innerHTML =
+    '<div class="gcard-popup">' +
+      '<div class="gcard-popup-name">' + esc(g.name) + '</div>' +
+      '<div class="gcard-popup-desc">' + desc + '</div>' +
+      '<div class="gcard-popup-stats">' +
+        '<div class="gcard-popup-stat"><span class="gcard-popup-stat-label">Visits</span><span class="gcard-popup-stat-value">' + fmtNum(g.visits) + '</span></div>' +
+        '<div class="gcard-popup-stat"><span class="gcard-popup-stat-label">Playing</span><span class="gcard-popup-stat-value">' + fmtNum(g.playing) + '</span></div>' +
+        (g.favorites ? '<div class="gcard-popup-stat"><span class="gcard-popup-stat-label">Favorites</span><span class="gcard-popup-stat-value">' + fmtNum(g.favorites) + '</span></div>' : '') +
+        '<div class="gcard-popup-stat"><span class="gcard-popup-stat-label">Role</span><span class="gcard-popup-stat-value">' + esc(g.role || '—') + '</span></div>' +
+      '</div>' +
+    '</div>' +
     '<div class="gcard-img-wrap">'+(g.thumbnail?'<img class="gcard-img" src="'+g.thumbnail+'" alt="'+esc(g.name)+'" loading="lazy"/>':'<div class="gcard-ph">no image</div>')+'</div>'+
     '<div class="gcard-body">'+
       '<div class="gcard-name">'+esc(g.name)+'</div>'+
@@ -776,6 +792,55 @@ const revObs = new IntersectionObserver(function(entries){entries.forEach(functi
 document.querySelectorAll('.reveal').forEach(function(el){revObs.observe(el);});
 const barObs = new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll('.bar-fill').forEach(function(b){b.style.width=b.dataset.w+'%';});barObs.unobserve(e.target);}});},{threshold:0.3});
 var barsEl=document.getElementById('bars'); if(barsEl) barObs.observe(barsEl);
+
+// ── ANIMATED COUNTERS ──────────────────────────────
+function animateCounter(el, target, suffix, duration) {
+  suffix = suffix || '';
+  duration = duration || 1800;
+  var start = 0;
+  var startTime = null;
+  var isFloat = String(target).includes('.');
+  el.classList.add('counting');
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3);
+    var current = isFloat ? (target * ease).toFixed(1) : Math.floor(target * ease);
+    el.textContent = current + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+    else { el.textContent = target + suffix; el.classList.remove('counting'); }
+  }
+  requestAnimationFrame(step);
+}
+
+var _statsAnimated = false;
+var statsObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting && !_statsAnimated) {
+      _statsAnimated = true;
+      // Parse current values and animate
+      var visits = document.getElementById('s-visits');
+      var games = document.getElementById('s-games');
+      var members = document.getElementById('s-members');
+      var years = document.getElementById('s-years');
+      // Get raw numbers from current text
+      function parseVal(el) {
+        var t = el.textContent.replace(/[^0-9.]/g,'');
+        return parseFloat(t) || 0;
+      }
+      function getSuffix(el) {
+        return el.textContent.replace(/[0-9.]/g,'').trim();
+      }
+      if(visits) animateCounter(visits, parseVal(visits), getSuffix(visits));
+      if(games) animateCounter(games, parseVal(games), getSuffix(games), 1200);
+      if(members) animateCounter(members, parseVal(members), getSuffix(members), 1500);
+      if(years) animateCounter(years, parseVal(years), getSuffix(years), 1000);
+      statsObs.disconnect();
+    }
+  });
+}, {threshold: 0.3});
+var statsRow = document.querySelector('.stats-row');
+if (statsRow) statsObs.observe(statsRow);
 
 trackVisit(); loadConfig(); loadGames(); loadPortfolio(); loadActivity();
 setInterval(loadActivity, 2000);
