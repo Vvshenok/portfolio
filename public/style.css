@@ -194,8 +194,8 @@ section { border-bottom: 1px solid var(--line); }
 .marquee-shell::before, .marquee-shell::after { content: ''; position: absolute; top: 80px; bottom: 0; width: 64px; z-index: 10; pointer-events: none; }
 .marquee-shell::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
 .marquee-shell::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
-.marquee-row-wrap { overflow: visible; position: relative; }
-.m-track { display: flex; gap: 8px; width: max-content; will-change: transform; }
+.marquee-row-wrap { overflow: hidden; position: relative; padding-top: 80px; margin-top: -80px; }
+.m-track { display: flex; gap: 8px; width: max-content; will-change: transform; overflow: visible; }
 .m-track.r1 { animation: mLeft 50s linear infinite; }
 .m-track.r2 { animation: mRight 50s linear infinite; }
 @keyframes mLeft  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
@@ -327,7 +327,7 @@ section { border-bottom: 1px solid var(--line); }
 .contact-response { font-family: var(--mono); font-size: 0.72rem; color: var(--dim); margin-top: 1rem; }
 .field { margin-bottom: 0.9rem; }
 .field-label { display: block; font-family: var(--mono); font-size: 0.62rem; color: var(--dim); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
-.field-input { width: 100%; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.65rem 0.85rem; color: var(--text); font-family: var(--sans); font-size: 0.85rem; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
+.field-input { width: 100%; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.65rem 0.85rem; color: var(--text); font-family: var(--sans); font-size: 0.85rem; outline: none; transition: border-color 0.15s; appearance: none; -webkit-appearance: none; }
 .field-input:focus { border-color: var(--line2); }
 .field-input::placeholder { color: var(--dim); }
 textarea.field-input { resize: vertical; min-height: 110px; }
