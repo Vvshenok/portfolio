@@ -190,12 +190,12 @@ section { border-bottom: 1px solid var(--line); }
 
 /* ── MARQUEE / GAMES ─────────────────────────────── */
 .games-wrap { padding-bottom: 0; }
-.marquee-shell { display: flex; flex-direction: column; gap: 8px; overflow: hidden; position: relative; padding-bottom: 1rem; padding-top: 80px; margin-top: -80px; }
-.marquee-shell::before, .marquee-shell::after { content: ''; position: absolute; top: 80px; bottom: 0; width: 64px; z-index: 10; pointer-events: none; }
+.marquee-shell { display: flex; flex-direction: column; gap: 8px; overflow: hidden; position: relative; padding-bottom: 1rem; }
+.marquee-shell::before, .marquee-shell::after { content: ''; position: absolute; top: 0; bottom: 0; width: 64px; z-index: 2; pointer-events: none; }
 .marquee-shell::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
 .marquee-shell::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
-.marquee-row-wrap { overflow: hidden; position: relative; padding-top: 80px; margin-top: -80px; }
-.m-track { display: flex; gap: 8px; width: max-content; will-change: transform; overflow: visible; }
+.marquee-row-wrap { overflow: hidden; position: relative; }
+.m-track { display: flex; gap: 8px; width: max-content; will-change: transform; }
 .m-track.r1 { animation: mLeft 50s linear infinite; }
 .m-track.r2 { animation: mRight 50s linear infinite; }
 @keyframes mLeft  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
@@ -489,39 +489,23 @@ footer { max-width: var(--max); margin: 0 auto; padding: 1.5rem 1.75rem; display
 
 /* ── GAME CARD HOVER POPUP ───────────────────────── */
 .gcard { position: relative; }
-.gcard-popup {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
+#gcard-tooltip {
+  position: fixed;
   width: 220px;
   background: var(--bg);
   border: 1px solid var(--line2);
   border-radius: 8px;
   padding: 0.85rem;
-  z-index: 50;
+  z-index: 9999;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.15s, transform 0.15s;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  transition: opacity 0.15s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
 }
-.gcard:hover .gcard-popup {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-.gcard-popup-name { font-size: 0.82rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
-.gcard-popup-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.65rem; }
-.gcard-popup-stats { display: flex; flex-direction: column; gap: 0.3rem; }
-.gcard-popup-stat { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.62rem; }
-.gcard-popup-stat-label { color: var(--dim); }
-.gcard-popup-stat-value { color: #ff8c00; }
-/* Arrow */
-.gcard-popup::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: var(--line2);
-}
+#gcard-tooltip.visible { opacity: 1; }
+.gcard-tooltip-name { font-size: 0.82rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
+.gcard-tooltip-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.65rem; }
+.gcard-tooltip-stats { display: flex; flex-direction: column; gap: 0.3rem; }
+.gcard-tooltip-stat { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.62rem; }
+.gcard-tooltip-stat-label { color: var(--dim); }
+.gcard-tooltip-stat-value { color: #ff8c00; }
