@@ -1,165 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Client Portal — Vvshenok</title>
+<title>Sign In — Vvshenok.dev</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/style.css"/>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-.auth-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:1.75rem;}
-.auth-tab{flex:1;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--dim);padding:0.65rem;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:color .12s,border-color .12s;letter-spacing:.04em;}
-.auth-tab.active{color:#ff8c00;border-bottom-color:#ff8c00;}
-.auth-panel{display:none;}
-.auth-panel.active{display:block;}
-.otp-inputs{display:flex;gap:0.5rem;justify-content:center;margin:1rem 0;}
-.otp-digit{width:44px;height:52px;text-align:center;font-family:var(--mono);font-size:1.4rem;font-weight:700;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--radius);color:var(--white);outline:none;transition:border-color .15s;}
-.otp-digit:focus{border-color:#ff8c00;}
-.strength-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:0.4rem;overflow:hidden;}
-.strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;}
-.divider-text{display:flex;align-items:center;gap:.75rem;font-family:var(--mono);font-size:0.62rem;color:var(--dim);margin:1.25rem 0;}
-.divider-text::before,.divider-text::after{content:'';flex:1;height:1px;background:var(--line);}
-.back-link{font-family:var(--mono);font-size:0.68rem;color:var(--dim);text-align:center;margin-top:1.25rem;display:block;cursor:pointer;transition:color .12s;}
-.back-link:hover{color:var(--muted);}
-.input-wrap{position:relative;}
-.input-wrap .toggle-pw{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--dim);padding:0;}
+.auth-page { min-height: 100vh; display: flex; flex-direction: column; }
+.auth-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 6rem 1.5rem 3rem; position: relative; z-index: 10; }
+.auth-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 860px; width: 100%; align-items: center; }
+.auth-left { }
+.auth-tagline { font-family: var(--mono); font-size: 0.65rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+.auth-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+.auth-title em { color: var(--accent); font-style: normal; }
+.auth-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.75; margin-bottom: 2rem; }
+.auth-features { display: flex; flex-direction: column; gap: 0.75rem; }
+.auth-feature { display: flex; align-items: center; gap: 0.75rem; font-size: 0.82rem; color: var(--muted); }
+.auth-feature-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.auth-box { background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 2rem; }
+.auth-box-title { font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+.auth-box-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.75rem; }
+.auth-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); margin-bottom: 1.75rem; }
+.auth-tab { flex: 1; text-align: center; font-family: var(--mono); font-size: 0.7rem; color: var(--dim); padding: 0.65rem; cursor: pointer; border: none; background: transparent; border-bottom: 2px solid transparent; transition: color .12s, border-color .12s; letter-spacing: .04em; }
+.auth-tab.active { color: #ff8c00; border-bottom-color: #ff8c00; }
+.otp-inputs { display: flex; gap: 0.5rem; justify-content: center; margin: 1rem 0; }
+.otp-digit { width: 44px; height: 52px; text-align: center; font-family: var(--mono); font-size: 1.4rem; font-weight: 700; background: var(--bg3); border: 1px solid var(--line2); border-radius: var(--radius); color: var(--white); outline: none; transition: border-color .15s; }
+.otp-digit:focus { border-color: #ff8c00; }
+.strength-bar { height: 3px; background: var(--bg3); border-radius: 2px; margin-top: 0.4rem; overflow: hidden; }
+.strength-fill { height: 100%; border-radius: 2px; transition: width .3s, background .3s; }
+.divider-text { display: flex; align-items: center; gap: .75rem; font-family: var(--mono); font-size: 0.62rem; color: var(--dim); margin: 1.25rem 0; }
+.divider-text::before, .divider-text::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.back-link { font-family: var(--mono); font-size: 0.68rem; color: var(--dim); text-align: center; margin-top: 1.25rem; display: block; cursor: pointer; transition: color .12s; }
+.back-link:hover { color: var(--muted); }
+.input-wrap { position: relative; }
+.input-wrap .toggle-pw { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--dim); padding: 0; }
+.auth-err { font-family: var(--mono); font-size: 0.68rem; min-height: 1.2rem; margin-top: 0.65rem; color: #f55; }
+.auth-err.ok { color: var(--accent); }
+@media (max-width: 700px) {
+  .auth-container { grid-template-columns: 1fr; gap: 2rem; }
+  .auth-left { display: none; }
+}
 </style>
 </head>
-<body class="admin-page">
+<body class="auth-page">
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" style="text-decoration:none;">vvshenok<em>.dev</em></a>
+    <ul class="nav-links">
+      <li><a href="/#games">Games</a></li>
+      <li><a href="/#explore">Explore</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+        <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/" onclick="closeMobileMenu()">Home</a>
+  <a href="/#games" onclick="closeMobileMenu()">Games</a>
+  <a href="/#explore" onclick="closeMobileMenu()">Explore</a>
+  <a href="/#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<!-- BG -->
 <div id="page-bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;"></div>
 <div id="page-bg-overlay" style="position:fixed;inset:0;z-index:1;pointer-events:none;background:rgba(12,12,12,0.82);"></div>
-<div class="dash-top" style="position:fixed;top:0;left:0;right:0;z-index:100;">
-  <div class="dash-brand">vvshenok<em>.dev</em> / portal</div>
-  <div class="dash-btns">
-    <a href="/" class="btn btn-ghost" style="font-size:0.72rem;padding:0.38rem 0.85rem;">← Home</a>
-  </div>
-</div>
-<div style="height:52px;"></div>
-<div style="position:relative;z-index:10;display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 52px);padding:2rem 1rem;">
-<div class="admin-box" style="width:380px;">
-  <div class="admin-brand">vvshenok<em>.dev</em> / portal</div>
 
-  <!-- LOGIN -->
-  <div id="view-login">
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuth('login')">Sign in</button>
-      <button class="auth-tab" onclick="switchAuth('signup')">Create account</button>
-    </div>
-    <div class="field">
-      <label class="field-label">Email</label>
-      <input class="field-input" type="email" id="l-email" placeholder="your@email.com" autocomplete="email"/>
-    </div>
-    <div class="field">
-      <label class="field-label">Password</label>
-      <div class="input-wrap">
-        <input class="field-input" type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" style="padding-right:2.5rem;"/>
-        <button class="toggle-pw" onclick="togglePw('l-pass',this)" tabindex="-1">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
+<!-- MAIN -->
+<div class="auth-main">
+  <div class="auth-container">
+
+    <!-- LEFT SIDE -->
+    <div class="auth-left">
+      <div class="auth-tagline">Client Portal</div>
+      <div class="auth-title">Track your<br/>project <em>live.</em></div>
+      <p class="auth-desc">Sign in to see real-time progress on your Roblox project, changelogs from Vvshenok, and everything you need to stay in the loop.</p>
+      <div class="auth-features">
+        <div class="auth-feature"><div class="auth-feature-dot"></div>Live progress tracking</div>
+        <div class="auth-feature"><div class="auth-feature-dot"></div>Changelogs and updates</div>
+        <div class="auth-feature"><div class="auth-feature-dot"></div>Project status in real time</div>
+        <div class="auth-feature"><div class="auth-feature-dot"></div>Secure and private</div>
       </div>
     </div>
-    <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doLogin()">Sign in</button>
-    <div class="admin-err" id="l-err"></div>
-    <div class="divider-text">or</div>
-    <span class="back-link" onclick="switchView('forgot')">Forgot password?</span>
-  </div>
 
-  <!-- SIGNUP -->
-  <div id="view-signup" style="display:none;">
-    <div class="auth-tabs">
-      <button class="auth-tab" onclick="switchAuth('login')">Sign in</button>
-      <button class="auth-tab active" onclick="switchAuth('signup')">Create account</button>
-    </div>
-    <div class="field">
-      <label class="field-label">Username</label>
-      <input class="field-input" type="text" id="s-user" placeholder="yourcoolname" autocomplete="username"/>
-    </div>
-    <div class="field">
-      <label class="field-label">Email</label>
-      <input class="field-input" type="email" id="s-email" placeholder="your@email.com" autocomplete="email"/>
-    </div>
-    <div class="field">
-      <label class="field-label">Password</label>
-      <div class="input-wrap">
-        <input class="field-input" type="password" id="s-pass" placeholder="Min 8 characters" autocomplete="new-password" oninput="checkStrength(this)" style="padding-right:2.5rem;"/>
-        <button class="toggle-pw" onclick="togglePw('s-pass',this)" tabindex="-1">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
+    <!-- RIGHT SIDE — AUTH BOX -->
+    <div class="auth-box">
+
+      <!-- LOGIN -->
+      <div id="view-login">
+        <div class="auth-box-title">Welcome back</div>
+        <div class="auth-box-sub">Sign in to your client account</div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchAuth('login')">Sign in</button>
+          <button class="auth-tab" onclick="switchAuth('signup')">Create account</button>
+        </div>
+        <div class="field"><label class="field-label">Email</label><input class="field-input" type="email" id="l-email" placeholder="your@email.com" autocomplete="email"/></div>
+        <div class="field"><label class="field-label">Password</label>
+          <div class="input-wrap">
+            <input class="field-input" type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" style="padding-right:2.5rem;"/>
+            <button class="toggle-pw" onclick="togglePw('l-pass')" tabindex="-1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doLogin()">Sign in</button>
+        <div class="auth-err" id="l-err"></div>
+        <div class="divider-text">or</div>
+        <span class="back-link" onclick="switchView('forgot')">Forgot password?</span>
       </div>
-      <div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0"></div></div>
-    </div>
-    <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doSignup()">Create account</button>
-    <div class="admin-err" id="s-err"></div>
-  </div>
 
-  <!-- VERIFY OTP -->
-  <div id="view-verify" style="display:none;">
-    <div class="admin-h">Check your email</div>
-    <div class="admin-sub" id="v-sub">Enter the 6-digit code we sent to your email.</div>
-    <div class="otp-inputs" id="otp-inputs">
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-    </div>
-    <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doVerify()">Verify</button>
-    <div class="admin-err" id="v-err"></div>
-    <span class="back-link" onclick="switchView('login')">Back to sign in</span>
-  </div>
+      <!-- SIGNUP -->
+      <div id="view-signup" style="display:none;">
+        <div class="auth-box-title">Create account</div>
+        <div class="auth-box-sub">Get access to your client portal</div>
+        <div class="auth-tabs">
+          <button class="auth-tab" onclick="switchAuth('login')">Sign in</button>
+          <button class="auth-tab active" onclick="switchAuth('signup')">Create account</button>
+        </div>
+        <div class="field"><label class="field-label">Username</label><input class="field-input" type="text" id="s-user" placeholder="yourcoolname" autocomplete="username"/></div>
+        <div class="field"><label class="field-label">Email</label><input class="field-input" type="email" id="s-email" placeholder="your@email.com" autocomplete="email"/></div>
+        <div class="field"><label class="field-label">Password</label>
+          <div class="input-wrap">
+            <input class="field-input" type="password" id="s-pass" placeholder="Min 8 characters" autocomplete="new-password" oninput="checkStrength(this)" style="padding-right:2.5rem;"/>
+            <button class="toggle-pw" onclick="togglePw('s-pass')" tabindex="-1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0"></div></div>
+        </div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doSignup()">Create account</button>
+        <div class="auth-err" id="s-err"></div>
+      </div>
 
-  <!-- FORGOT -->
-  <div id="view-forgot" style="display:none;">
-    <div class="admin-h">Reset password</div>
-    <div class="admin-sub">Enter your email and we'll send a reset code.</div>
-    <div class="field">
-      <label class="field-label">Email</label>
-      <input class="field-input" type="email" id="f-email" placeholder="your@email.com"/>
-    </div>
-    <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doForgot()">Send reset code</button>
-    <div class="admin-err" id="f-err"></div>
-    <span class="back-link" onclick="switchView('login')">Back to sign in</span>
-  </div>
+      <!-- VERIFY OTP -->
+      <div id="view-verify" style="display:none;">
+        <div class="auth-box-title">Check your email</div>
+        <div class="auth-box-sub" id="v-sub">Enter the 6-digit code we sent to your email.</div>
+        <div class="otp-inputs" id="otp-inputs">
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+        </div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doVerify()">Verify</button>
+        <div class="auth-err" id="v-err"></div>
+        <span class="back-link" onclick="switchView('login')">Back to sign in</span>
+      </div>
 
-  <!-- RESET PASSWORD -->
-  <div id="view-reset" style="display:none;">
-    <div class="admin-h">New password</div>
-    <div class="admin-sub">Enter the code from your email and choose a new password.</div>
-    <div class="otp-inputs" id="otp-reset">
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <!-- FORGOT -->
+      <div id="view-forgot" style="display:none;">
+        <div class="auth-box-title">Reset password</div>
+        <div class="auth-box-sub">Enter your email and we'll send a reset code.</div>
+        <div class="field"><label class="field-label">Email</label><input class="field-input" type="email" id="f-email" placeholder="your@email.com"/></div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doForgot()">Send reset code</button>
+        <div class="auth-err" id="f-err"></div>
+        <span class="back-link" onclick="switchView('login')">Back to sign in</span>
+      </div>
+
+      <!-- RESET -->
+      <div id="view-reset" style="display:none;">
+        <div class="auth-box-title">New password</div>
+        <div class="auth-box-sub">Enter the code from your email and choose a new password.</div>
+        <div class="otp-inputs" id="otp-reset">
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+        </div>
+        <div class="field" style="margin-top:.5rem;"><label class="field-label">New Password</label><input class="field-input" type="password" id="r-pass" placeholder="Min 8 characters"/></div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doReset()">Set new password</button>
+        <div class="auth-err" id="r-err"></div>
+        <span class="back-link" onclick="switchView('login')">Back to sign in</span>
+      </div>
+
     </div>
-    <div class="field" style="margin-top:.5rem;">
-      <label class="field-label">New Password</label>
-      <input class="field-input" type="password" id="r-pass" placeholder="Min 8 characters"/>
-    </div>
-    <button class="btn btn-solid" style="width:100%;justify-content:center;" onclick="doReset()">Set new password</button>
-    <div class="admin-err" id="r-err"></div>
-    <span class="back-link" onclick="switchView('login')">Back to sign in</span>
   </div>
 </div>
 
 <script>
+// Theme
+var savedTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+document.getElementById('theme-toggle').addEventListener('click', function() {
+  var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+});
+
+// Mobile menu
+document.getElementById('nav-hamburger').addEventListener('click', function() {
+  var m = document.getElementById('mobile-menu');
+  m.classList.toggle('open');
+  this.classList.toggle('open');
+});
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('nav-hamburger').classList.remove('open');
+}
+
 var _verifyEmail = '';
 var _resetEmail = '';
-var _verifyMode = 'signup';
 
 function sendOTPEmail(to_email, username, otp, purpose, subject) {
   var serviceId = window._EMAILJS2_SERVICE_ID;
   var templateId = window._EMAILJS2_OTP_TEMPLATE;
   if (!serviceId || !templateId) { console.warn('[emailjs] account2 not configured'); return; }
-  emailjs.send(serviceId, templateId, {
-    to_email, name: username, subject, purpose,
-    otp_code: otp, expiry_minutes: '10'
-  }).then(function(){ console.log('[emailjs] OTP sent to', to_email); })
+  emailjs.send(serviceId, templateId, { to_email, name: username, subject, purpose, otp_code: otp, expiry_minutes: '10' })
+    .then(function(){ console.log('[emailjs] OTP sent to', to_email); })
     .catch(function(e){ console.error('[emailjs] send error:', e); });
 }
 
@@ -167,11 +227,10 @@ function sendWelcomeEmail(to_email, username) {
   var serviceId = window._EMAILJS2_SERVICE_ID;
   var templateId = window._EMAILJS2_WELCOME_TEMPLATE;
   if (!serviceId || !templateId) return;
-  emailjs.send(serviceId, templateId, { to_email, name: username })
-    .catch(function(e){ console.error('[emailjs] welcome error:', e); });
+  emailjs.send(serviceId, templateId, { to_email, name: username }).catch(function(e){ console.error('[emailjs] welcome error:', e); });
 }
 
-// Load EmailJS account 2 config
+// Load config
 (async function(){
   try {
     var r = await fetch('/api/config');
@@ -192,18 +251,11 @@ function sendWelcomeEmail(to_email, username) {
     var d = await r.json();
     if (d.authed) window.location.href = '/portal';
   } catch {}
-
-  // Check URL params for reset flow
   var params = new URLSearchParams(window.location.search);
-  if (params.get('reset')) {
-    _resetEmail = params.get('email') || '';
-    switchView('reset');
-  }
+  if (params.get('reset')) { _resetEmail = params.get('email') || ''; switchView('reset'); }
 })();
 
-function switchAuth(tab) {
-  switchView(tab === 'login' ? 'login' : 'signup');
-}
+function switchAuth(tab) { switchView(tab === 'login' ? 'login' : 'signup'); }
 
 function switchView(view) {
   ['login','signup','verify','forgot','reset'].forEach(function(v) {
@@ -211,14 +263,13 @@ function switchView(view) {
   });
 }
 
-function togglePw(id, btn) {
+function togglePw(id) {
   var input = document.getElementById(id);
   input.type = input.type === 'password' ? 'text' : 'password';
 }
 
 function checkStrength(input) {
-  var v = input.value;
-  var score = 0;
+  var v = input.value, score = 0;
   if (v.length >= 8) score++;
   if (v.length >= 12) score++;
   if (/[A-Z]/.test(v)) score++;
@@ -230,7 +281,6 @@ function checkStrength(input) {
   fill.style.background = colors[score - 1] || '#f55';
 }
 
-// OTP input auto-advance
 document.querySelectorAll('.otp-digit').forEach(function(el, i, all) {
   el.addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g,'');
@@ -248,13 +298,11 @@ document.querySelectorAll('.otp-digit').forEach(function(el, i, all) {
   });
 });
 
-function getOTP(containerId) {
-  return Array.from(document.querySelectorAll('#'+containerId+' .otp-digit')).map(function(el){ return el.value; }).join('');
-}
+function getOTP(id) { return Array.from(document.querySelectorAll('#'+id+' .otp-digit')).map(function(el){ return el.value; }).join(''); }
 
 function setErr(id, msg, ok) {
   var el = document.getElementById(id);
-  el.style.color = ok ? 'var(--accent)' : '#f55';
+  el.className = 'auth-err' + (ok ? ' ok' : '');
   el.textContent = msg;
 }
 
@@ -269,7 +317,7 @@ async function doLogin() {
     if (d.unverified) {
       _verifyEmail = email;
       sendOTPEmail(email, d.username, d.otp, 'verification', 'Verify your email — Vvshenok.dev');
-      document.getElementById('v-sub').textContent = 'A fresh verification code was just sent to ' + email + '. Check your inbox (and junk folder).';
+      document.getElementById('v-sub').textContent = 'A fresh code was sent to ' + email + '. Check your inbox and junk folder.';
       switchView('verify');
       return;
     }
@@ -302,11 +350,7 @@ async function doVerify() {
   try {
     var r = await fetch('/api/client/verify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email: _verifyEmail, otp}) });
     var d = await r.json();
-    if (d.ok) {
-      sendWelcomeEmail(_verifyEmail, d.username);
-      window.location.href = '/portal';
-      return;
-    }
+    if (d.ok) { sendWelcomeEmail(_verifyEmail, d.username); window.location.href = '/portal'; return; }
     setErr('v-err', d.error || 'Invalid code');
   } catch { setErr('v-err', 'Network error'); }
 }
@@ -318,9 +362,7 @@ async function doForgot() {
     var r = await fetch('/api/client/forgot', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email}) });
     var d = await r.json();
     _resetEmail = email;
-    if (d.ok && d.otp) {
-      sendOTPEmail(email, d.username, d.otp, 'password reset', 'Reset your password — Vvshenok.dev');
-    }
+    if (d.ok && d.otp) sendOTPEmail(email, d.username, d.otp, 'password reset', 'Reset your password — Vvshenok.dev');
     setErr('f-err', 'If that email exists, a reset code was sent.', true);
     setTimeout(function(){ switchView('reset'); }, 1500);
   } catch { setErr('f-err', 'Network error'); }
@@ -351,13 +393,12 @@ document.addEventListener('keydown', function(e) {
   else if (id === 'reset') doReset();
 });
 
-// Build game tile background with parallax
+// Parallax bg
 (async function(){
   try {
     var r = await fetch('/api/games');
     var d = await r.json();
-    var games = d.games || [];
-    var thumbs = games.filter(function(g){ return g.thumbnail; }).map(function(g){ return g.thumbnail; });
+    var thumbs = (d.games||[]).filter(function(g){ return g.thumbnail; }).map(function(g){ return g.thumbnail; });
     if (!thumbs.length) return;
     var bg = document.getElementById('page-bg');
     var tileSize=130, gap=18, step=tileSize+gap;
@@ -368,24 +409,14 @@ document.addEventListener('keydown', function(e) {
       idx++;
     }
     bg.innerHTML = html;
-
-    // Parallax on mouse move
-    var targetX=0, targetY=0, currentX=0, currentY=0;
+    var tx=0, ty=0, cx=0, cy=0;
     document.addEventListener('mousemove', function(e) {
-      var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-      targetX = (e.clientX - cx) / cx * 25;
-      targetY = (e.clientY - cy) / cy * 25;
+      tx = (e.clientX - window.innerWidth/2) / window.innerWidth * 25;
+      ty = (e.clientY - window.innerHeight/2) / window.innerHeight * 25;
     });
-    function animate() {
-      currentX += (targetX - currentX) * 0.06;
-      currentY += (targetY - currentY) * 0.06;
-      bg.style.transform = 'translate(' + currentX + 'px,' + currentY + 'px)';
-      requestAnimationFrame(animate);
-    }
-    animate();
+    (function animate(){ cx += (tx-cx)*0.06; cy += (ty-cy)*0.06; bg.style.transform='translate('+cx+'px,'+cy+'px)'; requestAnimationFrame(animate); })();
   } catch{}
 })();
 </script>
-</div>
 </body>
 </html>
