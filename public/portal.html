@@ -52,7 +52,9 @@
 </style>
 </head>
 <body>
-<div class="portal-top">
+<div id="page-bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;"></div>
+<div id="page-bg-overlay" style="position:fixed;inset:0;z-index:1;pointer-events:none;background:rgba(12,12,12,0.88);"></div>
+<div class="portal-top" style="z-index:100;">
   <div class="portal-brand">vvshenok<em>.dev</em> / portal</div>
   <div style="display:flex;align-items:center;gap:1rem;">
     <a href="/" class="sm-btn" style="text-decoration:none;">← Home</a>
@@ -61,7 +63,7 @@
   </div>
 </div>
 
-<div class="portal-body">
+<div class="portal-body" style="position:relative;z-index:2;">
   <div class="portal-welcome">
     <h1>My Orders</h1>
     <p>Track the progress of your projects in real time.</p>
@@ -153,6 +155,26 @@ async function doLogout() {
   await fetch('/api/client/logout', { method:'POST' });
   window.location.href = '/portal-auth';
 }
+
+// Build game tile background
+(async function(){
+  try {
+    var r = await fetch('/api/games');
+    var d = await r.json();
+    var games = d.games || [];
+    var thumbs = games.filter(function(g){ return g.thumbnail; }).map(function(g){ return g.thumbnail; });
+    if (!thumbs.length) return;
+    var bg = document.getElementById('page-bg');
+    var tileSize=130, gap=18, step=tileSize+gap;
+    var cols=Math.ceil(window.innerWidth/step)+2, rows=Math.ceil(window.innerHeight/step)+2;
+    var html='', idx=0;
+    for (var row=0;row<rows;row++) for (var col=0;col<cols;col++) {
+      html+='<div style="position:absolute;left:'+(col*step-40)+'px;top:'+(row*step-30)+'px;width:'+tileSize+'px;height:'+tileSize+'px;overflow:hidden;border-radius:10px;transform:rotate(-12deg);opacity:0.08;"><img src="'+thumbs[idx%thumbs.length]+'" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy"/></div>';
+      idx++;
+    }
+    bg.innerHTML = html;
+  } catch{}
+})();
 </script>
 </body>
 </html>
