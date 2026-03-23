@@ -351,7 +351,7 @@ document.addEventListener('keydown', function(e) {
   else if (id === 'reset') doReset();
 });
 
-// Build game tile background
+// Build game tile background with parallax
 (async function(){
   try {
     var r = await fetch('/api/games');
@@ -361,13 +361,28 @@ document.addEventListener('keydown', function(e) {
     if (!thumbs.length) return;
     var bg = document.getElementById('page-bg');
     var tileSize=130, gap=18, step=tileSize+gap;
-    var cols=Math.ceil(window.innerWidth/step)+2, rows=Math.ceil(window.innerHeight/step)+2;
+    var cols=Math.ceil(window.innerWidth/step)+4, rows=Math.ceil(window.innerHeight/step)+4;
     var html='', idx=0;
     for (var row=0;row<rows;row++) for (var col=0;col<cols;col++) {
-      html+='<div style="position:absolute;left:'+(col*step-40)+'px;top:'+(row*step-30)+'px;width:'+tileSize+'px;height:'+tileSize+'px;overflow:hidden;border-radius:10px;transform:rotate(-12deg);opacity:0.12;"><img src="'+thumbs[idx%thumbs.length]+'" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy"/></div>';
+      html+='<div style="position:absolute;left:'+(col*step-80)+'px;top:'+(row*step-80)+'px;width:'+tileSize+'px;height:'+tileSize+'px;overflow:hidden;border-radius:10px;transform:rotate(-12deg);opacity:0.12;"><img src="'+thumbs[idx%thumbs.length]+'" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy"/></div>';
       idx++;
     }
     bg.innerHTML = html;
+
+    // Parallax on mouse move
+    var targetX=0, targetY=0, currentX=0, currentY=0;
+    document.addEventListener('mousemove', function(e) {
+      var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+      targetX = (e.clientX - cx) / cx * 25;
+      targetY = (e.clientY - cy) / cy * 25;
+    });
+    function animate() {
+      currentX += (targetX - currentX) * 0.06;
+      currentY += (targetY - currentY) * 0.06;
+      bg.style.transform = 'translate(' + currentX + 'px,' + currentY + 'px)';
+      requestAnimationFrame(animate);
+    }
+    animate();
   } catch{}
 })();
 </script>
