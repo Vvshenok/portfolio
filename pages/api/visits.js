@@ -1,5 +1,4 @@
 const { kvGet, kvSet } = require("../../lib/kv");
-
 const KEY = "vs:visits";
 
 export default async function handler(req, res) {

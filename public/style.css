@@ -421,3 +421,31 @@ footer { max-width: var(--max); margin: 0 auto; padding: 1.5rem 1.75rem; display
   .featured-card { grid-template-columns: 1fr; }
   .featured-body { padding: 1.25rem; }
 }
+
+/* ── SCROLL PROGRESS ─────────────────────────────── */
+.scroll-progress { position: absolute; bottom: -1px; left: 0; height: 2px; background: var(--accent); width: 0; transition: width 0.1s linear; z-index: 101; }
+
+/* ── BACK TO TOP ─────────────────────────────────── */
+#back-to-top { position: fixed; bottom: 2rem; right: 2rem; z-index: 90; width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); border: 1px solid var(--line2); color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(10px); transition: opacity 0.2s, transform 0.2s, background 0.15s; pointer-events: none; }
+#back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+#back-to-top:hover { background: var(--bg3); color: var(--white); }
+
+/* ── VISITOR BADGE ───────────────────────────────── */
+#visitor-badge { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 90; background: var(--bg2); border: 1px solid var(--line2); border-radius: 20px; padding: 0.4rem 1rem; font-family: var(--mono); font-size: 0.68rem; color: var(--muted); white-space: nowrap; transition: opacity 0.6s; }
+#visitor-badge.fade-out { opacity: 0; }
+
+/* ── ROBLOX PROFILE CARD ─────────────────────────── */
+.roblox-profile-card { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.5rem; transition: border-color 0.15s; }
+.roblox-profile-card:hover { border-color: var(--line2); }
+.roblox-card-top { display: flex; align-items: center; gap: 0.85rem; }
+.roblox-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.roblox-name { font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 0.1rem; }
+.roblox-user { font-family: var(--mono); font-size: 0.62rem; color: var(--dim); margin-bottom: 0.25rem; }
+.roblox-meta { font-family: var(--mono); font-size: 0.6rem; color: #ff8c00; }
+
+/* ── GAME FILTERS ────────────────────────────────── */
+.games-more-head { display: flex; align-items: center; justify-content: space-between; padding-top: 2.5rem; flex-wrap: wrap; gap: 1rem; }
+.game-filters { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.filter-btn { font-family: var(--mono); font-size: 0.62rem; padding: 0.3rem 0.75rem; border-radius: 20px; border: 1px solid var(--line); background: transparent; color: var(--dim); cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.filter-btn:hover { border-color: var(--line2); color: var(--muted); }
+.filter-btn.active { border-color: #ff8c00; color: #ff8c00; background: rgba(255,140,0,0.06); }

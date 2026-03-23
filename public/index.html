@@ -13,6 +13,7 @@
 <body>
 
 <nav class="nav">
+  <div class="scroll-progress" id="scroll-progress"></div>
   <div class="nav-inner">
     <span class="nav-logo">vvshenok<em>.dev</em></span>
     <ul class="nav-links" id="nav-links">
@@ -48,6 +49,14 @@
   <a href="/portal-auth" id="mobile-signin" onclick="closeMobileMenu()">Sign In</a>
   <a href="/portal" id="mobile-portal" style="display:none;color:#ff8c00;" onclick="closeMobileMenu()">My Orders</a>
 </div>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- VISITOR COUNTER -->
+<div id="visitor-badge" style="display:none;"></div>
 
 <section class="hero" id="top">
   <div class="hero-bg" id="hero-bg"></div>
@@ -145,9 +154,12 @@
       <span class="sec-t">Featured Game</span>
     </div>
     <div id="featured-game"><div class="games-loading">Fetching live data from Roblox...</div></div>
-    <div class="sec-head" style="padding-top:2.5rem;padding-bottom:1.5rem;">
-      <span class="sec-n"></span>
-      <span class="sec-t">More Games</span>
+    <div class="games-more-head">
+      <div class="sec-head" style="padding-bottom:0.75rem;">
+        <span class="sec-n"></span>
+        <span class="sec-t">More Games</span>
+      </div>
+      <div class="game-filters" id="game-filters"></div>
     </div>
   </div>
   <div class="marquee-shell" id="marquee-shell">
@@ -229,6 +241,16 @@
         </div>
       </div>
       <div class="links-col">
+        <div class="roblox-profile-card" id="roblox-card" style="display:none;">
+          <div class="roblox-card-top">
+            <img class="roblox-avatar" id="roblox-avatar" src="" alt="Vvshenok"/>
+            <div class="roblox-info">
+              <div class="roblox-name" id="roblox-name"></div>
+              <div class="roblox-user" id="roblox-user"></div>
+              <div class="roblox-meta" id="roblox-meta"></div>
+            </div>
+          </div>
+        </div>
         <a href="#" class="slink" id="link-roblox" target="_blank" rel="noreferrer">
           <div><div class="slink-lbl">Roblox</div><div class="slink-val">@Vvshenok</div></div>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
@@ -239,6 +261,10 @@
         </a>
         <div class="slink slink-copy" id="discord-copy" onclick="copyDiscord()">
           <div><div class="slink-lbl">Discord</div><div class="slink-val" id="disc-val"></div></div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </div>
+        <div class="slink slink-copy" id="email-copy" onclick="copyEmail()">
+          <div><div class="slink-lbl">Email</div><div class="slink-val" id="email-val">Vvshenok.dev@gmail.com</div></div>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         </div>
       </div>
@@ -445,29 +471,53 @@ async function loadGames() {
     var featured = games.slice().sort(function(a,b){ return (b.playing||0)-(a.playing||0); })[0];
     renderFeaturedGame(featured);
 
-    // More games marquee — split first half row1, second half row2
-    var rest = games.filter(function(g){ return g.universeId !== featured.universeId; });
-    if (!rest.length) rest = games;
-    var half = Math.ceil(rest.length/2);
-    var rowData = [rest.slice(0,half), rest.slice(half).length ? rest.slice(half) : rest.slice(0,half)];
-    var dirs = ['r1','r2'];
-    rowData.forEach(function(row, ri) {
-      if (!row.length) return;
-      var wrapper = document.createElement('div');
-      wrapper.className = 'marquee-row-wrap';
-      var track = document.createElement('div');
-      track.className = 'm-track ' + dirs[ri];
-      var cardW=284, gap2=8, screenW=window.innerWidth||1400;
-      var copies=Math.ceil((screenW*2)/((cardW+gap2)*row.length))+1;
-      var all=[];
-      for (var i=0;i<copies;i++) all.push.apply(all,row);
-      var halfLen=all.length;
-      for (var j=0;j<halfLen*2;j++) track.appendChild(makeGameCard(all[j%halfLen]));
-      wrapper.appendChild(track);
-      wrapper.addEventListener('mouseenter', function(){ track.style.animationPlayState='paused'; });
-      wrapper.addEventListener('mouseleave', function(){ track.style.animationPlayState='running'; });
-      shell.appendChild(wrapper);
-    });
+    // Build role filters
+    var roles = ['All'];
+    games.forEach(function(g){ if(g.role && !roles.includes(g.role)) roles.push(g.role); });
+    var filterEl = document.getElementById('game-filters');
+    if (filterEl && roles.length > 2) {
+      filterEl.innerHTML = '';
+      roles.forEach(function(role) {
+        var btn = document.createElement('button');
+        btn.className = 'filter-btn' + (role === 'All' ? ' active' : '');
+        btn.textContent = role;
+        btn.onclick = function() {
+          document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+          btn.classList.add('active');
+          var filtered = role === 'All' ? games : games.filter(function(g){ return g.role === role; });
+          rebuildMarquee(filtered, featured);
+        };
+        filterEl.appendChild(btn);
+      });
+    }
+
+    var _allGames = games;
+    var _featuredGame = featured;
+
+    function rebuildMarquee(gamesArr, feat) {
+      shell.innerHTML = '';
+      var rest = gamesArr.filter(function(g){ return !feat || g.universeId !== feat.universeId; });
+      if (!rest.length) rest = gamesArr;
+      var half = Math.ceil(rest.length/2);
+      var rowData = [rest.slice(0,half), rest.slice(half).length ? rest.slice(half) : rest.slice(0,half)];
+      var dirs = ['r1','r2'];
+      rowData.forEach(function(row, ri) {
+        if (!row.length) return;
+        var wrapper = document.createElement('div'); wrapper.className = 'marquee-row-wrap';
+        var track = document.createElement('div'); track.className = 'm-track ' + dirs[ri];
+        var cardW=284, gap2=8, screenW=window.innerWidth||1400;
+        var copies=Math.ceil((screenW*2)/((cardW+gap2)*row.length))+1;
+        var all=[];
+        for (var i=0;i<copies;i++) all.push.apply(all,row);
+        var halfLen=all.length;
+        for (var j=0;j<halfLen*2;j++) track.appendChild(makeGameCard(all[j%halfLen]));
+        wrapper.appendChild(track);
+        wrapper.addEventListener('mouseenter', function(){ track.style.animationPlayState='paused'; });
+        wrapper.addEventListener('mouseleave', function(){ track.style.animationPlayState='running'; });
+        shell.appendChild(wrapper);
+      });
+    }
+    rebuildMarquee(games, featured);
   } catch(e) { if(loading) loading.textContent='Could not load games.'; console.error(e); }
 }
 
@@ -628,7 +678,29 @@ async function submitContact() {
 }
 
 async function trackVisit() {
-  try { var r=await fetch('/api/visits',{method:'POST'}); var d=await r.json(); document.getElementById('s-pageviews').textContent=fmtNum(d.visits); } catch{}
+  try {
+    var isNew = !sessionStorage.getItem('vs_visited');
+    var r, d;
+    if (isNew) {
+      sessionStorage.setItem('vs_visited', '1');
+      r = await fetch('/api/visits', {method:'POST'});
+      d = await r.json();
+    } else {
+      r = await fetch('/api/visits');
+      d = await r.json();
+    }
+    var count = d.visits || 0;
+    document.getElementById('s-pageviews').textContent = fmtNum(count);
+    // Show visitor badge
+    if (isNew) {
+      var badge = document.getElementById('visitor-badge');
+      if (badge) {
+        badge.textContent = "You're visitor #" + count.toLocaleString();
+        badge.style.display = 'block';
+        setTimeout(function(){ badge.classList.add('fade-out'); setTimeout(function(){ badge.style.display='none'; badge.classList.remove('fade-out'); }, 600); }, 4000);
+      }
+    }
+  } catch{}
 }
 
 var _activityPositioned = false;
@@ -664,6 +736,66 @@ var barsEl=document.getElementById('bars'); if(barsEl) barObs.observe(barsEl);
 
 trackVisit(); loadConfig(); loadGames(); loadPortfolio(); loadActivity();
 setInterval(loadActivity, 2000);
+
+// ── SCROLL PROGRESS ────────────────────────────────
+window.addEventListener('scroll', function() {
+  var scrolled = window.scrollY;
+  var total = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = total > 0 ? (scrolled / total) * 100 : 0;
+  document.getElementById('scroll-progress').style.width = pct + '%';
+  // Back to top
+  var btn = document.getElementById('back-to-top');
+  if (btn) btn.classList.toggle('visible', scrolled > 400);
+});
+
+// ── ROBLOX PROFILE ─────────────────────────────────
+(async function(){
+  try {
+    var r = await fetch('/api/roblox-profile');
+    var d = await r.json();
+    if (d.error) return;
+    var card = document.getElementById('roblox-card');
+    document.getElementById('roblox-avatar').src = d.avatar || '';
+    document.getElementById('roblox-name').textContent = d.displayName || d.name;
+    document.getElementById('roblox-user').textContent = '@' + d.name;
+    var joined = new Date(d.created).getFullYear();
+    document.getElementById('roblox-meta').textContent = d.friends + ' friends · joined ' + joined;
+    card.style.display = 'block';
+  } catch{}
+})();
+
+// ── COPY EMAIL ─────────────────────────────────────
+function copyEmail() {
+  var email = 'Vvshenok.dev@gmail.com';
+  navigator.clipboard.writeText(email).then(function() {
+    var el = document.getElementById('email-copy');
+    el.classList.add('copied');
+    var val = document.querySelector('#email-copy .slink-val');
+    val.textContent = 'Copied!';
+    setTimeout(function() { el.classList.remove('copied'); val.textContent = email; }, 1500);
+  });
+}
+
+// ── KONAMI CODE EASTER EGG ─────────────────────────
+var _konami = [38,38,40,40,37,39,37,39,66,65];
+var _konamiIdx = 0;
+document.addEventListener('keydown', function(e) {
+  if (e.keyCode === _konami[_konamiIdx]) {
+    _konamiIdx++;
+    if (_konamiIdx === _konami.length) {
+      _konamiIdx = 0;
+      triggerEasterEgg();
+    }
+  } else { _konamiIdx = 0; }
+});
+
+function triggerEasterEgg() {
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.92);backdrop-filter:blur(8px);cursor:pointer;';
+  overlay.innerHTML = '<div style="font-size:5rem;margin-bottom:1rem;animation:spin 1s linear infinite;">🎮</div><div style="font-family:var(--mono);font-size:1.2rem;color:var(--accent);letter-spacing:.08em;margin-bottom:0.5rem;">CHEAT CODE ACTIVATED</div><div style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);">you found the easter egg lol — click to close</div><style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>';
+  overlay.onclick = function() { document.body.removeChild(overlay); };
+  document.body.appendChild(overlay);
+}
 
 // Show My Orders or Sign In based on client session
 (async function(){
