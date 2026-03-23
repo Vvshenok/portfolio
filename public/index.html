@@ -397,6 +397,15 @@ function updateDiscord(data) {
   var statusText = { online:'Online', idle:'Idle', dnd:'Do Not Disturb', offline:'Offline' };
   document.getElementById('dc-activity').textContent = other ? 'Playing ' + other.name : (statusText[data.discord_status] || 'Offline');
   document.getElementById('hero-discord-wrap').style.display = 'block';
+  // Reposition activity card if it's visible
+  setTimeout(function() {
+    var aw = document.getElementById('hero-activity-wrap');
+    if (aw && aw.style.display !== 'none' && window.innerWidth > 780) {
+      var dw = document.getElementById('hero-discord-wrap');
+      var discordH = dw.offsetHeight || 100;
+      aw.style.bottom = 'calc(4.5rem + ' + (discordH + 12) + 'px)';
+    }
+  }, 50);
 }
 
 // ── HERO BG ────────────────────────────────────────
@@ -634,13 +643,16 @@ async function loadActivity() {
     document.getElementById('act-file-name').textContent=a.file;
     var parts=[]; if(a.line)parts.push('Line '+a.line); if(a.workspace)parts.push(a.workspace);
     document.getElementById('act-meta').textContent=parts.join(' · ');
-    if(wrap && wrap.style.display==='none') {
-      // Only position and show once — never touch again after that
-      var dw=document.getElementById('hero-discord-wrap');
-      if(dw && dw.style.display!=='none') {
-        wrap.style.bottom='calc(4.5rem + '+(dw.offsetHeight||100)+12+'px)';
-      }
+    if(wrap) {
       wrap.style.display='block';
+      // Stack above discord card on desktop
+      var dw=document.getElementById('hero-discord-wrap');
+      if(dw && dw.style.display!=='none' && window.innerWidth > 780) {
+        var discordH = dw.offsetHeight || 100;
+        wrap.style.bottom = 'calc(4.5rem + ' + (discordH + 12) + 'px)';
+      } else if(window.innerWidth > 780) {
+        wrap.style.bottom = '4.5rem';
+      }
     }
   } catch{}
 }
