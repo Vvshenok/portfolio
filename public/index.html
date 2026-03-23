@@ -4,7 +4,26 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Vvshenok — Roblox Developer</title>
-<meta name="description" content="Roblox Lua developer. Scripted games with hundreds of millions of visits."/>
+<meta name="description" content="Roblox Lua developer. Scripted games with hundreds of millions of visits. Available for hire."/>
+<meta name="theme-color" content="#0c0c0c"/>
+<link rel="manifest" href="/manifest.json"/>
+
+<!-- OG / Social -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://vvshenok.is-a.dev"/>
+<meta property="og:title" content="Vvshenok — Roblox Developer"/>
+<meta property="og:description" content="Roblox Lua developer. Scripted games with hundreds of millions of visits. Available for hire."/>
+<meta property="og:image" content="https://vvshenok.is-a.dev/api/og"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@Vvshenok"/>
+<meta name="twitter:title" content="Vvshenok — Roblox Developer"/>
+<meta name="twitter:description" content="Roblox Lua developer. Scripted games with hundreds of millions of visits. Available for hire."/>
+<meta name="twitter:image" content="https://vvshenok.is-a.dev/api/og"/>
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -100,6 +119,7 @@
         <span class="hero-activity-file-name" id="act-file-name"></span>
       </div>
       <div class="hero-activity-meta" id="act-meta"></div>
+      <div class="hero-activity-lastseen" id="act-lastseen"></div>
     </div>
   </div>
 </section>
@@ -120,7 +140,7 @@
     </div>
     <div class="stat">
       <div class="stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <div class="stat-n" id="s-playing">0</div>
+      <div class="stat-n" id="s-playing">0<span class="stat-ticker" id="playing-ticker"></span></div>
       <div class="stat-l">Playing now</div>
     </div>
     <div class="stat">
@@ -441,10 +461,15 @@ function buildHeroBg(games) {
   var thumbs = games.filter(function(g){ return g.thumbnail; }).map(function(g){ return g.thumbnail; });
   if (!thumbs.length) return;
   var tileSize=130, gap=18, step=tileSize+gap;
-  var cols=Math.ceil(window.innerWidth/step)+1, rows=Math.ceil((window.innerHeight*0.6)/step)+1;
+  // Only build enough tiles to cover viewport — no extras
+  var cols = Math.ceil(window.innerWidth / step) + 1;
+  var rows = Math.ceil((window.innerHeight * 0.6) / step) + 1;
   var html='', idx=0;
   for (var r=0;r<rows;r++) for (var c=0;c<cols;c++) {
-    html+='<div class="hero-tile" style="left:'+(c*step-40)+'px;top:'+(r*step-30)+'px;width:'+tileSize+'px;height:'+tileSize+'px;"><img src="'+esc(thumbs[idx%thumbs.length])+'" loading="lazy"/></div>';
+    var x = c*step-40, y = r*step-30;
+    // Use loading="lazy" and only load thumbs we need (cycle through small set)
+    var src = thumbs[idx % Math.min(thumbs.length, 6)]; // max 6 unique images
+    html += '<div class="hero-tile" style="left:'+x+'px;top:'+y+'px;width:'+tileSize+'px;height:'+tileSize+'px;"><img src="'+esc(src)+'" loading="lazy" decoding="async"/></div>';
     idx++;
   }
   bg.innerHTML = html;
@@ -461,8 +486,18 @@ async function loadGames() {
     var totalVisits=0, totalPlaying=0;
     games.forEach(function(g){ totalVisits+=g.visits||0; totalPlaying+=g.playing||0; });
     document.getElementById('s-visits').textContent = fmtNum(totalVisits);
-    document.getElementById('s-playing').textContent = fmtNum(totalPlaying);
+    document.getElementById('s-playing').innerHTML = fmtNum(totalPlaying) + '<span class="stat-ticker" id="playing-ticker"></span>';
     document.getElementById('s-games').textContent = games.length;
+
+    // Animate playing count — tick up/down slightly every few seconds to feel live
+    var _basePlaying = totalPlaying;
+    setInterval(function() {
+      var variance = Math.floor(Math.random() * 7) - 3; // -3 to +3
+      var current = _basePlaying + variance;
+      if (current < 0) current = 0;
+      var el = document.getElementById('s-playing');
+      if (el) el.innerHTML = fmtNum(current) + '<span class="stat-ticker" id="playing-ticker"></span>';
+    }, 8000);
     buildHeroBg(games);
     if (!games.length) { if(loading) loading.textContent='No games listed yet.'; return; }
     if (loading) loading.remove();
@@ -715,6 +750,13 @@ async function loadActivity() {
     document.getElementById('act-file-name').textContent=a.file;
     var parts=[]; if(a.line)parts.push('Line '+a.line); if(a.workspace)parts.push(a.workspace);
     document.getElementById('act-meta').textContent=parts.join(' · ');
+    // Last seen
+    if (a.updatedAt) {
+      var ago = Math.floor((Date.now() - a.updatedAt) / 1000);
+      var agoStr = ago < 60 ? 'just now' : ago < 3600 ? Math.floor(ago/60) + 'm ago' : Math.floor(ago/3600) + 'h ago';
+      var ls = document.getElementById('act-lastseen');
+      if (ls) ls.textContent = 'Active ' + agoStr;
+    }
     if(wrap) {
       wrap.style.display='block';
       // Stack above discord card on desktop

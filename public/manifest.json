@@ -1,0 +1,17 @@
+{
+  "name": "Vvshenok — Roblox Developer",
+  "short_name": "Vvshenok",
+  "description": "Roblox Lua developer. Scripted games with hundreds of millions of visits.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0c0c",
+  "theme_color": "#0c0c0c",
+  "icons": [
+    {
+      "src": "/og-image.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
