@@ -45,7 +45,7 @@ export default function handler(req, res) {
   <text x="470" y="400" font-family="monospace" font-size="10" fill="#555" text-anchor="middle" letter-spacing="1">YEARS SCRIPTING</text>
   
   <!-- URL -->
-  <text x="80" y="560" font-family="monospace" font-size="16" fill="#404040">vvshenok.is-a.dev</text>
+  <text x="80" y="560" font-family="monospace" font-size="16" fill="#404040">portfolio-rho-lemon-27.vercel.app</text>
   
   <!-- Right decoration -->
   <text x="950" y="350" font-family="monospace" font-size="120" fill="#1a1a1a" text-anchor="middle">&lt;/&gt;</text>
