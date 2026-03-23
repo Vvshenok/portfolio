@@ -488,9 +488,14 @@ async function loadGames() {
     var games = data.games || [];
     var totalVisits=0, totalPlaying=0;
     games.forEach(function(g){ totalVisits+=g.visits||0; totalPlaying+=g.playing||0; });
-    document.getElementById('s-visits').textContent = fmtNum(totalVisits);
+    // Store raw numbers as data attributes for counter animation
+    var visitsEl = document.getElementById('s-visits');
+    var gamesEl = document.getElementById('s-games');
+    visitsEl.dataset.target = totalVisits;
+    visitsEl.textContent = fmtNum(totalVisits);
+    gamesEl.dataset.target = games.length;
+    gamesEl.textContent = games.length;
     document.getElementById('s-playing').innerHTML = fmtNum(totalPlaying) + '<span class="stat-ticker" id="playing-ticker"></span>';
-    document.getElementById('s-games').textContent = games.length;
 
     // Animate playing count — tick up/down slightly every few seconds to feel live
     var _basePlaying = totalPlaying;
@@ -662,7 +667,11 @@ function renderLibraries(libs) {
 
 function renderGroups(groups) {
   var totalMembers=0; groups.forEach(function(g){totalMembers+=g.memberCount||0;});
-  if (totalMembers) document.getElementById('s-members').textContent=fmtNum(totalMembers);
+  if (totalMembers) {
+    var membersEl = document.getElementById('s-members');
+    membersEl.dataset.target = totalMembers;
+    membersEl.textContent = fmtNum(totalMembers);
+  }
   buildMarquee(document.getElementById('groups-shell'), groups, function(g) {
     var card=document.createElement('div'); card.className='group-card'; card.style.cssText='width:260px;flex-shrink:0;';
     var badge=g.isVerified?'<img src="/verified.png" class="verified-img" title="Verified" alt="Verified"/>':'';
@@ -794,21 +803,23 @@ const barObs = new IntersectionObserver(function(entries){entries.forEach(functi
 var barsEl=document.getElementById('bars'); if(barsEl) barObs.observe(barsEl);
 
 // ── ANIMATED COUNTERS ──────────────────────────────
-function animateCounter(el, target, suffix, duration) {
-  suffix = suffix || '';
+function animateCounter(el, target, duration) {
+  if (!el || !target) return;
   duration = duration || 1800;
-  var start = 0;
   var startTime = null;
-  var isFloat = String(target).includes('.');
   el.classList.add('counting');
   function step(ts) {
     if (!startTime) startTime = ts;
     var progress = Math.min((ts - startTime) / duration, 1);
     var ease = 1 - Math.pow(1 - progress, 3);
-    var current = isFloat ? (target * ease).toFixed(1) : Math.floor(target * ease);
-    el.textContent = current + suffix;
-    if (progress < 1) requestAnimationFrame(step);
-    else { el.textContent = target + suffix; el.classList.remove('counting'); }
+    var current = Math.floor(target * ease);
+    el.textContent = fmtNum(current);
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = fmtNum(target);
+      el.classList.remove('counting');
+    }
   }
   requestAnimationFrame(step);
 }
@@ -818,27 +829,18 @@ var statsObs = new IntersectionObserver(function(entries) {
   entries.forEach(function(e) {
     if (e.isIntersecting && !_statsAnimated) {
       _statsAnimated = true;
-      // Parse current values and animate
-      var visits = document.getElementById('s-visits');
-      var games = document.getElementById('s-games');
-      var members = document.getElementById('s-members');
-      var years = document.getElementById('s-years');
-      // Get raw numbers from current text
-      function parseVal(el) {
-        var t = el.textContent.replace(/[^0-9.]/g,'');
-        return parseFloat(t) || 0;
-      }
-      function getSuffix(el) {
-        return el.textContent.replace(/[0-9.]/g,'').trim();
-      }
-      if(visits) animateCounter(visits, parseVal(visits), getSuffix(visits));
-      if(games) animateCounter(games, parseVal(games), getSuffix(games), 1200);
-      if(members) animateCounter(members, parseVal(members), getSuffix(members), 1500);
-      if(years) animateCounter(years, parseVal(years), getSuffix(years), 1000);
+      setTimeout(function() {
+        var visits = document.getElementById('s-visits');
+        var games = document.getElementById('s-games');
+        var members = document.getElementById('s-members');
+        if (visits && visits.dataset.target) animateCounter(visits, parseInt(visits.dataset.target), 2000);
+        if (games && games.dataset.target) animateCounter(games, parseInt(games.dataset.target), 1200);
+        if (members && members.dataset.target) animateCounter(members, parseInt(members.dataset.target), 1800);
+      }, 200);
       statsObs.disconnect();
     }
   });
-}, {threshold: 0.3});
+}, {threshold: 0.5});
 var statsRow = document.querySelector('.stats-row');
 if (statsRow) statsObs.observe(statsRow);
 

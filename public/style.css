@@ -190,8 +190,8 @@ section { border-bottom: 1px solid var(--line); }
 
 /* ── MARQUEE / GAMES ─────────────────────────────── */
 .games-wrap { padding-bottom: 0; }
-.marquee-shell { display: flex; flex-direction: column; gap: 8px; overflow: hidden; position: relative; padding-bottom: 1rem; padding-top: 8px; }
-.marquee-shell::before, .marquee-shell::after { content: ''; position: absolute; top: 0; bottom: 0; width: 64px; z-index: 10; pointer-events: none; }
+.marquee-shell { display: flex; flex-direction: column; gap: 8px; overflow: hidden; position: relative; padding-bottom: 1rem; padding-top: 80px; margin-top: -80px; }
+.marquee-shell::before, .marquee-shell::after { content: ''; position: absolute; top: 80px; bottom: 0; width: 64px; z-index: 10; pointer-events: none; }
 .marquee-shell::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
 .marquee-shell::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
 .marquee-row-wrap { overflow: visible; position: relative; }
