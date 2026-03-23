@@ -70,13 +70,6 @@
   <a href="/portal" id="mobile-portal" style="display:none;color:#ff8c00;" onclick="closeMobileMenu()">My Orders</a>
 </div>
 
-<!-- GAME CARD TOOLTIP -->
-<div id="gcard-tooltip">
-  <div class="gcard-tooltip-name" id="tt-name"></div>
-  <div class="gcard-tooltip-desc" id="tt-desc"></div>
-  <div class="gcard-tooltip-stats" id="tt-stats"></div>
-</div>
-
 <!-- BACK TO TOP -->
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
@@ -334,6 +327,11 @@
   </div>
 </footer>
 
+<div id="gcard-tooltip" style="display:none;position:fixed;z-index:9999;">
+  <div class="gcard-tooltip-name" id="tt-name"></div>
+  <div class="gcard-tooltip-desc" id="tt-desc"></div>
+  <div class="gcard-tooltip-stats" id="tt-stats"></div>
+</div>
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
 let _discordTag = '';
@@ -607,18 +605,18 @@ function makeGameCard(g) {
   var tt = document.getElementById('gcard-tooltip');
   div.addEventListener('mouseenter', function(e) {
     document.getElementById('tt-name').textContent = g.name;
-    var desc = g.description ? (g.description.length > 90 ? g.description.slice(0,90)+'…' : g.description) : 'No description available.';
+    var desc = g.description ? (g.description.length > 90 ? g.description.slice(0,90)+'…' : g.description) : '';
     document.getElementById('tt-desc').textContent = desc;
     var stats = '<div class="gcard-tooltip-stat"><span class="gcard-tooltip-stat-label">Visits</span><span class="gcard-tooltip-stat-value">'+fmtNum(g.visits)+'</span></div>'+
       '<div class="gcard-tooltip-stat"><span class="gcard-tooltip-stat-label">Playing</span><span class="gcard-tooltip-stat-value">'+fmtNum(g.playing)+'</span></div>'+
       (g.favorites ? '<div class="gcard-tooltip-stat"><span class="gcard-tooltip-stat-label">Favorites</span><span class="gcard-tooltip-stat-value">'+fmtNum(g.favorites)+'</span></div>' : '')+
       '<div class="gcard-tooltip-stat"><span class="gcard-tooltip-stat-label">Role</span><span class="gcard-tooltip-stat-value">'+esc(g.role||'—')+'</span></div>';
     document.getElementById('tt-stats').innerHTML = stats;
-    tt.classList.add('visible');
+    tt.style.display = 'block';
     positionTooltip(e);
   });
   div.addEventListener('mousemove', positionTooltip);
-  div.addEventListener('mouseleave', function() { tt.classList.remove('visible'); });
+  div.addEventListener('mouseleave', function() { tt.style.display = 'none'; });
   return div;
 }
 
