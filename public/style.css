@@ -85,6 +85,7 @@ img { display: block; }
 /* Available badge */
 .avail-badge { display: flex; align-items: center; gap: 0.4rem; font-family: var(--mono); font-size: 0.65rem; color: #23a55a; border: 1px solid rgba(35,165,90,0.35); border-radius: 20px; padding: 0.25rem 0.7rem; letter-spacing: 0.04em; }
 .avail-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #23a55a; flex-shrink: 0; }
+.avail-badge.is-unavailable { color: #f23f43; border-color: rgba(242,63,67,0.35); }
 
 /* Theme toggle */
 .theme-toggle { background: none; border: 1px solid var(--line2); border-radius: 6px; padding: 0.3rem 0.45rem; cursor: pointer; color: var(--muted); display: flex; align-items: center; transition: border-color 0.15s, color 0.15s; }

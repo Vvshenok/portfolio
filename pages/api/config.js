@@ -1,9 +1,14 @@
 const cfg = require("../../config");
+const { kvGet } = require("../../lib/kv");
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).end();
+  const availability = await kvGet("vs:availability");
+  const available = availability && typeof availability.available === "boolean"
+    ? availability.available
+    : cfg.available;
   res.status(200).json({
-    available: cfg.available,
+    available,
     displayName: cfg.displayName,
     tagline: cfg.tagline,
     bio: cfg.bio,

@@ -180,6 +180,14 @@
   </div>
 
   <div class="tab-panel" id="tab-statuspricing">
+    <div class="dash-sec">Availability</div>
+    <div class="add-box">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <input type="checkbox" id="sp-available" style="accent-color:var(--accent);width:14px;height:14px;"/>
+        <label for="sp-available" style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);cursor:pointer;">Available for hire</label>
+      </div>
+      <div class="add-foot"><button class="btn btn-solid" onclick="saveAvailability()" style="font-size:0.75rem;">Save availability</button></div>
+    </div>
     <div class="dash-sec">Currently working on</div>
     <div class="add-box">
       <div class="field"><label class="field-label" for="sp-text">What are you working on right now?</label><input class="field-input" type="text" id="sp-text" placeholder="e.g. Combat system for a new fighting game"/></div>
@@ -466,6 +474,8 @@ async function loadStatusPricing(){
     const r=await fetch('/api/admin/status');
     const d=await r.json();
     const st=d.status||{};
+    const availability=d.availability||{};
+    document.getElementById('sp-available').checked=availability.available!==false;
     document.getElementById('sp-text').value=st.text||'';
     document.getElementById('sp-active').checked=!!st.active;
     renderPricingList(d.pricing||[]);
@@ -477,6 +487,13 @@ async function saveStatus(){
   try{
     await fetch('/api/admin/status',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:{text,active}})});
     msg('Status saved.','ok');
+  }catch{msg('Network error.','err');}
+}
+async function saveAvailability(){
+  const available=document.getElementById('sp-available').checked;
+  try{
+    await fetch('/api/admin/status',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({availability:{available}})});
+    msg(available?'Availability set to available.':'Availability set to not available.','ok');
   }catch{msg('Network error.','err');}
 }
 

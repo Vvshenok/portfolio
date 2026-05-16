@@ -407,9 +407,10 @@ async function loadConfig() {
   try {
     var r = await fetch('/api/config');
     var c = await r.json();
-    if (c.available) {
-      document.getElementById('avail-badge').style.display = 'flex';
-    }
+    var badge = document.getElementById('avail-badge');
+    badge.style.display = 'flex';
+    badge.classList.toggle('is-unavailable', !c.available);
+    badge.textContent = c.available ? 'Available for hire' : 'Not Available for hire';
     if (c.bio) { document.getElementById('hero-bio').textContent = c.bio; document.getElementById('about-p1').textContent = c.bio; }
     if (c.bioExtra) document.getElementById('about-p2').textContent = c.bioExtra;
     if (c.stats && c.stats.years) document.getElementById('s-years').textContent = c.stats.years + ' yrs';

@@ -4,13 +4,14 @@ const { kvGet } = require("../../lib/kv");
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).end();
   try {
-    const [libraries, projects, groups, testimonials, status, pricing] = await Promise.all([
+    const [libraries, projects, groups, testimonials, status, pricing, availability] = await Promise.all([
       getList("vs:libraries"),
       getList("vs:projects"),
       getList("vs:groups"),
       getList("vs:testimonials"),
       kvGet("vs:status"),
       kvGet("vs:pricing"),
+      kvGet("vs:availability"),
     ]);
 
     const refreshedGroups = await Promise.all(groups.map(async g => {
@@ -38,6 +39,7 @@ export default async function handler(req, res) {
       testimonials,
       status: status || { text: "", active: false },
       pricing: pricing || [],
+      availability: availability || null,
     });
   } catch (err) {
     console.error(err);
