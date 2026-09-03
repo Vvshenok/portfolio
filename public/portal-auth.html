@@ -40,6 +40,9 @@
 .input-wrap .toggle-pw { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--dim); padding: 0; }
 .auth-err { font-family: var(--mono); font-size: 0.68rem; min-height: 1.2rem; margin-top: 0.65rem; color: #f55; }
 .auth-err.ok { color: var(--accent); }
+.btn-discord { display: flex; align-items: center; justify-content: center; gap: 0.6rem; width: 100%; background: #5865f2; color: #fff; border: none; border-radius: var(--radius); padding: 0.7rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: background 0.15s, transform 0.15s; }
+.btn-discord:hover { background: #4752c4; transform: translateY(-1px); }
+.discord-icon { width: 18px; height: 18px; flex-shrink: 0; }
 @media (max-width: 700px) {
   .auth-container { grid-template-columns: 1fr; gap: 2rem; }
   .auth-left { display: none; }
@@ -117,7 +120,7 @@
         <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doLogin()">Sign in</button>
         <div class="auth-err" id="l-err"></div>
         <div class="divider-text">or</div>
-        <a class="btn btn-ghost" href="/api/client/discord" style="width:100%;justify-content:center;">Continue with Discord</a>
+        <a class="btn-discord" href="/api/client/discord"><svg class="discord-icon" viewBox="0 0 127.14 96.36" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,65.69,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>Continue with Discord</a>
         <span class="back-link" onclick="switchView('forgot')">Forgot password?</span>
       </div>
 
@@ -141,7 +144,7 @@
         <button class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="doSignup()">Create account</button>
         <div class="auth-err" id="s-err"></div>
         <div class="divider-text">or</div>
-        <a class="btn btn-ghost" href="/api/client/discord" style="width:100%;justify-content:center;">Continue with Discord</a>
+        <a class="btn-discord" href="/api/client/discord"><svg class="discord-icon" viewBox="0 0 127.14 96.36" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>Continue with Discord</a>
       </div>
 
       <!-- VERIFY OTP -->
