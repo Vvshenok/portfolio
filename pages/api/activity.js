@@ -6,6 +6,7 @@ const STALE_MS = 90 * 1000; // 90 seconds
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
+    if (process.env.ACTIVITY_PUBLIC_ENABLED !== "true") return res.status(200).json({ activity: null });
     const activity = await kvGet(KEY);
     if (!activity || !activity.file) return res.status(200).json({ activity: null });
     return res.status(200).json({ activity });

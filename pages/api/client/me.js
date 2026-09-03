@@ -2,6 +2,8 @@ const { getCookieToken, getClientSession, getClientByEmail } = require('../../..
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end();
+  res.setHeader('Cache-Control', 'no-store, private');
+  res.setHeader('Vary', 'Cookie');
   try {
     const token = getCookieToken(req);
     if (!token) return res.status(200).json({ authed: false });

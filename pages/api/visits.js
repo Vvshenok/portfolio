@@ -2,6 +2,7 @@ const { kvGet, kvSet } = require("../../lib/kv");
 const KEY = "vs:visits";
 
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
   if (req.method === "POST") {
     try {
       const current = await kvGet(KEY) || 0;

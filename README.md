@@ -9,7 +9,9 @@ Full-stack Roblox developer portfolio with live Roblox API data, staff dashboard
 - **Next.js 14** — API routes (no frontend framework, pages are plain HTML)
 - **Vercel** — free hosting, no trial, no credit card required
 - **games.json** — your game database, no external DB needed
-- **EmailJS** — contact form emails, free tier is plenty
+- **EmailJS** — contact form emails
+- **Stripe + PayPal** — secure service payments
+- **Nodemailer + PDFKit** — automatic PDF invoices
 
 ---
 
@@ -84,10 +86,55 @@ ADMIN_USERNAME=Vvshenok
 ADMIN_PASSWORD=your_secure_password_here
 
 EMAILJS_SERVICE_ID=your_service_id
-EMAILJS_TEMPLATE_ID=your_template_id
 EMAILJS_PUBLIC_KEY=your_public_key
+EMAILJS_CONTACT_TEMPLATE=your_contact_template_id
+EMAILJS_AUTOREPLY_TEMPLATE=your_autoreply_template_id
+
+# Client portal email templates
+EMAILJS2_SERVICE_ID=your_transactional_service_id
+EMAILJS2_PUBLIC_KEY=your_transactional_public_key
+EMAILJS2_OTP_TEMPLATE=your_otp_template_id
+EMAILJS2_WELCOME_TEMPLATE=your_welcome_template_id
+
+CONTACT_TO_EMAIL=you@example.com
 
 SESSION_SECRET=any_random_string_32_chars_or_longer
+ACTIVITY_PUBLIC_ENABLED=false
+
+# Payments
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+PAYPAL_CLIENT_ID=your_paypal_client_id
+PAYPAL_CLIENT_SECRET=your_paypal_client_secret
+PAYPAL_ENV=sandbox
+PUBLIC_SITE_URL=http://localhost:3000
+
+# Invoice email (SMTP; use an app password where required)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your_smtp_username
+SMTP_PASSWORD=your_smtp_password
+INVOICE_FROM_EMAIL=you@example.com
+
+# Persistent storage: configure either KV/STORAGE or the Upstash pair
+KV_REST_API_URL=https://your-kv.upstash.io
+KV_REST_API_TOKEN=your_kv_token
+# STORAGE_REST_API_URL=...
+# STORAGE_REST_API_TOKEN=...
+
+# Optional Discord login
+DISCORD_CLIENT_ID=your_discord_client_id
+DISCORD_CLIENT_SECRET=your_discord_client_secret
+DISCORD_ALLOWED_USER_ID=your_discord_user_id
+NEXT_PUBLIC_BASE_URL=https://your-domain.com
+
+# Optional activity publisher and SMS notifications
+ACTIVITY_API_KEY=your_private_activity_api_key
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_MESSAGING_SERVICE_SID=your_messaging_service_sid
+TWILIO_TO_NUMBER=your_phone_number
 ```
 
 **.env.local is in .gitignore — it will never be pushed to GitHub.**
@@ -105,6 +152,15 @@ SESSION_SECRET=any_random_string_32_chars_or_longer
    {{message}}
    ```
 4. Copy your **Service ID**, **Template ID**, and **Public Key** into `.env.local`
+
+## Payments and invoices
+
+The `/pay` page accepts an email, service description, and amount in USD. Stripe Checkout handles cards and Apple Pay when enabled in your Stripe account. PayPal buttons use sandbox mode until `PAYPAL_ENV=live` is set. After a completed payment, the app emails the customer a PDF invoice through SMTP.
+
+1. Create Stripe API keys and add a webhook endpoint at `https://your-domain.com/api/payments/stripe-webhook` for `checkout.session.completed`. Add its signing secret as `STRIPE_WEBHOOK_SECRET`.
+2. Create a PayPal app in the [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/) and add its client ID and secret.
+3. Use SMTP credentials for the mailbox that should send invoices. `INVOICE_FROM_EMAIL` must be an address allowed by that SMTP provider.
+4. Set `PUBLIC_SITE_URL` to the deployed HTTPS URL in Vercel.
 
 ---
 
@@ -162,6 +218,18 @@ Open http://localhost:3000
    - `EMAILJS_TEMPLATE_ID`
    - `EMAILJS_PUBLIC_KEY`
    - `SESSION_SECRET`
+   - `STRIPE_SECRET_KEY`
+   - `STRIPE_WEBHOOK_SECRET`
+   - `PAYPAL_CLIENT_ID`
+   - `PAYPAL_CLIENT_SECRET`
+   - `PAYPAL_ENV`
+   - `PUBLIC_SITE_URL`
+   - `SMTP_HOST`
+   - `SMTP_PORT`
+   - `SMTP_SECURE`
+   - `SMTP_USER`
+   - `SMTP_PASSWORD`
+   - `INVOICE_FROM_EMAIL`
 5. Click **Deploy**
 
 Vercel gives you a free `.vercel.app` domain instantly.

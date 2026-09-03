@@ -10,6 +10,7 @@ const nextConfig = {
       { source: "/dashboard", destination: "/dashboard.html" },
       { source: "/portal", destination: "/portal.html" },
       { source: "/portal-auth", destination: "/portal-auth.html" },
+      { source: "/pay", destination: "/pay.html" },
     ];
   },
 };
