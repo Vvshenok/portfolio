@@ -17,18 +17,18 @@ export default async function handler(req, res) {
 
   try {
     const creds = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
-    const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
+    const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
       method: 'POST',
       headers: {
-        'Authorization': `Basic ${creds}`,
+        Authorization: `Basic ${creds}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({ To: toNumber, MessagingServiceSid: messagingServiceSid, Body: body }),
     });
-    const data = await r.json();
+    const data = await response.json();
     if (data.sid) return res.status(200).json({ ok: true });
     return res.status(200).json({ ok: false, error: data.message });
-  } catch (e) {
-    return res.status(200).json({ ok: false, error: e.message });
+  } catch (error) {
+    return res.status(200).json({ ok: false, error: error.message });
   }
 }

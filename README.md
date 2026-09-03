@@ -109,13 +109,17 @@ PAYPAL_CLIENT_SECRET=your_paypal_client_secret
 PAYPAL_ENV=sandbox
 PUBLIC_SITE_URL=http://localhost:3000
 
-# Invoice email (SMTP; use an app password where required)
+# Invoice email via SMTP
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER=your_smtp_username
 SMTP_PASSWORD=your_smtp_password
 INVOICE_FROM_EMAIL=you@example.com
+
+# Gmail shortcut: these use your existing Vercel variables instead
+# GMAIL_USER=you@gmail.com
+# GMAIL_APP_PASSWORD=your_16_character_app_password
 
 # Persistent storage: configure either KV/STORAGE or the Upstash pair
 KV_REST_API_URL=https://your-kv.upstash.io
@@ -129,12 +133,8 @@ DISCORD_CLIENT_SECRET=your_discord_client_secret
 DISCORD_ALLOWED_USER_ID=your_discord_user_id
 NEXT_PUBLIC_BASE_URL=https://your-domain.com
 
-# Optional activity publisher and SMS notifications
+# Optional activity publisher
 ACTIVITY_API_KEY=your_private_activity_api_key
-TWILIO_ACCOUNT_SID=your_twilio_account_sid
-TWILIO_AUTH_TOKEN=your_twilio_auth_token
-TWILIO_MESSAGING_SERVICE_SID=your_messaging_service_sid
-TWILIO_TO_NUMBER=your_phone_number
 ```
 
 **.env.local is in .gitignore — it will never be pushed to GitHub.**
@@ -161,6 +161,19 @@ The `/pay` page accepts an email, service description, and amount in USD. Stripe
 2. Create a PayPal app in the [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/) and add its client ID and secret.
 3. Use SMTP credentials for the mailbox that should send invoices. `INVOICE_FROM_EMAIL` must be an address allowed by that SMTP provider.
 4. Set `PUBLIC_SITE_URL` to the deployed HTTPS URL in Vercel.
+
+## Discord login setup
+
+Discord login is for the site owner/admin dashboard, not for customers. To configure it:
+
+1. Open the [Discord Developer Portal](https://discord.com/developers/applications) and choose **New Application**.
+2. Open **OAuth2** and copy the **Client ID** into `DISCORD_CLIENT_ID`.
+3. Click **Reset Secret**, copy the new secret into `DISCORD_CLIENT_SECRET`, and never expose it in frontend code.
+4. Add this exact redirect URL under **Redirects**:
+   `https://vvshenok.xyz/api/auth/discord/callback`
+5. Copy your own Discord user ID into `DISCORD_ALLOWED_USER_ID`. Enable **Developer Mode** in Discord, right-click your profile, and choose **Copy User ID**.
+6. Set `NEXT_PUBLIC_BASE_URL=https://vvshenok.xyz` in Vercel and redeploy.
+7. Open `/login` and use **Continue with Discord**. Only the Discord ID in `DISCORD_ALLOWED_USER_ID` will be allowed into the admin dashboard.
 
 ---
 
