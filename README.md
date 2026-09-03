@@ -175,6 +175,8 @@ Discord login is for the site owner/admin dashboard, not for customers. To confi
 6. Set `NEXT_PUBLIC_BASE_URL=https://vvshenok.xyz` in Vercel and redeploy.
 7. Open `/login` and use **Continue with Discord**. Only the Discord ID in `DISCORD_ALLOWED_USER_ID` will be allowed into the admin dashboard.
 
+The client portal uses a separate route, `/api/client/discord`, and does not use `DISCORD_ALLOWED_USER_ID`. Any Discord user with a verified Discord email can create or connect a customer portal account. Their Discord ID is stored against the client record, and the normal `vs_client` customer session cookie is issued; this never creates an admin session.
+
 ---
 
 ## Step 6 — Find your Universe IDs and Place IDs
