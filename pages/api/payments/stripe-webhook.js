@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         const payment = { invoiceNumber: `VS-${session.id.slice(-8).toUpperCase()}`, email: session.customer_details?.email, description: session.metadata?.description || 'Roblox scripting services', amount: (session.amount_total || 0) / 100, paidAt: Date.now(), method: 'Stripe' };
         await sendInvoice({ invoiceNumber: payment.invoiceNumber, customerEmail: payment.email, description: payment.description, amount: payment.amount, paidAt: payment.paidAt, paymentMethod: payment.method });
         await kvSet(paymentKey, payment);
-        await recordCompletedPayment();
+        await recordCompletedPayment(payment);
       }
     }
     return res.status(200).json({ received: true });

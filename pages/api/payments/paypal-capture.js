@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     if (!payment.email) return res.status(400).json({ error: 'Missing customer email' });
     await sendInvoice({ invoiceNumber: payment.invoiceNumber, customerEmail: payment.email, description: payment.description, amount: payment.amount, paidAt: payment.paidAt, paymentMethod: payment.method });
     await kvSet(key, payment);
-    await recordCompletedPayment();
+    await recordCompletedPayment(payment);
     return res.status(200).json({ ok: true });
   } catch (error) { console.error('[paypal-capture]', error.message); return res.status(500).json({ error: 'Payment succeeded, but the invoice could not be sent. Please contact me.' }); }
 }

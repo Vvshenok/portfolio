@@ -121,6 +121,8 @@
   </div>
   <div class="portal-section-title">Your Projects</div>
   <div id="orders-list"><div class="games-loading">Loading your orders...</div></div>
+  <div class="portal-section-title portal-payments-title">Payment history</div>
+  <div id="payments-list"><div class="games-loading">Loading payment history...</div></div>
 </div>
 
 <script>
@@ -149,6 +151,7 @@ var statusLabels = { in_progress:'In Progress', completed:'Completed', review:'I
     if (!d.authed) { window.location.href = '/portal-auth'; return; }
     document.getElementById('portal-username').textContent = d.username;
     loadOrders();
+    loadPayments();
   } catch { window.location.href = '/portal-auth'; }
 })();
 
@@ -159,6 +162,21 @@ async function loadOrders() {
     renderOrders(d.orders || []);
   } catch { document.getElementById('orders-list').innerHTML = '<div class="games-loading">Failed to load orders.</div>'; }
 }
+
+async function loadPayments() {
+  try {
+    var r = await fetch('/api/client/payments');
+    var d = await r.json();
+    var el = document.getElementById('payments-list');
+    var payments = d.payments || [];
+    if (!payments.length) { el.innerHTML = '<div class="empty-portal"><h2>No payments yet</h2><p>Completed service payments will appear here with their invoice details.</p></div>'; return; }
+    el.innerHTML = payments.map(function(payment) {
+      return '<div class="order-card payment-card"><div class="order-header"><div class="order-info"><div class="order-title">'+escPortal(payment.description)+'</div><div class="order-meta">'+escPortal(payment.invoiceNumber)+' · '+new Date(payment.paidAt).toLocaleDateString()+' · '+escPortal(payment.method)+'</div></div><strong class="payment-amount">$'+Number(payment.amount).toFixed(2)+' USD</strong></div></div>';
+    }).join('');
+  } catch { document.getElementById('payments-list').innerHTML = '<div class="games-loading">Payment history unavailable.</div>'; }
+}
+
+function escPortal(value) { return String(value || '').replace(/[&<>"']/g, function(character) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]; }); }
 
 function renderOrders(orders) {
   var el = document.getElementById('orders-list');
